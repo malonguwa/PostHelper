@@ -7,11 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3DB3070D1DDB2B0E00CFBFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3070C1DDB2B0E00CFBFC6 /* AppDelegate.swift */; };
-		3DB3070F1DDB2B0E00CFBFC6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3070E1DDB2B0E00CFBFC6 /* ViewController.swift */; };
-		3DB307121DDB2B0E00CFBFC6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DB307101DDB2B0E00CFBFC6 /* Main.storyboard */; };
-		3DB307141DDB2B0E00CFBFC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DB307131DDB2B0E00CFBFC6 /* Assets.xcassets */; };
-		3DB307171DDB2B0E00CFBFC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DB307151DDB2B0E00CFBFC6 /* LaunchScreen.storyboard */; };
+		369C90B253ABC6DA4733A587 /* Pods_PostHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF7280D41AB2AAB696B055B5 /* Pods_PostHelper.framework */; };
+		3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */; };
+		3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D65CDDC1DDC423D00073AB4 /* HALoginVC.swift */; };
+		3D65CDE31DDC446C00073AB4 /* HALogin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDDB1DDC423D00073AB4 /* HALogin.storyboard */; };
+		3D65CDE41DDC446C00073AB4 /* HALoginVC.swift in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDDC1DDC423D00073AB4 /* HALoginVC.swift */; };
+		3D65CDE61DDC446C00073AB4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD91DDC423D00073AB4 /* LaunchScreen.storyboard */; };
+		3D65CDE71DDC446C00073AB4 /* AppDelegate.swift in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */; };
+		3D65CDE81DDC446C00073AB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD61DDC423D00073AB4 /* Assets.xcassets */; };
+		3D98093F1DDDA0E700BB4FEF /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D98093E1DDDA0E700BB4FEF /* Home.storyboard */; };
+		3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */; };
+		3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */; };
 		3DB307221DDB2B0E00CFBFC6 /* PostHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */; };
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
 /* End PBXBuildFile section */
@@ -34,19 +40,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		3D65CDD61DDC423D00073AB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3D65CDD81DDC423D00073AB4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3D65CDD91DDC423D00073AB4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3D65CDDB1DDC423D00073AB4 /* HALogin.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HALogin.storyboard; sourceTree = "<group>"; };
+		3D65CDDC1DDC423D00073AB4 /* HALoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HALoginVC.swift; sourceTree = "<group>"; };
+		3D65CDE91DDC4F1200073AB4 /* PostHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PostHelper.entitlements; sourceTree = "<group>"; };
+		3D98093E1DDDA0E700BB4FEF /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
+		3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostVC.swift; sourceTree = "<group>"; };
+		3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAHomeTableController.swift; sourceTree = "<group>"; };
 		3DB307091DDB2B0E00CFBFC6 /* PostHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PostHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DB3070C1DDB2B0E00CFBFC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3DB3070E1DDB2B0E00CFBFC6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		3DB307111DDB2B0E00CFBFC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		3DB307131DDB2B0E00CFBFC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		3DB307161DDB2B0E00CFBFC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		3DB307181DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DB3071D1DDB2B0E00CFBFC6 /* PostHelperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperTests.swift; sourceTree = "<group>"; };
 		3DB307231DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DB307281DDB2B0E00CFBFC6 /* PostHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperUITests.swift; sourceTree = "<group>"; };
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		747A69839BDFCDEF9138C8E0 /* Pods_PostHelperUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostHelperUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FFDBA34AE057E37144E9A72 /* Pods-PostHelper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostHelper.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper.release.xcconfig"; sourceTree = "<group>"; };
+		939F7C730FC13A127E23CEAA /* Pods-PostHelper.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostHelper.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper.debug.xcconfig"; sourceTree = "<group>"; };
+		EF7280D41AB2AAB696B055B5 /* Pods_PostHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA1487E709B98E8B9BEC35DF /* Pods_PostHelperTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostHelperTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				369C90B253ABC6DA4733A587 /* Pods_PostHelper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,13 +90,58 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11634D9F0F7107EBE1FA3908 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EF7280D41AB2AAB696B055B5 /* Pods_PostHelper.framework */,
+				FA1487E709B98E8B9BEC35DF /* Pods_PostHelperTests.framework */,
+				747A69839BDFCDEF9138C8E0 /* Pods_PostHelperUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3D65CDD41DDC423D00073AB4 /* PostHelper */ = {
+			isa = PBXGroup;
+			children = (
+				3D65CDE91DDC4F1200073AB4 /* PostHelper.entitlements */,
+				3D65CDDA1DDC423D00073AB4 /* Login */,
+				3D65CDD71DDC423D00073AB4 /* Home */,
+				3D65CDD81DDC423D00073AB4 /* Info.plist */,
+				3D65CDD91DDC423D00073AB4 /* LaunchScreen.storyboard */,
+				3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */,
+				3D65CDD61DDC423D00073AB4 /* Assets.xcassets */,
+			);
+			path = PostHelper;
+			sourceTree = "<group>";
+		};
+		3D65CDD71DDC423D00073AB4 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				3D98093E1DDDA0E700BB4FEF /* Home.storyboard */,
+				3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */,
+				3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		3D65CDDA1DDC423D00073AB4 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				3D65CDDB1DDC423D00073AB4 /* HALogin.storyboard */,
+				3D65CDDC1DDC423D00073AB4 /* HALoginVC.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
 		3DB307001DDB2B0E00CFBFC6 = {
 			isa = PBXGroup;
 			children = (
-				3DB3070B1DDB2B0E00CFBFC6 /* PostHelper */,
+				3D65CDD41DDC423D00073AB4 /* PostHelper */,
 				3DB307201DDB2B0E00CFBFC6 /* PostHelperTests */,
 				3DB3072B1DDB2B0E00CFBFC6 /* PostHelperUITests */,
 				3DB3070A1DDB2B0E00CFBFC6 /* Products */,
+				BFAB604D503CC05C2D567932 /* Pods */,
+				11634D9F0F7107EBE1FA3908 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,19 +153,6 @@
 				3DB307281DDB2B0E00CFBFC6 /* PostHelperUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		3DB3070B1DDB2B0E00CFBFC6 /* PostHelper */ = {
-			isa = PBXGroup;
-			children = (
-				3DB3070C1DDB2B0E00CFBFC6 /* AppDelegate.swift */,
-				3DB3070E1DDB2B0E00CFBFC6 /* ViewController.swift */,
-				3DB307101DDB2B0E00CFBFC6 /* Main.storyboard */,
-				3DB307131DDB2B0E00CFBFC6 /* Assets.xcassets */,
-				3DB307151DDB2B0E00CFBFC6 /* LaunchScreen.storyboard */,
-				3DB307181DDB2B0E00CFBFC6 /* Info.plist */,
-			);
-			path = PostHelper;
 			sourceTree = "<group>";
 		};
 		3DB307201DDB2B0E00CFBFC6 /* PostHelperTests */ = {
@@ -125,6 +173,15 @@
 			path = PostHelperUITests;
 			sourceTree = "<group>";
 		};
+		BFAB604D503CC05C2D567932 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				939F7C730FC13A127E23CEAA /* Pods-PostHelper.debug.xcconfig */,
+				8FFDBA34AE057E37144E9A72 /* Pods-PostHelper.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +189,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3DB307311DDB2B0E00CFBFC6 /* Build configuration list for PBXNativeTarget "PostHelper" */;
 			buildPhases = (
+				1E1D91AB50B3BFC50F69D012 /* [CP] Check Pods Manifest.lock */,
 				3DB307051DDB2B0E00CFBFC6 /* Sources */,
 				3DB307061DDB2B0E00CFBFC6 /* Frameworks */,
 				3DB307071DDB2B0E00CFBFC6 /* Resources */,
+				19EA883AB8F31C240A232007 /* [CP] Embed Pods Frameworks */,
+				E82919AF6BDC4FE0743F8081 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -187,6 +247,7 @@
 		3DB307011DDB2B0E00CFBFC6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = HA;
 				LastSwiftUpdateCheck = 0810;
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = HnA;
@@ -195,6 +256,11 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = Q42V28CTZ7;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					3DB3071C1DDB2B0E00CFBFC6 = {
 						CreatedOnToolsVersion = 8.1;
@@ -235,9 +301,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DB307171DDB2B0E00CFBFC6 /* LaunchScreen.storyboard in Resources */,
-				3DB307141DDB2B0E00CFBFC6 /* Assets.xcassets in Resources */,
-				3DB307121DDB2B0E00CFBFC6 /* Main.storyboard in Resources */,
+				3D65CDE31DDC446C00073AB4 /* HALogin.storyboard in Resources */,
+				3D65CDE41DDC446C00073AB4 /* HALoginVC.swift in Resources */,
+				3D65CDE61DDC446C00073AB4 /* LaunchScreen.storyboard in Resources */,
+				3D98093F1DDDA0E700BB4FEF /* Home.storyboard in Resources */,
+				3D65CDE71DDC446C00073AB4 /* AppDelegate.swift in Resources */,
+				3D65CDE81DDC446C00073AB4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,13 +326,63 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		19EA883AB8F31C240A232007 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1E1D91AB50B3BFC50F69D012 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		E82919AF6BDC4FE0743F8081 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		3DB307051DDB2B0E00CFBFC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DB3070F1DDB2B0E00CFBFC6 /* ViewController.swift in Sources */,
-				3DB3070D1DDB2B0E00CFBFC6 /* AppDelegate.swift in Sources */,
+				3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */,
+				3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */,
+				3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */,
+				3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,25 +416,6 @@
 			targetProxy = 3DB307291DDB2B0E00CFBFC6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		3DB307101DDB2B0E00CFBFC6 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3DB307111DDB2B0E00CFBFC6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		3DB307151DDB2B0E00CFBFC6 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3DB307161DDB2B0E00CFBFC6 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		3DB3072F1DDB2B0E00CFBFC6 /* Debug */ = {
@@ -411,8 +511,10 @@
 		};
 		3DB307321DDB2B0E00CFBFC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 939F7C730FC13A127E23CEAA /* Pods-PostHelper.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = PostHelper/PostHelper.entitlements;
 				DEVELOPMENT_TEAM = Q42V28CTZ7;
 				INFOPLIST_FILE = PostHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -424,8 +526,10 @@
 		};
 		3DB307331DDB2B0E00CFBFC6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8FFDBA34AE057E37144E9A72 /* Pods-PostHelper.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = PostHelper/PostHelper.entitlements;
 				DEVELOPMENT_TEAM = Q42V28CTZ7;
 				INFOPLIST_FILE = PostHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -503,7 +607,7 @@
 				3DB307301DDB2B0E00CFBFC6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		3DB307311DDB2B0E00CFBFC6 /* Build configuration list for PBXNativeTarget "PostHelper" */ = {
 			isa = XCConfigurationList;
@@ -512,6 +616,7 @@
 				3DB307331DDB2B0E00CFBFC6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		3DB307341DDB2B0E00CFBFC6 /* Build configuration list for PBXNativeTarget "PostHelperTests" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +625,7 @@
 				3DB307361DDB2B0E00CFBFC6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		3DB307371DDB2B0E00CFBFC6 /* Build configuration list for PBXNativeTarget "PostHelperUITests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +634,7 @@
 				3DB307391DDB2B0E00CFBFC6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

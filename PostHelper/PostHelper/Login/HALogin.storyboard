@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="LNd-eK-KR8">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Welcome-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="HALoginVC" customModule="PostHelper" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5MU-oT-WYp" userLabel="TwitterAdd">
+                                <rect key="frame" x="216" y="170" width="22" height="22"/>
+                            </button>
+                            <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pWJ-G2-kw8">
+                                <rect key="frame" x="128" y="136" width="80" height="30"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" button="YES" notEnabled="YES"/>
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="5GF-GD-bQv"/>
+                                    <constraint firstAttribute="height" constant="30" id="waT-Ci-0ST"/>
+                                </constraints>
+                                <state key="normal" title="Facebook"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7VW-Di-bAk" userLabel="FacebookAdd">
+                                <rect key="frame" x="216" y="140" width="22" height="22"/>
+                                <connections>
+                                    <action selector="addFBAccountClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KJU-BZ-L6X"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7xz-s0-jJd">
+                                <rect key="frame" x="166" y="419" width="43" height="30"/>
+                                <state key="normal" title="Ready"/>
+                                <connections>
+                                    <segue destination="8DW-bs-1WT" kind="show" id="5SC-2c-JeX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="52b-Wa-eV8">
+                                <rect key="frame" x="128" y="166" width="80" height="30"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" button="YES" notEnabled="YES"/>
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="eAC-wf-nv1"/>
+                                    <constraint firstAttribute="height" constant="30" id="nen-na-MqW"/>
+                                </constraints>
+                                <state key="normal" title="Twitter"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="81i-Ci-XXX">
+                                <rect key="frame" x="250" y="136" width="51" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="LogOut"/>
+                                <connections>
+                                    <action selector="FBLogOutClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1hl-eH-kgT"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="5MU-oT-WYp" firstAttribute="top" secondItem="7VW-Di-bAk" secondAttribute="bottom" constant="8" id="062-a9-Ibv"/>
+                            <constraint firstItem="7xz-s0-jJd" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="BiE-j0-wnx"/>
+                            <constraint firstItem="52b-Wa-eV8" firstAttribute="top" secondItem="pWJ-G2-kw8" secondAttribute="bottom" id="GQD-kc-sbs"/>
+                            <constraint firstItem="7VW-Di-bAk" firstAttribute="leading" secondItem="pWJ-G2-kw8" secondAttribute="trailing" constant="8" id="JfV-kb-FtF"/>
+                            <constraint firstItem="pWJ-G2-kw8" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-20" id="MB3-J8-qVa"/>
+                            <constraint firstItem="52b-Wa-eV8" firstAttribute="centerX" secondItem="pWJ-G2-kw8" secondAttribute="centerX" id="ZKA-Qz-WeK"/>
+                            <constraint firstItem="7VW-Di-bAk" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="76" id="ZcE-EY-iX0"/>
+                            <constraint firstItem="7xz-s0-jJd" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="100" id="fX9-7L-4SJ"/>
+                            <constraint firstItem="5MU-oT-WYp" firstAttribute="leading" secondItem="52b-Wa-eV8" secondAttribute="trailing" constant="8" id="xEk-mN-ibt"/>
+                            <constraint firstItem="pWJ-G2-kw8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="72" id="xS0-hN-hr0"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Welcome" id="ksN-g1-xxb"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="375" height="667"/>
+                    <connections>
+                        <outlet property="addFBAccountBtn" destination="7VW-Di-bAk" id="r1D-2F-9qf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="816.79999999999995" y="-559.07046476761627"/>
+        </scene>
+        <!--Home-->
+        <scene sceneID="uzY-Jp-GO5">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Home" id="8DW-bs-1WT" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DF3-Ac-6UH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="817" y="-175"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="hhR-V9-Dw5">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LNd-eK-KR8" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="375" height="667"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="D5W-IN-k5m">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="qRg-PA-NQr"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pIr-VI-u18" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="100" y="-559.07046476761627"/>
+        </scene>
+    </scenes>
+</document>
