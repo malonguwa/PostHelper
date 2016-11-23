@@ -21,28 +21,29 @@ class HAHomeTableController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
+            self.performSegue(withIdentifier: "homeToPost", sender: nil)
 
-            let loginManager = LoginManager()
-            loginManager.logIn([.publishActions], viewController: self) { loginResult in
-                switch loginResult {
-                case .failed(let error):
-                    print(error)
-                case .cancelled:
-                    print("User cancelled login.")
-                case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-
-                    print("Logged in with publish permisson!, \n grantedPermissions: \(grantedPermissions), \n declinedPermissions: \(declinedPermissions),\n accessToken: \(accessToken)")
-                    
-                    self.flag = 1
-//                    guard let navi = self.navigationController else{
-//                        return
-//                    }
-                    
-                    
-                    self.performSegue(withIdentifier: "homeToPost", sender: nil)
- 
-                }
-            }
+//            let loginManager = LoginManager()
+//            loginManager.logIn([.publishActions], viewController: self) { loginResult in
+//                switch loginResult {
+//                case .failed(let error):
+//                    print(error)
+//                case .cancelled:
+//                    print("User cancelled login.")
+//                case .success(let grantedPermissions, let declinedPermissions, let accessToken):
+//
+//                    print("Logged in with publish permisson!, \n grantedPermissions: \(grantedPermissions), \n declinedPermissions: \(declinedPermissions),\n accessToken: \(accessToken)")
+//                    
+//                    self.flag = 1
+////                    guard let navi = self.navigationController else{
+////                        return
+////                    }
+//                    
+//                    
+//                    self.performSegue(withIdentifier: "homeToPost", sender: nil)
+// 
+//                }
+//            }
         }
     }
     

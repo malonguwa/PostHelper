@@ -34,7 +34,20 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         
         let loginManager = LoginManager()
         loginManager.loginBehavior = .native
-        loginManager.logIn([.publicProfile], viewController: self) { loginResult in
+//        loginManager.logIn([.publicProfile], viewController: self) { loginResult in
+//            switch loginResult {
+//            case .failed(let error):
+//                print(error)
+//            case .cancelled:
+//                print("User cancelled login.")
+//            case .success(let grantedPermissions, let declinedPermissions, let accessToken):
+//                
+//                print("Logged in with read permission!, \n grantedPermissions: \(grantedPermissions), \n declinedPermissions: \(declinedPermissions),\n accessToken: \(accessToken)")
+//            }
+//        }
+        
+        
+        loginManager.logIn([.publishActions], viewController: self) { loginResult in
             switch loginResult {
             case .failed(let error):
                 print(error)
@@ -44,6 +57,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                 
                 print("Logged in with read permission!, \n grantedPermissions: \(grantedPermissions), \n declinedPermissions: \(declinedPermissions),\n accessToken: \(accessToken)")
             }
+            
         }
         
 
