@@ -8,6 +8,7 @@
 
 import UIKit
 import FacebookCore
+import DKImagePickerController
 
 class HAPostVC: UIViewController {
 
@@ -38,7 +39,7 @@ class HAPostVC: UIViewController {
         
     }
 
-// MARK: Notification - UIKeyboardWillChangeFrame
+    // MARK: Notification - UIKeyboardWillChangeFrame
     func keyboardWillChange(notice : Notification) {
         let value = notice.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue
         let frame = value.cgRectValue
@@ -51,25 +52,39 @@ class HAPostVC: UIViewController {
         })
     }
     
-    
+    // MARK: Pic Button click
     @IBAction func picBtnClick(_ sender: Any) {
         
         imagePickerManager.callBack = {
             self.imageScrollView.isHidden = true
             self.textView.becomeFirstResponder()
         }
+        
+        imagePickerManager.selectedImages = { (imageArray) in
+            guard let contentView = self.imageScrollView.subviews.first else {
+                return
+            }
+            
+            for asset in imageArray.enumerated() {
+                asset.element.fetchImageWithSize(CGSize(width: 100, height: self.imageScrollView.frame.size.height), completeBlock: {(image, info) in
+                    let HAimageView = UIImageView(frame: CGRect(x: (asset.offset * 60) + 20 * asset.offset, y: 0, width: 60, height: 60))
+                    
+                    HAimageView.image = image
+                    contentView.addSubview(HAimageView)
+                })
+            }
+            
+            self.imageScrollView.isHidden = false
+            self.textView.becomeFirstResponder()
+        }
+        
         imagePickerManager.addImage(naviController: self)
-        
-        
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        textView.resignFirstResponder()
+    }
     
     /*
     // MARK: - Navigation
@@ -81,17 +96,6 @@ class HAPostVC: UIViewController {
     }
     */
 
-    
-    
-    
-    
-    
-    
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        textView.resignFirstResponder()
-    }
 }
 
 // MARK: UITextViewDelegate

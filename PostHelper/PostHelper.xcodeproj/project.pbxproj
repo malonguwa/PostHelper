@@ -52,6 +52,7 @@
 		3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostVC.swift; sourceTree = "<group>"; };
 		3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAHomeTableController.swift; sourceTree = "<group>"; };
 		3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAImagePickerManager.swift; sourceTree = "<group>"; };
+		3D9809481DE6CCD800BB4FEF /* ImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB307091DDB2B0E00CFBFC6 /* PostHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PostHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB3071D1DDB2B0E00CFBFC6 /* PostHelperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperTests.swift; sourceTree = "<group>"; };
@@ -139,6 +140,7 @@
 		3DB307001DDB2B0E00CFBFC6 = {
 			isa = PBXGroup;
 			children = (
+				3D9809481DE6CCD800BB4FEF /* ImagePicker.framework */,
 				3D65CDD41DDC423D00073AB4 /* PostHelper */,
 				3DB307201DDB2B0E00CFBFC6 /* PostHelperTests */,
 				3DB3072B1DDB2B0E00CFBFC6 /* PostHelperUITests */,
