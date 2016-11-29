@@ -8,6 +8,7 @@
 
 import UIKit
 import FacebookCore
+import FacebookShare
 import DKImagePickerController
 
 class HAPostVC: UIViewController {
@@ -19,23 +20,14 @@ class HAPostVC: UIViewController {
     @IBOutlet weak var scrollViewContentWidth: NSLayoutConstraint!
     @IBOutlet weak var imageScrollView: UIScrollView!
     var imagePickerManager : HAImagePickerManager = HAImagePickerManager()
+    var imageArrayForSend : [DKAsset]?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         textView.becomeFirstResponder()
         textView.delegate = self
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostVC.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        
-    }
-    
-    @IBAction func postClick(_ sender: Any) {
-
-        print("start to send")
-        
-        GraphRequest(graphPath: "/me/feed", parameters:["message" : textView.text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
-            print("\(response)\n\(requestResult)")
-        }
-        
         
     }
 
@@ -61,6 +53,7 @@ class HAPostVC: UIViewController {
         }
         
         imagePickerManager.selectedImages = { (imageArray) in
+            self.imageArrayForSend = imageArray
             guard let contentView = self.imageScrollView.subviews.first else {
                 return
             }
@@ -80,7 +73,92 @@ class HAPostVC: UIViewController {
         
         imagePickerManager.addImage(naviController: self)
     }
-
+ 
+    //MARK: Video Button click
+    @IBAction func videoBtnClick(_ sender: Any) {
+        imagePickerManager.callBack = {
+            self.imageScrollView.isHidden = true
+            self.textView.becomeFirstResponder()
+        }
+        
+        imagePickerManager.selectedImages = { (imageArray) in
+            self.imageArrayForSend = imageArray
+//            guard let contentView = self.imageScrollView.subviews.first else {
+//                return
+//            }
+            
+            for asset in imageArray.enumerated() {
+                asset.element.fetchAVAssetWithCompleteBlock({ (AVAsset, info) in
+                        print(AVAsset!.duration)
+                    
+                })
+            }
+            
+            self.imageScrollView.isHidden = false
+            self.textView.becomeFirstResponder()
+        }
+        
+        imagePickerManager.addVideo(naviController: self)
+        
+        
+        
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: Send Button click
+    @IBAction func sendBtnClick(_ sender: Any) {
+        print("start to send")
+        
+        //send text
+        if textView.text.characters.count != 0 {
+            GraphRequest(graphPath: "/me/feed", parameters:["message" : textView.text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
+                //text send completely
+                print("\(response)\n\(requestResult)")
+            }
+        }
+        
+        else if imageArrayForSend != nil {
+            //send photo(s)
+            guard let _imageArrayForSend = imageArrayForSend else {
+                print("image Array == nil")
+                return
+            }
+            
+            for asset in _imageArrayForSend.enumerated() {
+                asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
+                    if image != nil {
+                        let photo = Photo(image: image!, userGenerated: true)
+                        print(photo.image as UIImage!)
+                        let content = PhotoShareContent(photos: [photo])
+                        
+                        let sharer = GraphSharer(content: content)
+                        sharer.failsOnInvalidData = true
+                        sharer.completion = { result in
+                         // photo send completely
+                            
+                        }
+                        try! sharer.share()
+                    }
+                })
+            }
+        }
+            
+        else {//
+            return
+        }
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
         textView.resignFirstResponder()

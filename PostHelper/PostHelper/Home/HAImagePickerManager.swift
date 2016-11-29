@@ -17,11 +17,14 @@ class HAImagePickerManager: NSObject {
     var selectedImages : ((_ imageArray : [DKAsset]) -> ())?
     // mutableArray for selected images
 //    var imageArray : [UIImage] = [UIImage]()
-    
-    
+
+    //FIXME: Here
+
+    ///MARK: attach image(s)
     func addImage(naviController : UIViewController) {
         let pickerController = DKImagePickerController()
-        
+        pickerController.assetType = .allPhotos
+
         // when click cancel button
         pickerController.didCancel = {
             guard let _callBack = self.callBack else {
@@ -46,4 +49,37 @@ class HAImagePickerManager: NSObject {
         naviController.present(pickerController, animated: true, completion: nil)
         
     }
+    
+    ///MARK: attach video
+    func addVideo(naviController : UIViewController) {
+        let pickerController = DKImagePickerController()
+        pickerController.assetType = .allVideos
+        // when click cancel button
+        pickerController.didCancel = {
+            guard let _callBack = self.callBack else {
+                print("callback = nil")
+                return
+            }
+            _callBack()
+        }
+        
+        // when click select button
+        pickerController.didSelectAssets = { (assets: [DKAsset]) in
+            print("didSelectAssets")
+            print(assets)
+            
+            guard let _selectedImages = self.selectedImages else {
+                print("selectedImages = nil")
+                return
+            }
+            _selectedImages(assets)
+        }
+        
+        naviController.present(pickerController, animated: true, completion: nil)
+
+        
+        
+    }
+    
+    
 }

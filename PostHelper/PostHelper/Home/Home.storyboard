@@ -24,7 +24,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="148"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="X38-aI-usX" id="0xs-Xt-dCk">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="147"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="148"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lvd-l8-ZNC">
@@ -56,7 +56,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                         <rect key="frame" x="0.0" y="204" width="375" height="159"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Md-qq-rZK" id="JJf-kb-NlD">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="158"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="159"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -104,7 +104,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                         </constraints>
                                         <state key="normal" title="Send"/>
                                         <connections>
-                                            <action selector="postClick:" destination="lfj-k7-XS8" eventType="touchUpInside" id="oj0-2N-YXs"/>
+                                            <action selector="sendBtnClick:" destination="lfj-k7-XS8" eventType="touchUpInside" id="SuC-Zz-hZi"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aqQ-Q4-OC6">
@@ -113,6 +113,14 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                         <state key="normal" title="Pic"/>
                                         <connections>
                                             <action selector="picBtnClick:" destination="lfj-k7-XS8" eventType="touchUpInside" id="FMt-py-gYu"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xso-cu-WwE">
+                                        <rect key="frame" x="57" y="8" width="40" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Video"/>
+                                        <connections>
+                                            <action selector="videoBtnClick:" destination="lfj-k7-XS8" eventType="touchUpInside" id="ZJC-cu-zon"/>
                                         </connections>
                                     </button>
                                 </subviews>
