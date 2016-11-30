@@ -18,7 +18,8 @@ class HAImagePickerManager: NSObject {
     // mutableArray for selected images
 //    var imageArray : [UIImage] = [UIImage]()
 
-    //FIXME: Here
+    //TODO:todo 2.addImage 和  addVideo 优化
+    //TODO:todo 3.addVideo-当选择后截第一帧
 
     ///MARK: attach image(s)
     func addImage(naviController : UIViewController) {

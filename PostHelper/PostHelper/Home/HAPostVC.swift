@@ -10,6 +10,7 @@ import UIKit
 import FacebookCore
 import FacebookShare
 import DKImagePickerController
+import AVFoundation
 
 class HAPostVC: UIViewController {
 
@@ -21,6 +22,8 @@ class HAPostVC: UIViewController {
     @IBOutlet weak var imageScrollView: UIScrollView!
     var imagePickerManager : HAImagePickerManager = HAImagePickerManager()
     var imageArrayForSend : [DKAsset]?
+    var videoArrayForSend : [DKAsset]?
+
 
     
     override func viewDidLoad() {
@@ -82,82 +85,167 @@ class HAPostVC: UIViewController {
         }
         
         imagePickerManager.selectedImages = { (imageArray) in
-            self.imageArrayForSend = imageArray
-//            guard let contentView = self.imageScrollView.subviews.first else {
-//                return
-//            }
+            self.videoArrayForSend = imageArray
             
-            for asset in imageArray.enumerated() {
-                asset.element.fetchAVAssetWithCompleteBlock({ (AVAsset, info) in
-                        print(AVAsset!.duration)
-                    
-                })
+            guard let contentView = self.imageScrollView.subviews.first else {
+                return
             }
+
+            
+
+           self.videoArrayForSend![0].fetchAVAssetWithCompleteBlock({ (Asset, info) in
+                //                        print("~~~\(asset!)~~~\n")
+                //                        print(info!)
+                
+                let avurl = Asset as! AVURLAsset
+            
+            let videoImage = self.getVideoImage(videoURL: avurl.url)
+            
+            
+            DispatchQueue.main.async(){
+                let HAimageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+                
+                HAimageView.image = videoImage
+                contentView.addSubview(HAimageView)
+            }
+
+            
+            
+            })
+
+            
             
             self.imageScrollView.isHidden = false
             self.textView.becomeFirstResponder()
         }
         
         imagePickerManager.addVideo(naviController: self)
-        
-        
-        
-        
-        
-        
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
         print("start to send")
         
-        //send text
+        //--------------------------------------------send text
         if textView.text.characters.count != 0 {
             GraphRequest(graphPath: "/me/feed", parameters:["message" : textView.text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
                 //text send completely
-                print("\(response)\n\(requestResult)")
+                print("text send completely + \(response)\n\(requestResult)\n")
+
+                self.textView.text = ""
             }
         }
         
-        else if imageArrayForSend != nil {
-            //send photo(s)
+        // -------------------------------------------send photo(s)
+        if imageArrayForSend != nil {
             guard let _imageArrayForSend = imageArrayForSend else {
                 print("image Array == nil")
                 return
             }
             
+            //TODO:todo 1.发送多张图片循环优化
+            var _photos = [Photo]()
             for asset in _imageArrayForSend.enumerated() {
                 asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
+                    
                     if image != nil {
                         let photo = Photo(image: image!, userGenerated: true)
-                        print(photo.image as UIImage!)
-                        let content = PhotoShareContent(photos: [photo])
+                        _photos.append(photo)
+//                        print(photo.image as UIImage!)
                         
-                        let sharer = GraphSharer(content: content)
-                        sharer.failsOnInvalidData = true
-                        sharer.completion = { result in
-                         // photo send completely
-                            
-                        }
-                        try! sharer.share()
                     }
+                    
+                })
+            }
+        let content = PhotoShareContent(photos: _photos)
+        let sharer = GraphSharer(content: content)
+        sharer.failsOnInvalidData = true
+        sharer.completion = { result in
+            // photo send completely
+            print("photo send completely + \(result)\n")
+            for imageView in self.imageScrollView.subviews[0].subviews {
+                if imageView is UIImageView {
+                    imageView.removeFromSuperview()
+                }
+            }
+            self.imageArrayForSend?.removeAll()
+            
+        }
+        try! sharer.share()
+        
+        
+        }
+        
+        
+        //-------------------------------------------send Video
+        if videoArrayForSend != nil {
+            
+            guard let _videoArrayForSend = videoArrayForSend else {
+                print("image Array == nil")
+                return
+            }
+            
+            for asset in _videoArrayForSend.enumerated() {
+                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
+                    //                        print("~~~\(asset!)~~~\n")
+                    //                        print(info!)
+                    
+                    let avurl = Asset as! AVURLAsset
+                    
+                    let video = Video(url: avurl.url)
+                    let content = VideoShareContent(video: video)
+                    let sharer = GraphSharer(content: content)
+                    sharer.failsOnInvalidData = true
+                    sharer.completion = { result in
+                        // video send completely
+                        print("video send completely + \(result)\n")
+                        self.videoArrayForSend?.removeAll()
+                        
+                        
+                    }
+                    try! sharer.share()
+                    
+                    
+                    //                    print("~~~\(avurl.url)~~~\n")
                 })
             }
         }
-            
-        else {//
-            return
-        }
+        
+//        else {//
+//            return
+//        }
     }
+    
+    
+    //MARK: videoImage
+    func getVideoImage(videoURL: URL!) -> UIImage {
+        print(videoURL)
+
+//        let url = NSURL(fileURLWithPath: videoURL)
+        print("\(videoURL)")
+
+        let asset = AVURLAsset(url: videoURL)
+        
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true
+        let time = CMTimeMakeWithSeconds(0.0, 600)
+        
+        var actualTime = CMTimeMake(0, 0)
+        let image = try!imageGenerator.copyCGImage(at: time, actualTime: &actualTime)
+     
+        let thumb = UIImage(cgImage: image)
+        
+        return thumb
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -173,7 +261,6 @@ class HAPostVC: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
 }
 
 // MARK: UITextViewDelegate
