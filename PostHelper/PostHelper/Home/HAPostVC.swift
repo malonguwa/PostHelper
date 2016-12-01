@@ -56,6 +56,13 @@ class HAPostVC: UIViewController {
         }
         
         imagePickerManager.selectedImages = { (imageArray) in
+            
+            if imageArray.count == 0 {
+                self.imageScrollView.isHidden = false
+                self.textView.becomeFirstResponder()
+                return
+            }
+            
             self.imageArrayForSend = imageArray
             guard let contentView = self.imageScrollView.subviews.first else {
                 return
@@ -85,34 +92,39 @@ class HAPostVC: UIViewController {
         }
         
         imagePickerManager.selectedImages = { (imageArray) in
+            
+            if imageArray.count == 0 {
+                self.imageScrollView.isHidden = false
+                self.textView.becomeFirstResponder()
+                return
+            }
+            
             self.videoArrayForSend = imageArray
             
             guard let contentView = self.imageScrollView.subviews.first else {
                 return
             }
 
-            
-
-           self.videoArrayForSend![0].fetchAVAssetWithCompleteBlock({ (Asset, info) in
+            guard self.videoArrayForSend != nil else {
+                return
+            }
+            self.videoArrayForSend?[0].fetchAVAssetWithCompleteBlock({ (Asset, info) in
                 //                        print("~~~\(asset!)~~~\n")
                 //                        print(info!)
                 
                 let avurl = Asset as! AVURLAsset
-            
-            let videoImage = self.getVideoImage(videoURL: avurl.url)
-            
-            
-            DispatchQueue.main.async(){
-                let HAimageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
                 
-                HAimageView.image = videoImage
-                contentView.addSubview(HAimageView)
-            }
-
-            
-            
+                let videoImage = self.getVideoImage(videoURL: avurl.url)
+                
+                
+                DispatchQueue.main.async(){
+                    let HAimageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+                    
+                    HAimageView.image = videoImage
+                    contentView.addSubview(HAimageView)
+                }
             })
-
+            
             
             
             self.imageScrollView.isHidden = false
@@ -137,6 +149,39 @@ class HAPostVC: UIViewController {
         }
         
         // -------------------------------------------send photo(s)
+        if imageArrayForSend != nil{
+            guard let _imageArrayForSend = imageArrayForSend else {
+                print("image Array == nil")
+                return
+            }
+            
+            var _photos = [UIImage]()
+
+            //TODO:todo 1.发送多张图片循环优化
+            for asset in _imageArrayForSend.enumerated() {
+                asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
+                    
+                    if image != nil {
+                        _photos.append(image!)
+                   }
+                })
+            }
+            
+            
+            postImagesToFB(images: _photos)
+
+            
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        /**
         if imageArrayForSend != nil {
             guard let _imageArrayForSend = imageArrayForSend else {
                 print("image Array == nil")
@@ -175,6 +220,7 @@ class HAPostVC: UIViewController {
         
         
         }
+ */
         
         
         //-------------------------------------------send Video
@@ -239,7 +285,96 @@ class HAPostVC: UIViewController {
     }
     
     
-    
+    func postImagesToFB(images : [UIImage]) {
+        
+        
+        var ablumID : String?
+//        let text = "Text along with image"
+        let connectionForAlum = GraphRequestConnection()
+        let params = [
+            //                "message" : text,
+            "name" : "MyAlbum_HnA"
+            ] as [String : Any]
+
+        let requestCreateAlbum = GraphRequest(graphPath: "me/albums", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+        
+        connectionForAlum.add(requestCreateAlbum, batchEntryName: "myBatch_HnA", completion: {(response, result) in
+            print(response!)
+            print(result)
+            switch result {
+            case .failed(let error):
+                // Handle the result's error
+                print(error)
+                break
+                
+            case .success(let graphResponse):
+                if graphResponse.dictionaryValue != nil {
+                    // Do something with your responseDictionary
+                    let responseDictionary = graphResponse.dictionaryValue!
+                    let connection = GraphRequestConnection()
+                    
+                    
+                    ablumID = (responseDictionary["id"] as! String)
+                    print("\(ablumID)")
+                    
+                            for image in images {
+                    
+                                let imageData = UIImageJPEGRepresentation(image, 90)
+                    
+                        //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
+                                let params = [
+                    //                "message" : text,
+                                    "source" : imageData!
+                                ] as [String : Any]
+                    
+                    
+                                let request = GraphRequest(graphPath: "\(ablumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                    
+                                connection.add(request, batchEntryName: nil, completion: { (response, result) in
+                                    print(response!)
+                                    print(result)
+                    
+                                })
+                                
+                            }
+                    
+                            connection.start()
+
+                    
+                    
+                }
+                
+            }
+            
+        })
+        connectionForAlum.start()
+        
+        
+
+        
+//        for image in images {
+//            
+//            let imageData = UIImageJPEGRepresentation(image, 90)
+//            
+//    //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
+//            let params = [
+////                "message" : text,
+//                "source" : imageData!
+//            ] as [String : Any]
+//       
+//            
+//            let request = GraphRequest(graphPath: "\(ablumID)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+//
+//            connection.add(request, batchParameters: nil, completion: { (response, result) in
+//                
+//                print(response!)
+//                print(result)
+//
+//            })
+//            
+//        }
+//        connection.start()
+    }
     
     
     
