@@ -21,9 +21,11 @@ class HAPostVC: UIViewController {
     @IBOutlet weak var scrollViewContentWidth: NSLayoutConstraint!
     @IBOutlet weak var imageScrollView: UIScrollView!
     var imagePickerManager : HAImagePickerManager = HAImagePickerManager()
-    var imageArrayForSend : [DKAsset]?
-    var videoArrayForSend : [DKAsset]?
-
+//    var imageArrayForSend : [DKAsset]?
+//    var videoArrayForSend : [DKAsset]?
+    
+    var avAssetsForSend : [DKAsset]?
+    var postHelperAblumID : String?
 
     
     override func viewDidLoad() {
@@ -55,20 +57,20 @@ class HAPostVC: UIViewController {
             self.textView.becomeFirstResponder()
         }
         
-        imagePickerManager.selectedImages = { (imageArray) in
+        imagePickerManager.HnA_selectedAVAssets = { (HnA_DKAssetArray) in
             
-            if imageArray.count == 0 {
+            if HnA_DKAssetArray.count == 0 {
                 self.imageScrollView.isHidden = false
                 self.textView.becomeFirstResponder()
                 return
             }
             
-            self.imageArrayForSend = imageArray
+            self.avAssetsForSend = HnA_DKAssetArray
             guard let contentView = self.imageScrollView.subviews.first else {
                 return
             }
             
-            for asset in imageArray.enumerated() {
+            for asset in HnA_DKAssetArray.enumerated() {
                 asset.element.fetchImageWithSize(CGSize(width: 100, height: self.imageScrollView.frame.size.height), completeBlock: {(image, info) in
                     let HAimageView = UIImageView(frame: CGRect(x: (asset.offset * 60) + 20 * asset.offset, y: 0, width: 60, height: 60))
                     
@@ -91,24 +93,24 @@ class HAPostVC: UIViewController {
             self.textView.becomeFirstResponder()
         }
         
-        imagePickerManager.selectedImages = { (imageArray) in
+        imagePickerManager.HnA_selectedAVAssets = { (HnA_DKAssetArray) in
             
-            if imageArray.count == 0 {
+            if HnA_DKAssetArray.count == 0 {
                 self.imageScrollView.isHidden = false
                 self.textView.becomeFirstResponder()
                 return
             }
             
-            self.videoArrayForSend = imageArray
+            self.avAssetsForSend = HnA_DKAssetArray
             
             guard let contentView = self.imageScrollView.subviews.first else {
                 return
             }
 
-            guard self.videoArrayForSend != nil else {
+            guard self.avAssetsForSend != nil else {
                 return
             }
-            self.videoArrayForSend?[0].fetchAVAssetWithCompleteBlock({ (Asset, info) in
+            self.avAssetsForSend?[0].fetchAVAssetWithCompleteBlock({ (Asset, info) in
                 //                        print("~~~\(asset!)~~~\n")
                 //                        print(info!)
                 
@@ -134,23 +136,35 @@ class HAPostVC: UIViewController {
         imagePickerManager.addVideo(naviController: self)
     }
     
+    
+    // MARK: FB - Send Text Only
+    func FB_SendTextOnly(text : String!) {
+        GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
+            //text send completely
+            print("text send completely + \(response)\n\(requestResult)\n")
+            
+            self.textView.text = ""
+        }
+    }
+    // MARK: FB - Send Image Only
+    func FB_SendImageOnly() {
+        
+    }
+    
+    // MARK: FB - Send Video Only
+
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
         print("start to send")
         
         //--------------------------------------------send text
         if textView.text.characters.count != 0 {
-            GraphRequest(graphPath: "/me/feed", parameters:["message" : textView.text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
-                //text send completely
-                print("text send completely + \(response)\n\(requestResult)\n")
-
-                self.textView.text = ""
-            }
+            FB_SendTextOnly(text: textView.text)
         }
         
         // -------------------------------------------send photo(s)
-        if imageArrayForSend != nil{
-            guard let _imageArrayForSend = imageArrayForSend else {
+        if avAssetsForSend != nil{
+            guard let _avAssetsForSend = avAssetsForSend else {
                 print("image Array == nil")
                 return
             }
@@ -158,80 +172,33 @@ class HAPostVC: UIViewController {
             var _photos = [UIImage]()
 
             //TODO:todo 1.发送多张图片循环优化
-            for asset in _imageArrayForSend.enumerated() {
+            for asset in _avAssetsForSend.enumerated() {
                 asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
                     
-                    if image != nil {
+                    if image != nil && asset.element.isVideo == false{
                         _photos.append(image!)
                    }
                 })
             }
             
-            
-            postImagesToFB(images: _photos)
-
-            
-            
-            
-            
-        }
-        
-        
-        
-        
-        
-        
-        /**
-        if imageArrayForSend != nil {
-            guard let _imageArrayForSend = imageArrayForSend else {
-                print("image Array == nil")
-                return
+            if _photos.count == 0 {
+                
+            } else {
+                postImagesToFB(images: _photos)
             }
-            
-            //TODO:todo 1.发送多张图片循环优化
-            var _photos = [Photo]()
-            for asset in _imageArrayForSend.enumerated() {
-                asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
-                    
-                    if image != nil {
-                        let photo = Photo(image: image!, userGenerated: true)
-                        _photos.append(photo)
-//                        print(photo.image as UIImage!)
-                        
-                    }
-                    
-                })
-            }
-        let content = PhotoShareContent(photos: _photos)
-        let sharer = GraphSharer(content: content)
-        sharer.failsOnInvalidData = true
-        sharer.completion = { result in
-            // photo send completely
-            print("photo send completely + \(result)\n")
-            for imageView in self.imageScrollView.subviews[0].subviews {
-                if imageView is UIImageView {
-                    imageView.removeFromSuperview()
-                }
-            }
-            self.imageArrayForSend?.removeAll()
-            
+    
         }
-        try! sharer.share()
-        
-        
-        }
- */
-        
         
         //-------------------------------------------send Video
-        if videoArrayForSend != nil {
+        let falg = 0
+        if avAssetsForSend != nil && falg == 1{
             
-            guard let _videoArrayForSend = videoArrayForSend else {
+            guard let _avAssetsForSend = avAssetsForSend else {
                 print("image Array == nil")
                 return
             }
             
-            for asset in _videoArrayForSend.enumerated() {
+            for asset in _avAssetsForSend.enumerated() {
                 asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
                     //                        print("~~~\(asset!)~~~\n")
                     //                        print(info!)
@@ -245,7 +212,7 @@ class HAPostVC: UIViewController {
                     sharer.completion = { result in
                         // video send completely
                         print("video send completely + \(result)\n")
-                        self.videoArrayForSend?.removeAll()
+//                        self.videoArrayForSend?.removeAll()
                         
                         
                     }
@@ -256,10 +223,6 @@ class HAPostVC: UIViewController {
                 })
             }
         }
-        
-//        else {//
-//            return
-//        }
     }
     
     
@@ -287,20 +250,103 @@ class HAPostVC: UIViewController {
     
     func postImagesToFB(images : [UIImage]) {
         
+//        
+//        var ablumID : String?
+////        let text = "Text along with image"
+//        let connectionForAlum = GraphRequestConnection()
+//        let params = [
+//            //                "message" : text,
+//            "name" : "MyAlbum_PostHelper"
+//            ] as [String : Any]
+
+        let paramsForAblumExist = [
+            "fields" : "id, name"
+        ] as [String : Any]
         
-        var ablumID : String?
-//        let text = "Text along with image"
-        let connectionForAlum = GraphRequestConnection()
+        
+        //fetch all exist albums as [Dict]
+        GraphRequest(graphPath: "me/albums", parameters: paramsForAblumExist, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.GET, apiVersion: GraphAPIVersion.defaultVersion).start({ (HTTPResponse, GraphRequestResult) in
+
+            switch GraphRequestResult {
+            case .failed(let error):
+                print("postImagesToFB() + \(error)")
+                break;
+                
+            case .success(let graphResponse):
+                if graphResponse.dictionaryValue != nil {
+                    print("Ablum list + \(graphResponse.dictionaryValue!)")
+                    let responseDictionary = graphResponse.dictionaryValue!
+                    
+                    let array = responseDictionary["data"] as! [NSDictionary]
+                    
+                    var albumIsFound = false
+                    for dict in array {
+                        
+                        if dict["name"] as! String == "MyAlbum_PostHelper"{
+                            //已经有一个相册名字叫MyAlbum_PostHelper，无需创建，拿到该相册ID，直接将照片存入
+                            print(dict["name"]!)
+                            albumIsFound = true
+                            self.sendImagesToExistFBAlbum(images: images, albumID: dict["id"] as! String)
+                            break
+                            
+                        }
+                    }
+                    
+                    if albumIsFound == false {
+                        //需要创建一个相册名字为MyAlbum_PostHelper，本地化保存该相册ID，再将照片存入
+                        self.sendImagesToNewFBAlbum(images: images, albumName : "MyAlbum_PostHelper")
+                        break
+                    }
+                }
+            }
+        })
+    }
+    
+    // MARK: - sendImagesToExistFBAlbum
+    private func sendImagesToExistFBAlbum(images: [UIImage], albumID: String!){
+        print("exist - \(albumID)")
+        
+
+                    self.postHelperAblumID = albumID!
+                    
+                    let connection = GraphRequestConnection()
+                    for image in images {
+                        
+                        let imageData = UIImageJPEGRepresentation(image, 90)
+                        
+                        //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
+                        let params = [
+                            //                "message" : text,
+                            "source" : imageData!
+                            ] as [String : Any]
+                        
+                        
+                        let request = GraphRequest(graphPath: "\(self.postHelperAblumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                        
+                        connection.add(request, batchEntryName: nil, completion: { (response, result) in
+//                            print(response!)
+                            print("existAblums + \(result)")
+                            
+                        })
+                        
+                    }
+                    
+                    connection.start()
+
+    }
+    
+    // MARK: - sendImagesToNewFBAlbum
+    private func sendImagesToNewFBAlbum(images: [UIImage], albumName: String!){
+//        let connectionForAlum = GraphRequestConnection()
         let params = [
             //                "message" : text,
-            "name" : "MyAlbum_HnA"
+            "name" : albumName!
             ] as [String : Any]
-
+        
         let requestCreateAlbum = GraphRequest(graphPath: "me/albums", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
         
-        connectionForAlum.add(requestCreateAlbum, batchEntryName: "myBatch_HnA", completion: {(response, result) in
-            print(response!)
-            print(result)
+        requestCreateAlbum.start { (response, result) in
+            print("1-newAlbum + \(result)")
             switch result {
             case .failed(let error):
                 // Handle the result's error
@@ -313,89 +359,47 @@ class HAPostVC: UIViewController {
                     let responseDictionary = graphResponse.dictionaryValue!
                     let connection = GraphRequestConnection()
                     
+                    let albumID = (responseDictionary["id"] as! String)
                     
-                    ablumID = (responseDictionary["id"] as! String)
-                    print("\(ablumID)")
-                    
-                            for image in images {
-                    
-                                let imageData = UIImageJPEGRepresentation(image, 90)
-                    
+                    //                    print("\(albumID)")
+                    //                    print("dict : \(responseDictionary) \n")
+                    self.postHelperAblumID = albumID
+                    print(self.postHelperAblumID!)
+                    for image in images {
+                        
+                        let imageData = UIImageJPEGRepresentation(image, 90)
+                        
                         //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
-                                let params = [
-                    //                "message" : text,
-                                    "source" : imageData!
-                                ] as [String : Any]
+                        let params = [
+                            //                "message" : text,
+                            "source" : imageData!
+                            ] as [String : Any]
+                        
+                        
+                        let request = GraphRequest(graphPath: "\(self.postHelperAblumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                        
+                        connection.add(request, batchEntryName: nil, completion: { (response, result) in
+                            //                            print(response!)
+                            print("existAblums + \(result)")
+                            
+                        })
+                        
+                    }
                     
-                    
-                                let request = GraphRequest(graphPath: "\(ablumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-                    
-                                connection.add(request, batchEntryName: nil, completion: { (response, result) in
-                                    print(response!)
-                                    print(result)
-                    
-                                })
-                                
-                            }
-                    
-                            connection.start()
-
-                    
-                    
+                    connection.start()
                 }
                 
             }
-            
-        })
-        connectionForAlum.start()
-        
-        
+        }
 
-        
-//        for image in images {
-//            
-//            let imageData = UIImageJPEGRepresentation(image, 90)
-//            
-//    //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
-//            let params = [
-////                "message" : text,
-//                "source" : imageData!
-//            ] as [String : Any]
-//       
-//            
-//            let request = GraphRequest(graphPath: "\(ablumID)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-//
-//            connection.add(request, batchParameters: nil, completion: { (response, result) in
-//                
-//                print(response!)
-//                print(result)
-//
-//            })
-//            
-//        }
-//        connection.start()
     }
-    
-    
-    
-    
-    
+
     
     
     deinit {
         NotificationCenter.default.removeObserver(self)
         textView.resignFirstResponder()
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 }
 
 // MARK: UITextViewDelegate

@@ -14,7 +14,7 @@ class HAImagePickerManager: NSObject {
     // closure for HAPostVC.textViewDidChange
     var callBack : (() -> ())?
     // closure for add images in scrollView
-    var selectedImages : ((_ imageArray : [DKAsset]) -> ())?
+    var HnA_selectedAVAssets : ((_ HnA_DKAssetArray : [DKAsset]) -> ())?
     // mutableArray for selected images
 //    var imageArray : [UIImage] = [UIImage]()
 
@@ -40,7 +40,7 @@ class HAImagePickerManager: NSObject {
             print("didSelectAssets")
             print(assets)
             
-            guard let _selectedImages = self.selectedImages else {
+            guard let _selectedImages = self.HnA_selectedAVAssets else {
                 print("selectedImages = nil")
                 return
             }
@@ -69,11 +69,11 @@ class HAImagePickerManager: NSObject {
             print("didSelectAssets")
             print(assets)
             
-            guard let _selectedImages = self.selectedImages else {
+            guard let _selectedVideos = self.HnA_selectedAVAssets else {
                 print("selectedImages = nil")
                 return
             }
-            _selectedImages(assets)
+            _selectedVideos(assets)
         }
         
         naviController.present(pickerController, animated: true, completion: nil)
