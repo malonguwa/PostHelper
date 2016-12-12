@@ -24,9 +24,17 @@ class HAPostVC: UIViewController {
 //    var imageArrayForSend : [DKAsset]?
 //    var videoArrayForSend : [DKAsset]?
     
-    var avAssetsForSend : [DKAsset]?
+    var avAssetsForSend = [DKAsset]()
     var postHelperAblumID : String?
 
+    
+    // MARK: Enum
+    enum WhichButton {
+        case Pic
+        case Video
+    }
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,9 +57,8 @@ class HAPostVC: UIViewController {
         })
     }
     
-    // MARK: Pic Button click
-    @IBAction func picBtnClick(_ sender: Any) {
-        
+    // MARK: displayAVAsset
+    func displayAVAssets(whichBtn : WhichButton) {
         imagePickerManager.callBack = {
             self.imageScrollView.isHidden = true
             self.textView.becomeFirstResponder()
@@ -65,75 +72,69 @@ class HAPostVC: UIViewController {
                 return
             }
             
-            self.avAssetsForSend = HnA_DKAssetArray
+            //            self.avAssetsForSend = HnA_DKAssetArray
+            self.avAssetsForSend.append(contentsOf: HnA_DKAssetArray)
+            print(self.avAssetsForSend.count)
+            
             guard let contentView = self.imageScrollView.subviews.first else {
                 return
             }
             
-            for asset in HnA_DKAssetArray.enumerated() {
-                asset.element.fetchImageWithSize(CGSize(width: 100, height: self.imageScrollView.frame.size.height), completeBlock: {(image, info) in
-                    let HAimageView = UIImageView(frame: CGRect(x: (asset.offset * 60) + 20 * asset.offset, y: 0, width: 60, height: 60))
+            for asset in self.avAssetsForSend.enumerated() {
+                if asset.element.isVideo == false { //image
+                    asset.element.fetchImageWithSize(CGSize(width: 100, height: self.imageScrollView.frame.size.height), completeBlock: {(image, info) in
+                        
+                        let HAimageView = UIImageView(frame: CGRect(x: (asset.offset * 60) + 20 * asset.offset, y: 0, width: 60, height: 60))
+                        HAimageView.image = image
+                        contentView.addSubview(HAimageView)
+                    })
                     
-                    HAimageView.image = image
-                    contentView.addSubview(HAimageView)
-                })
+                } else { //video
+                    asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
+                        //                        print("~~~\(asset!)~~~\n")
+                        //                        print(info!)
+                        
+                        let avurl = Asset as! AVURLAsset
+                        
+                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
+                        serialQueue.sync {
+                            
+                            let videoImage = self.getVideoImage(videoURL: avurl.url)
+                            
+                            DispatchQueue.main.async(){
+                                let HAimageView = UIImageView(frame: CGRect(x: (asset.offset * 60) + 20 * asset.offset, y: 0, width: 60, height: 60))
+                                HAimageView.image = videoImage
+                                contentView.addSubview(HAimageView)
+                            }
+                        }
+                    })
+                }
+   
             }
-            
             self.imageScrollView.isHidden = false
             self.textView.becomeFirstResponder()
         }
         
-        imagePickerManager.addImage(naviController: self)
+        if whichBtn == .Pic{
+            imagePickerManager.addImage(naviController: self)
+            
+        } else if whichBtn == .Video{
+            imagePickerManager.addVideo(naviController: self)
+
+        }
+        
+    }
+    
+    
+    
+    // MARK: Pic Button click
+    @IBAction func picBtnClick(_ sender: UIButton) {
+        displayAVAssets(whichBtn : .Pic)
     }
  
     //MARK: Video Button click
-    @IBAction func videoBtnClick(_ sender: Any) {
-        imagePickerManager.callBack = {
-            self.imageScrollView.isHidden = true
-            self.textView.becomeFirstResponder()
-        }
-        
-        imagePickerManager.HnA_selectedAVAssets = { (HnA_DKAssetArray) in
-            
-            if HnA_DKAssetArray.count == 0 {
-                self.imageScrollView.isHidden = false
-                self.textView.becomeFirstResponder()
-                return
-            }
-            
-            self.avAssetsForSend = HnA_DKAssetArray
-            
-            guard let contentView = self.imageScrollView.subviews.first else {
-                return
-            }
-
-            guard self.avAssetsForSend != nil else {
-                return
-            }
-            self.avAssetsForSend?[0].fetchAVAssetWithCompleteBlock({ (Asset, info) in
-                //                        print("~~~\(asset!)~~~\n")
-                //                        print(info!)
-                
-                let avurl = Asset as! AVURLAsset
-                
-                let videoImage = self.getVideoImage(videoURL: avurl.url)
-                
-                
-                DispatchQueue.main.async(){
-                    let HAimageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
-                    
-                    HAimageView.image = videoImage
-                    contentView.addSubview(HAimageView)
-                }
-            })
-            
-            
-            
-            self.imageScrollView.isHidden = false
-            self.textView.becomeFirstResponder()
-        }
-        
-        imagePickerManager.addVideo(naviController: self)
+    @IBAction func videoBtnClick(_ sender: UIButton) {
+        displayAVAssets(whichBtn: .Video)
     }
     
     
@@ -147,81 +148,138 @@ class HAPostVC: UIViewController {
         }
     }
     // MARK: FB - Send Image Only
-    func FB_SendImageOnly() {
+    func FB_SendImageOnly(avAssetsForSend : [DKAsset]!) {
+//        guard let _avAssetsForSend = avAssetsForSend else {
+//            print("image Array == nil")
+//            return
+//        }
+        
+        var _photos = [UIImage]()
+        
+        for asset in avAssetsForSend.enumerated() {
+            asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
+                
+                if image != nil && asset.element.isVideo == false{
+                    _photos.append(image!)
+                }
+            })
+        }
+        
+        if _photos.count == 0 {
+            
+        } else {
+            postImagesToFB(images: _photos)
+        }
+    }
+    
+    // MARK: FB - Send Non-Resumable Video Only
+    func FB_SendVideoOnly(avAssetsForSend : [DKAsset]!) {
+        guard let _avAssetsForSend = avAssetsForSend else {
+            print("Array == nil")
+            return
+        }
+        
+        var _videos = [URL]()
+
+        for asset in _avAssetsForSend.enumerated() {
+            asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
+                //                        print("~~~\(asset!)~~~\n")
+                //                        print(info!)
+                
+                let avurl = av as! AVURLAsset
+                
+                if av != nil && asset.element.isVideo == true{
+                    _videos.append(avurl.url)
+                }
+                
+            })
+        }
+        
+        if _videos.count == 0 {
+            
+        } else {
+            postVideosToFB(videos: _videos)
+        }
+    }
+    
+    // MARK: postVideosToFB
+    func postVideosToFB(videos: [URL]!) {
+        
+        let connection = GraphRequestConnection()
+        
+        
+        for videoURL in videos {
+            
+           let videoParams = [
+                "file_url" : videoURL
+                ] as [String : Any]
+           let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+            
+            connection.add(videoSendRequest)
+        }
+        
+        connection.start()
+        
+        let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
+            print("\(bytesSent)\n")
+        }
+        
+        let downloadFailureHandler = { (error: Error) -> () in
+            print("\(error)")
+        }
+        
+        connection.networkProgressHandler = downloadProgressHandler
+        connection.networkFailureHandler = downloadFailureHandler
         
     }
     
-    // MARK: FB - Send Video Only
-
+    
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
         print("start to send")
-        
+        let falg = 0
+
         //--------------------------------------------send text
-        if textView.text.characters.count != 0 {
+        if textView.text.characters.count != 0{
             FB_SendTextOnly(text: textView.text)
         }
         
         // -------------------------------------------send photo(s)
-        if avAssetsForSend != nil{
-            guard let _avAssetsForSend = avAssetsForSend else {
-                print("image Array == nil")
-                return
-            }
-            
-            var _photos = [UIImage]()
-
-            //TODO:todo 1.发送多张图片循环优化
-            for asset in _avAssetsForSend.enumerated() {
-                asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
-                    
-                    if image != nil && asset.element.isVideo == false{
-                        _photos.append(image!)
-                   }
-                })
-            }
-            
-            if _photos.count == 0 {
-                
-            } else {
-                postImagesToFB(images: _photos)
-            }
-    
+        if avAssetsForSend != nil && falg == 2{//判断条件需要更改
+            FB_SendImageOnly(avAssetsForSend: avAssetsForSend)
         }
         
         //-------------------------------------------send Video
-        let falg = 0
-        if avAssetsForSend != nil && falg == 1{
+        /// TODO: Send mutiple videos and share the same array(avAssetsForSend) with images
+        if avAssetsForSend != nil && falg == 0{
             
-            guard let _avAssetsForSend = avAssetsForSend else {
-                print("image Array == nil")
-                return
-            }
+            FB_SendVideoOnly(avAssetsForSend: avAssetsForSend)
             
-            for asset in _avAssetsForSend.enumerated() {
-                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
-                    //                        print("~~~\(asset!)~~~\n")
-                    //                        print(info!)
-                    
-                    let avurl = Asset as! AVURLAsset
-                    
-                    let video = Video(url: avurl.url)
-                    let content = VideoShareContent(video: video)
-                    let sharer = GraphSharer(content: content)
-                    sharer.failsOnInvalidData = true
-                    sharer.completion = { result in
-                        // video send completely
-                        print("video send completely + \(result)\n")
-//                        self.videoArrayForSend?.removeAll()
-                        
-                        
-                    }
-                    try! sharer.share()
-                    
-                    
-                    //                    print("~~~\(avurl.url)~~~\n")
-                })
-            }
+//            guard let _avAssetsForSend = avAssetsForSend else {
+//                print("image Array == nil")
+//                return
+//            }
+//            
+//            for asset in _avAssetsForSend.enumerated() {
+//                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
+//                    //                        print("~~~\(asset!)~~~\n")
+//                    //                        print(info!)
+//                    
+//                    let avurl = Asset as! AVURLAsset
+//                    
+//                    let video = Video(url: avurl.url)
+//                    let content = VideoShareContent(video: video)
+//                    let sharer = GraphSharer(content: content)
+//                    sharer.failsOnInvalidData = true
+//                    sharer.completion = { result in
+//                        // video send completely
+//                        print("video send completely + \(result)\n")
+////                        self.videoArrayForSend?.removeAll()
+//                    }
+//                    try! sharer.share()
+//                    //                    print("~~~\(avurl.url)~~~\n")
+//                })
+//            }
         }
     }
     
