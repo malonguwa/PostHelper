@@ -21,6 +21,7 @@
 		3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */; };
 		3DB307221DDB2B0E00CFBFC6 /* PostHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */; };
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
+		3DF4CFB61E017A5200423B92 /* HAFacebookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF4CFB51E017A5200423B92 /* HAFacebookManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		3DB307281DDB2B0E00CFBFC6 /* PostHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperUITests.swift; sourceTree = "<group>"; };
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DF4CFB51E017A5200423B92 /* HAFacebookManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFacebookManager.swift; sourceTree = "<group>"; };
 		747A69839BDFCDEF9138C8E0 /* Pods_PostHelperUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostHelperUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FFDBA34AE057E37144E9A72 /* Pods-PostHelper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostHelper.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper.release.xcconfig"; sourceTree = "<group>"; };
 		939F7C730FC13A127E23CEAA /* Pods-PostHelper.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostHelper.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper.debug.xcconfig"; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				3D98093E1DDDA0E700BB4FEF /* Home.storyboard */,
 				3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */,
 				3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */,
+				3DF4CFB51E017A5200423B92 /* HAFacebookManager.swift */,
 				3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */,
 			);
 			path = Home;
@@ -386,6 +389,7 @@
 			files = (
 				3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */,
 				3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */,
+				3DF4CFB61E017A5200423B92 /* HAFacebookManager.swift in Sources */,
 				3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */,
 				3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */,
 				3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */,

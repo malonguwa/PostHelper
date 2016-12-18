@@ -26,6 +26,7 @@ class HAPostVC: UIViewController {
     
     var avAssetsForSend = [DKAsset]()
     var postHelperAblumID : String?
+    var facebookMgr = HAFacebookManager()
 
     
     // MARK: Enum
@@ -168,88 +169,98 @@ class HAPostVC: UIViewController {
         if _photos.count == 0 {
             
         } else {
-            postImagesToFB(images: _photos)
+//            postImagesToFB(images: _photos)
+//            facebookMgr.sendGroupPhotos(images: _photos, albumID: postHelperAblumID)
+            facebookMgr.findAlbum(images: _photos)
         }
     }
+    
+    
+    
+    // MARK: getFileSize
+    func getSize(path: String!){
+        let filePath = path
+        var fileSize : UInt64
+        
+        do {
+            //return [FileAttributeKey : Any]
+            let attr = try FileManager.default.attributesOfItem(atPath: filePath!)
+            fileSize = attr[FileAttributeKey.size] as! UInt64
+            
+            //if you convert to NSDictionary, you can get file size old way as well.
+            let dict = attr as NSDictionary
+            fileSize = dict.fileSize()
+            print(fileSize)
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+    
+    
     
     // MARK: FB - Send Non-Resumable Video Only
     func FB_SendVideoOnly(avAssetsForSend : [DKAsset]!) {
-//        guard let _avAssetsForSend = avAssetsForSend else {
-//            print("Array == nil")
-//            return
-//        }
+        let queue = DispatchQueue(label: "serialQForVideoUpload")// 创建了一个串行队列
         
-        var _videos = [URL]()
-
-        let queue = DispatchQueue(label: "aaaa")// 创建了一个串行队列
-
-            
-            for asset in avAssetsForSend.enumerated() {
-                queue.async {//将任务代码块加入异步串行队列queue中
-                    let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                    asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
-                        let avurl = av as! AVURLAsset
-                        if av != nil && asset.element.isVideo == true{
-                            
-                            _videos.append(avurl.url)
-                            semaphore.signal()//当满足条件时，向队列发送信号
-                            print("1: \(_videos)")
-                        }
-                    })
-                    semaphore.wait()//阻塞并等待信号
-                }
-            }
-
-        queue.async { //将任务代码块加入异步串行队列queue中
-            print("2: end-for")
-            if _videos.count == 0 {
-                print("3-1: _videos.count == 0")
-            } else {
-                print("3-2: _videos.count > 0")
-                self.postVideosToFB(videos: _videos)
-            }
-        }
-        
-        
-    }
-    
-    // MARK: postVideosToFB
-    func postVideosToFB(videos: [URL]!) {
-        
+        var _videos = [NSData]()
         let connection = GraphRequestConnection()
         
+        for asset in avAssetsForSend.enumerated() {
+            queue.async {//将任务代码块加入异步串行队列queue中
+                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
+                    let avurl = av as! AVURLAsset
+                    if av != nil && asset.element.isVideo == true{
+                        
+                        let videoData = NSData(contentsOf: avurl.url)
+                        _videos.append(videoData!)
+                        print("1: \(_videos.count)")
+                        
+                        semaphore.signal()//当满足条件时，向队列发送信号
+                    }
+                })
+                semaphore.wait()//阻塞并等待信号
+            }
+        }
         
-        for videoURL in videos {
+        queue.async { //将任务代码块加入异步串行队列queue中
+            print("2: end-for")
+            //发请求
             
-           let videoParams = [
-                "file_url" : videoURL
-                ] as [String : Any]
-           let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+            for videoData in _videos {
+                let videoParams = [
+                    "video.mov" : videoData,
+                    "description" : "This is test video"
+//                    "unpublished_content_type" : DRAFT
+                    ] as [String : Any]
+                
+                let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                
+                connection.add(videoSendRequest, batchEntryName: nil, completion: { (HTTPURLResponse, GraphRequestResult) in
+                    print(GraphRequestResult)
+                })
+            }
             
-            connection.add(videoSendRequest, batchEntryName: nil, completion: { (HTTPURLResponse, GraphRequestResult) in
-                print(GraphRequestResult)
-            })
+            connection.start()
+            
+            let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
+                let totalBytesSent_double = Double.init(totalBytesSent)
+                let totalExpectedBytes_double = Double.init(totalExpectedBytes)
+                print("totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double))%\n")
+            }
+            
+            let downloadFailureHandler = { (error: Error) -> () in
+                print("\(error)")
+            }
+            
+            connection.networkProgressHandler = downloadProgressHandler
+            connection.networkFailureHandler = downloadFailureHandler
         }
-        
-        connection.start()
-        
-        let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
-            print("\(bytesSent)\n")
-        }
-        
-        let downloadFailureHandler = { (error: Error) -> () in
-            print("\(error)")
-        }
-        
-        connection.networkProgressHandler = downloadProgressHandler
-        connection.networkFailureHandler = downloadFailureHandler
-        
     }
-    
     
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
-        let falg = 0
+        let flag = 0
 
         //--------------------------------------------send text
         if textView.text.characters.count != 0{
@@ -257,42 +268,17 @@ class HAPostVC: UIViewController {
         }
         
         // -------------------------------------------send photo(s)
-        if avAssetsForSend.count > 0 && falg == 2{//判断条件需要更改
+        if avAssetsForSend.count > 0 && flag == 0{//判断条件需要更改
+            
             FB_SendImageOnly(avAssetsForSend: avAssetsForSend)
         }
         
         //-------------------------------------------send Video
         /// TODO: Send mutiple videos and share the same array(avAssetsForSend) with images
-        if avAssetsForSend.count > 0 && falg == 0{
+        if avAssetsForSend.count > 0 && flag == 1{
             print("start to send video(s)")
 
             FB_SendVideoOnly(avAssetsForSend: avAssetsForSend)
-            
-//            guard let _avAssetsForSend = avAssetsForSend else {
-//                print("image Array == nil")
-//                return
-//            }
-//            
-//            for asset in _avAssetsForSend.enumerated() {
-//                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
-//                    //                        print("~~~\(asset!)~~~\n")
-//                    //                        print(info!)
-//                    
-//                    let avurl = Asset as! AVURLAsset
-//                    
-//                    let video = Video(url: avurl.url)
-//                    let content = VideoShareContent(video: video)
-//                    let sharer = GraphSharer(content: content)
-//                    sharer.failsOnInvalidData = true
-//                    sharer.completion = { result in
-//                        // video send completely
-//                        print("video send completely + \(result)\n")
-////                        self.videoArrayForSend?.removeAll()
-//                    }
-//                    try! sharer.share()
-//                    //                    print("~~~\(avurl.url)~~~\n")
-//                })
-//            }
         }
     }
     
