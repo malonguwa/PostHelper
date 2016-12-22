@@ -34,7 +34,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         
         let loginManager = LoginManager()
         loginManager.loginBehavior = .native
-        loginManager.logIn([.publicProfile, ReadPermission.custom("user_photos")], viewController: self) { loginResult in
+        loginManager.logIn([.publicProfile, ReadPermission.custom("user_photos"), ReadPermission.custom("user_videos")], viewController: self) { loginResult in
             switch loginResult {
             case .failed(let error):
                 print(error)

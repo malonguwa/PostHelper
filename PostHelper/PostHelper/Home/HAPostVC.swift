@@ -25,9 +25,11 @@ class HAPostVC: UIViewController {
 //    var videoArrayForSend : [DKAsset]?
     
     var avAssetsForSend = [DKAsset]()
+//    var avAssetsForDisplay = [UIImage]()
     var postHelperAblumID : String?
     var facebookMgr = HAFacebookManager()
 
+    @IBOutlet weak var contentView: UIView!
     
     // MARK: Enum
     enum WhichButton {
@@ -77,39 +79,36 @@ class HAPostVC: UIViewController {
             self.avAssetsForSend.append(contentsOf: HnA_DKAssetArray)
             print(self.avAssetsForSend.count)
             
-            guard let contentView = self.imageScrollView.subviews.first else {
-                return
-            }
+//            guard let contentView = self.imageScrollView.subviews.first else {
+//                return
+//            }
             
             for asset in self.avAssetsForSend.enumerated() {
                 if asset.element.isVideo == false { //image
-                    asset.element.fetchImageWithSize(CGSize(width: 100, height: self.imageScrollView.frame.size.height), completeBlock: {(image, info) in
-                        
-                        let HAimageView = UIImageView(frame: CGRect(x: (asset.offset * 60) + 20 * asset.offset, y: 0, width: 60, height: 60))
-                        HAimageView.image = image
-                        contentView.addSubview(HAimageView)
+                    asset.element.fetchImageWithSize(CGSize(width: 100, height: 100), completeBlock: {(image, info) in
+//                        self.avAssetsForDisplay.append(image!)
+//                        print("ImageCount: \(self.avAssetsForDisplay.count)")
+                        self.addImageAndDeleteBtn(image: image!, offset: asset.offset)
                     })
                     
                 } else { //video
                     asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
-                        //                        print("~~~\(asset!)~~~\n")
-                        //                        print(info!)
-                        
                         let avurl = Asset as! AVURLAsset
                         
-                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
-                        serialQueue.sync {
-                            
+//                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
+//                        serialQueue.async {
+                        
                             let videoImage = self.getVideoImage(videoURL: avurl.url)
-                            
-                            DispatchQueue.main.async(){
-                                let HAimageView = UIImageView(frame: CGRect(x: (asset.offset * 60) + 20 * asset.offset, y: 0, width: 60, height: 60))
-                                HAimageView.image = videoImage
-                                contentView.addSubview(HAimageView)
-                            }
-                        }
+//                            self.avAssetsForDisplay.append(videoImage)
+//                        print("VideoCount: \(self.avAssetsForDisplay.count)")
+
+                            self.addImageAndDeleteBtn(image: videoImage, offset: asset.offset)
+
+//                        }
                     })
                 }
+                
+                
    
             }
             self.imageScrollView.isHidden = false
@@ -126,7 +125,123 @@ class HAPostVC: UIViewController {
         
     }
     
+    // MARK: addImageAndDeleteBtn
+    func addImageAndDeleteBtn(image: UIImage, offset: Int) {
+//        print("addImageAndDeleteBtn : \(offset)")
+        let HAimageView = UIImageView(frame: CGRect(x: (offset * 100) + 20 * offset, y: 0, width: 100, height: 100))
+        HAimageView.image = image
+        HAimageView.isUserInteractionEnabled = true
+
+        let deleteBtn = UIButton.init(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        deleteBtn.backgroundColor = UIColor.black
+        deleteBtn.tag = offset
+        
+        
+        DispatchQueue.main.async(){
+            self.contentView.addSubview(HAimageView)
+            HAimageView.addSubview(deleteBtn)
+            self.scrollViewContentWidth.constant = CGFloat((self.avAssetsForSend.count * 100) + (20 * self.avAssetsForSend.count))
+        }
+        
+        deleteBtn.addTarget(self, action: #selector(HAPostVC.deleteImageInScrollView(_:)), for: UIControlEvents.touchUpInside)
+    }
     
+    // MARK: deleteBtnClick
+    func deleteImageInScrollView(_ sender: UIButton) {
+        print("avAssetsForSend beforeDelete: \(self.avAssetsForSend.count)")
+        print("avAssetsForSend deleteIndex: \(sender.tag)")
+        self.avAssetsForSend.remove(at: sender.tag)
+        print("avAssetsForSend afterDelete: \(self.avAssetsForSend.count)")
+
+        for delete in self.contentView.subviews{
+            delete.removeFromSuperview()
+        }
+        
+        for asset in self.avAssetsForSend.enumerated(){
+            if asset.element.isVideo == false { //image
+                asset.element.fetchImageWithSize(CGSize(width: 100, height: 100), completeBlock: {(image, info) in
+                    self.addImageAndDeleteBtn(image: image!, offset: asset.offset)
+                })
+                
+            } else { //video
+                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
+                    let avurl = Asset as! AVURLAsset
+                    
+                    //                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
+                    //                        serialQueue.async {
+                    
+                    let videoImage = self.getVideoImage(videoURL: avurl.url)
+                    
+                    self.addImageAndDeleteBtn(image: videoImage, offset: asset.offset)
+                    
+                    //                        }
+                })
+            }
+        }
+    }
+    /**
+    func deleteImageInScrollView(_ sender: UIButton) {
+        print(self.contentView.subviews.count)
+        
+        var imageViewIndex = 0
+        for view in self.contentView.subviews.enumerated(){
+            print("\(view.offset) : \(view.element)")
+            let senderUIImageView = sender.superview as! UIImageView
+            
+            if view.element is UIImageView{
+                
+                if senderUIImageView.isEqual(view.element){
+                    print("in IF")
+                    print("send before: \(self.avAssetsForSend.count)")
+//                    print("dis  before: \(self.avAssetsForDisplay.count)")
+                    print("arrayIndex: \(imageViewIndex)")
+                    self.avAssetsForSend.remove(at: imageViewIndex == 0 ? 0 : imageViewIndex - 1)
+//                    self.avAssetsForDisplay.remove(at: imageViewcount == 0 ? 0 : imageViewcount - 1)
+                    print("send after: \(self.avAssetsForSend.count)")
+//                    print("dis  after: \(self.avAssetsForDisplay.count)")
+
+                    for delete in self.contentView.subviews{
+                        delete.removeFromSuperview()
+                    }
+                    break
+                }//END if
+                imageViewIndex = imageViewIndex + 1
+
+            }//END if
+            else {
+                continue
+            }//END else
+        }//END for
+        
+        for asset in self.avAssetsForSend.enumerated(){
+            if asset.element.isVideo == false { //image
+                asset.element.fetchImageWithSize(CGSize(width: 100, height: 100), completeBlock: {(image, info) in
+                    self.addImageAndDeleteBtn(image: image!, offset: asset.offset)
+                })
+                
+            } else { //video
+                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
+                    let avurl = Asset as! AVURLAsset
+                    
+                    //                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
+                    //                        serialQueue.async {
+                    
+                    let videoImage = self.getVideoImage(videoURL: avurl.url)
+                    
+                    self.addImageAndDeleteBtn(image: videoImage, offset: asset.offset)
+                    
+                    //                        }
+                })
+            }
+
+        }
+
+//        for image in self.avAssetsForDisplay.enumerated(){
+//            addImageAndDeleteBtn(image: image.element, offset: image.offset)
+//        }
+        print("Click ---->>> \(sender)")
+    }
+    */
     
     // MARK: Pic Button click
     @IBAction func picBtnClick(_ sender: UIButton) {
@@ -229,9 +344,10 @@ class HAPostVC: UIViewController {
             
             for videoData in _videos {
                 let videoParams = [
-                    "video.mov" : videoData,
-                    "description" : "This is test video"
-//                    "unpublished_content_type" : DRAFT
+                    "test.mov" : videoData,
+//                    "description" : "This is test video"
+//                    "unpublished_content_type" : "DRAFT"
+                    "published" : "false"
                     ] as [String : Any]
                 
                 let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
@@ -260,7 +376,7 @@ class HAPostVC: UIViewController {
     
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
-        let flag = 0
+        let flag = 1
 
         //--------------------------------------------send text
         if textView.text.characters.count != 0{

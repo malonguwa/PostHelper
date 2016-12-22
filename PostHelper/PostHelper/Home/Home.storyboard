@@ -144,9 +144,9 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                 <nil key="highlightedColor"/>
                             </label>
                             <scrollView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nO5-vu-df5">
-                                <rect key="frame" x="0.0" y="101" width="375" height="128"/>
+                                <rect key="frame" x="0.0" y="160" width="375" height="128"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9jc-5Z-9qR">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9jc-5Z-9qR" userLabel="contentView">
                                         <rect key="frame" x="0.0" y="0.0" width="400" height="128"/>
                                         <color key="backgroundColor" red="0.93432844479999999" green="1" blue="0.090557705860000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
@@ -177,10 +177,11 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                             <constraint firstItem="nO5-vu-df5" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" id="e7z-Yl-QzU"/>
                             <constraint firstAttribute="trailing" secondItem="SNE-yg-4OF" secondAttribute="trailing" id="jbv-JZ-kCP"/>
                             <constraint firstItem="2Df-C5-UA5" firstAttribute="top" secondItem="SNE-yg-4OF" secondAttribute="bottom" id="q3F-RX-39a"/>
-                            <constraint firstItem="nO5-vu-df5" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" constant="81" id="qtq-ct-y6W"/>
+                            <constraint firstItem="nO5-vu-df5" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" constant="140" id="qtq-ct-y6W"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="contentView" destination="9jc-5Z-9qR" id="ZcH-nV-lE5"/>
                         <outlet property="imageScrollView" destination="nO5-vu-df5" id="MeW-OU-nDI"/>
                         <outlet property="placeHolderLabel" destination="wDc-al-4br" id="TNe-aQ-Hqp"/>
                         <outlet property="scrollViewContentWidth" destination="mkh-mq-oyq" id="Gfc-dE-llR"/>
