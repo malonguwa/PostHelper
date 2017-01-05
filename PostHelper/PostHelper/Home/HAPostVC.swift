@@ -13,32 +13,30 @@ import DKImagePickerController
 import AVFoundation
 
 class HAPostVC: UIViewController {
-
+    
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var placeHolderLabel: UILabel!
     @IBOutlet weak var sendBtn: UIButton!
     @IBOutlet weak var toolBarBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var scrollViewContentWidth: NSLayoutConstraint!
     @IBOutlet weak var imageScrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
     var imagePickerManager : HAImagePickerManager = HAImagePickerManager()
-//    var imageArrayForSend : [DKAsset]?
-//    var videoArrayForSend : [DKAsset]?
-    
     var avAssetsForSend = [DKAsset]()
-//    var avAssetsForDisplay = [UIImage]()
+    var avAssetsForDisplay = [UIImage]()
     var postHelperAblumID : String?
     var facebookMgr = HAFacebookManager()
 
-    @IBOutlet weak var contentView: UIView!
+    //    var imageArrayForSend : [DKAsset]?
+    //    var videoArrayForSend : [DKAsset]?
     
-    // MARK: Enum
+    // MARK: Enum for image or video picker controller
     enum WhichButton {
         case Pic
         case Video
     }
     
-    
-    
+    // MARK: System functions
     override func viewDidLoad() {
         super.viewDidLoad()
         textView.becomeFirstResponder()
@@ -46,7 +44,7 @@ class HAPostVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostVC.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         
     }
-
+    
     // MARK: Notification - UIKeyboardWillChangeFrame
     func keyboardWillChange(notice : Notification) {
         let value = notice.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue
@@ -60,7 +58,8 @@ class HAPostVC: UIViewController {
         })
     }
     
-    // MARK: displayAVAsset
+    
+    // MARK: Button target - Pic/Video Button is clicked
     func displayAVAssets(whichBtn : WhichButton) {
         imagePickerManager.callBack = {
             self.imageScrollView.isHidden = true
@@ -75,41 +74,29 @@ class HAPostVC: UIViewController {
                 return
             }
             
-            //            self.avAssetsForSend = HnA_DKAssetArray
             self.avAssetsForSend.append(contentsOf: HnA_DKAssetArray)
             print(self.avAssetsForSend.count)
             
-//            guard let contentView = self.imageScrollView.subviews.first else {
-//                return
-//            }
+            let serialQueue2 = DispatchQueue(label: "serialQ2ForAVSelection")
             
-            for asset in self.avAssetsForSend.enumerated() {
-                if asset.element.isVideo == false { //image
-                    asset.element.fetchImageWithSize(CGSize(width: 100, height: 100), completeBlock: {(image, info) in
-//                        self.avAssetsForDisplay.append(image!)
-//                        print("ImageCount: \(self.avAssetsForDisplay.count)")
-                        self.addImageAndDeleteBtn(image: image!, offset: asset.offset)
-                    })
-                    
-                } else { //video
-                    asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
-                        let avurl = Asset as! AVURLAsset
-                        
-//                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
-//                        serialQueue.async {
-                        
+            for asset in HnA_DKAssetArray.enumerated() {
+                serialQueue2.async {
+                    if asset.element.isVideo == false { //image
+                        asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
+                            let resizedImg = UIImage.HA_resizeImage(image: image)
+                            self.addImageAndDeleteBtn(image: resizedImg, offset: self.avAssetsForDisplay.count)
+                            self.avAssetsForDisplay.append(resizedImg)
+                        })
+                    } else { //video
+                        asset.element.fetchAVAsset(true, options: nil, completeBlock: { (Asset, info) in
+                            let avurl = Asset as! AVURLAsset
                             let videoImage = self.getVideoImage(videoURL: avurl.url)
-//                            self.avAssetsForDisplay.append(videoImage)
-//                        print("VideoCount: \(self.avAssetsForDisplay.count)")
-
-                            self.addImageAndDeleteBtn(image: videoImage, offset: asset.offset)
-
-//                        }
-                    })
+                            let resizedImg = UIImage.HA_resizeImage(image: videoImage)
+                            self.addImageAndDeleteBtn(image: resizedImg, offset: self.avAssetsForDisplay.count)
+                            self.avAssetsForDisplay.append(resizedImg)
+                        })
+                    }
                 }
-                
-                
-   
             }
             self.imageScrollView.isHidden = false
             self.textView.becomeFirstResponder()
@@ -117,138 +104,71 @@ class HAPostVC: UIViewController {
         
         if whichBtn == .Pic{
             imagePickerManager.addImage(naviController: self)
-            
         } else if whichBtn == .Video{
             imagePickerManager.addVideo(naviController: self)
-
         }
-        
     }
     
-    // MARK: addImageAndDeleteBtn
+    // MARK: @synchronized - Lock
+    public func synchronized(lock: AnyObject, closure: () -> ()) {
+        objc_sync_enter(lock)
+        closure()
+        objc_sync_exit(lock)
+    }
+    
+    
+    
+    // MARK: Button - addImageAndDeleteBtn
     func addImageAndDeleteBtn(image: UIImage, offset: Int) {
-//        print("addImageAndDeleteBtn : \(offset)")
-        let HAimageView = UIImageView(frame: CGRect(x: (offset * 100) + 20 * offset, y: 0, width: 100, height: 100))
-        HAimageView.image = image
+        print("addImageAndDeleteBtn : \(offset)")
+        
+        let HAimageView = UIImageView(image: image)
+        HAimageView.frame = CGRect(x: (offset * 100) + 20 * offset, y: 0, width: Int(image.size.width), height: Int(image.size.height))
         HAimageView.isUserInteractionEnabled = true
-
+        
         let deleteBtn = UIButton.init(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         deleteBtn.backgroundColor = UIColor.black
         deleteBtn.tag = offset
         
-        
         DispatchQueue.main.async(){
             self.contentView.addSubview(HAimageView)
             HAimageView.addSubview(deleteBtn)
+            deleteBtn.addTarget(self, action: #selector(HAPostVC.deleteImageInScrollView(_:)), for: UIControlEvents.touchUpInside)
             self.scrollViewContentWidth.constant = CGFloat((self.avAssetsForSend.count * 100) + (20 * self.avAssetsForSend.count))
+            self.imageScrollView.setNeedsDisplay()
         }
         
-        deleteBtn.addTarget(self, action: #selector(HAPostVC.deleteImageInScrollView(_:)), for: UIControlEvents.touchUpInside)
+        
     }
     
-    // MARK: deleteBtnClick
+    // MARK: Button - deleteBtnClick
     func deleteImageInScrollView(_ sender: UIButton) {
         print("avAssetsForSend beforeDelete: \(self.avAssetsForSend.count)")
         print("avAssetsForSend deleteIndex: \(sender.tag)")
         self.avAssetsForSend.remove(at: sender.tag)
+        self.avAssetsForDisplay.remove(at: sender.tag)
+        
         print("avAssetsForSend afterDelete: \(self.avAssetsForSend.count)")
-
+        
         for delete in self.contentView.subviews{
             delete.removeFromSuperview()
         }
         
-        for asset in self.avAssetsForSend.enumerated(){
-            if asset.element.isVideo == false { //image
-                asset.element.fetchImageWithSize(CGSize(width: 100, height: 100), completeBlock: {(image, info) in
-                    self.addImageAndDeleteBtn(image: image!, offset: asset.offset)
-                })
-                
-            } else { //video
-                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
-                    let avurl = Asset as! AVURLAsset
-                    
-                    //                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
-                    //                        serialQueue.async {
-                    
-                    let videoImage = self.getVideoImage(videoURL: avurl.url)
-                    
-                    self.addImageAndDeleteBtn(image: videoImage, offset: asset.offset)
-                    
-                    //                        }
-                })
-            }
-        }
-    }
-    /**
-    func deleteImageInScrollView(_ sender: UIButton) {
-        print(self.contentView.subviews.count)
-        
-        var imageViewIndex = 0
-        for view in self.contentView.subviews.enumerated(){
-            print("\(view.offset) : \(view.element)")
-            let senderUIImageView = sender.superview as! UIImageView
+        for asset in self.avAssetsForDisplay.enumerated(){
+            print("~~~~~~~\(avAssetsForDisplay.count)~~~~~~~~~")
             
-            if view.element is UIImageView{
-                
-                if senderUIImageView.isEqual(view.element){
-                    print("in IF")
-                    print("send before: \(self.avAssetsForSend.count)")
-//                    print("dis  before: \(self.avAssetsForDisplay.count)")
-                    print("arrayIndex: \(imageViewIndex)")
-                    self.avAssetsForSend.remove(at: imageViewIndex == 0 ? 0 : imageViewIndex - 1)
-//                    self.avAssetsForDisplay.remove(at: imageViewcount == 0 ? 0 : imageViewcount - 1)
-                    print("send after: \(self.avAssetsForSend.count)")
-//                    print("dis  after: \(self.avAssetsForDisplay.count)")
-
-                    for delete in self.contentView.subviews{
-                        delete.removeFromSuperview()
-                    }
-                    break
-                }//END if
-                imageViewIndex = imageViewIndex + 1
-
-            }//END if
-            else {
-                continue
-            }//END else
-        }//END for
-        
-        for asset in self.avAssetsForSend.enumerated(){
-            if asset.element.isVideo == false { //image
-                asset.element.fetchImageWithSize(CGSize(width: 100, height: 100), completeBlock: {(image, info) in
-                    self.addImageAndDeleteBtn(image: image!, offset: asset.offset)
-                })
-                
-            } else { //video
-                asset.element.fetchAVAssetWithCompleteBlock({ (Asset, info) in
-                    let avurl = Asset as! AVURLAsset
-                    
-                    //                        let serialQueue = DispatchQueue(label: "serialQForVideoImages")
-                    //                        serialQueue.async {
-                    
-                    let videoImage = self.getVideoImage(videoURL: avurl.url)
-                    
-                    self.addImageAndDeleteBtn(image: videoImage, offset: asset.offset)
-                    
-                    //                        }
-                })
-            }
-
+            print("\(asset.offset): \(asset.element)")
+            self.addImageAndDeleteBtn(image: asset.element, offset: asset.offset)
         }
-
-//        for image in self.avAssetsForDisplay.enumerated(){
-//            addImageAndDeleteBtn(image: image.element, offset: image.offset)
-//        }
-        print("Click ---->>> \(sender)")
     }
-    */
+    
     
     // MARK: Pic Button click
     @IBAction func picBtnClick(_ sender: UIButton) {
         displayAVAssets(whichBtn : .Pic)
     }
- 
-    //MARK: Video Button click
+    
+    // MARK: Video Button click
     @IBAction func videoBtnClick(_ sender: UIButton) {
         displayAVAssets(whichBtn: .Video)
     }
@@ -265,10 +185,10 @@ class HAPostVC: UIViewController {
     }
     // MARK: FB - Send Image Only
     func FB_SendImageOnly(avAssetsForSend : [DKAsset]!) {
-//        guard let _avAssetsForSend = avAssetsForSend else {
-//            print("image Array == nil")
-//            return
-//        }
+        //        guard let _avAssetsForSend = avAssetsForSend else {
+        //            print("image Array == nil")
+        //            return
+        //        }
         
         var _photos = [UIImage]()
         
@@ -284,8 +204,8 @@ class HAPostVC: UIViewController {
         if _photos.count == 0 {
             
         } else {
-//            postImagesToFB(images: _photos)
-//            facebookMgr.sendGroupPhotos(images: _photos, albumID: postHelperAblumID)
+            //            postImagesToFB(images: _photos)
+            //            facebookMgr.sendGroupPhotos(images: _photos, albumID: postHelperAblumID)
             facebookMgr.findAlbum(images: _photos)
         }
     }
@@ -345,8 +265,8 @@ class HAPostVC: UIViewController {
             for videoData in _videos {
                 let videoParams = [
                     "test.mov" : videoData,
-//                    "description" : "This is test video"
-//                    "unpublished_content_type" : "DRAFT"
+                    //                    "description" : "This is test video"
+                    //                    "unpublished_content_type" : "DRAFT"
                     "published" : "false"
                     ] as [String : Any]
                 
@@ -377,7 +297,7 @@ class HAPostVC: UIViewController {
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
         let flag = 1
-
+        
         //--------------------------------------------send text
         if textView.text.characters.count != 0{
             FB_SendTextOnly(text: textView.text)
@@ -393,7 +313,7 @@ class HAPostVC: UIViewController {
         /// TODO: Send mutiple videos and share the same array(avAssetsForSend) with images
         if avAssetsForSend.count > 0 && flag == 1{
             print("start to send video(s)")
-
+            
             FB_SendVideoOnly(avAssetsForSend: avAssetsForSend)
         }
     }
@@ -402,10 +322,10 @@ class HAPostVC: UIViewController {
     //MARK: videoImage
     func getVideoImage(videoURL: URL!) -> UIImage {
         print(videoURL)
-
-//        let url = NSURL(fileURLWithPath: videoURL)
+        
+        //        let url = NSURL(fileURLWithPath: videoURL)
         print("\(videoURL)")
-
+        
         let asset = AVURLAsset(url: videoURL)
         
         let imageGenerator = AVAssetImageGenerator(asset: asset)
@@ -414,7 +334,7 @@ class HAPostVC: UIViewController {
         
         var actualTime = CMTimeMake(0, 0)
         let image = try!imageGenerator.copyCGImage(at: time, actualTime: &actualTime)
-     
+        
         let thumb = UIImage(cgImage: image)
         
         return thumb
@@ -423,23 +343,23 @@ class HAPostVC: UIViewController {
     
     func postImagesToFB(images : [UIImage]) {
         
-//        
-//        var ablumID : String?
-////        let text = "Text along with image"
-//        let connectionForAlum = GraphRequestConnection()
-//        let params = [
-//            //                "message" : text,
-//            "name" : "MyAlbum_PostHelper"
-//            ] as [String : Any]
-
+        //
+        //        var ablumID : String?
+        ////        let text = "Text along with image"
+        //        let connectionForAlum = GraphRequestConnection()
+        //        let params = [
+        //            //                "message" : text,
+        //            "name" : "MyAlbum_PostHelper"
+        //            ] as [String : Any]
+        
         let paramsForAblumExist = [
             "fields" : "id, name"
-        ] as [String : Any]
+            ] as [String : Any]
         
         
         //fetch all exist albums as [Dict]
         GraphRequest(graphPath: "me/albums", parameters: paramsForAblumExist, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.GET, apiVersion: GraphAPIVersion.defaultVersion).start({ (HTTPResponse, GraphRequestResult) in
-
+            
             switch GraphRequestResult {
             case .failed(let error):
                 print("postImagesToFB() + \(error)")
@@ -479,38 +399,38 @@ class HAPostVC: UIViewController {
     private func sendImagesToExistFBAlbum(images: [UIImage], albumID: String!){
         print("exist - \(albumID)")
         
-
-                    self.postHelperAblumID = albumID!
-                    
-                    let connection = GraphRequestConnection()
-                    for image in images {
-                        
-                        let imageData = UIImageJPEGRepresentation(image, 90)
-                        
-                        //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
-                        let params = [
-                            //                "message" : text,
-                            "source" : imageData!
-                            ] as [String : Any]
-                        
-                        
-                        let request = GraphRequest(graphPath: "\(self.postHelperAblumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-                        
-                        connection.add(request, batchEntryName: nil, completion: { (response, result) in
-//                            print(response!)
-                            print("existAblums + \(result)")
-                            
-                        })
-                        
-                    }
-                    
-                    connection.start()
-
+        
+        self.postHelperAblumID = albumID!
+        
+        let connection = GraphRequestConnection()
+        for image in images {
+            
+            let imageData = UIImageJPEGRepresentation(image, 90)
+            
+            //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
+            let params = [
+                //                "message" : text,
+                "source" : imageData!
+                ] as [String : Any]
+            
+            
+            let request = GraphRequest(graphPath: "\(self.postHelperAblumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+            
+            connection.add(request, batchEntryName: nil, completion: { (response, result) in
+                //                            print(response!)
+                print("existAblums + \(result)")
+                
+            })
+            
+        }
+        
+        connection.start()
+        
     }
     
     // MARK: - sendImagesToNewFBAlbum
     private func sendImagesToNewFBAlbum(images: [UIImage], albumName: String!){
-//        let connectionForAlum = GraphRequestConnection()
+        //        let connectionForAlum = GraphRequestConnection()
         let params = [
             //                "message" : text,
             "name" : albumName!
@@ -564,9 +484,9 @@ class HAPostVC: UIViewController {
                 
             }
         }
-
+        
     }
-
+    
     
     
     deinit {
@@ -590,3 +510,18 @@ extension HAPostVC: UITextViewDelegate {
     }
 }
 
+// MARK: UIImage - HA_resizeImage
+extension UIImage {
+    class func HA_resizeImage(image: UIImage!) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 100, height: 100)
+        UIGraphicsBeginImageContext(rect.size)
+        image.draw(in: rect)
+        let picture1 = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        let imageData = UIImagePNGRepresentation(picture1!)
+        let img = UIImage(data: imageData!)
+//        print("resized: \(img)")
+        return img!
+    }
+}

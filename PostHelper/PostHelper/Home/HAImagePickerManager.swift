@@ -15,13 +15,12 @@ class HAImagePickerManager: NSObject {
     var callBack : (() -> ())?
     // closure for add images in scrollView
     var HnA_selectedAVAssets : ((_ HnA_DKAssetArray : [DKAsset]) -> ())?
+    
     // mutableArray for selected images
 //    var imageArray : [UIImage] = [UIImage]()
 
-    //TODO:todo 2.addImage 和  addVideo 优化
-    //TODO:todo 3.addVideo-当选择后截第一帧
 
-    ///MARK: attach image(s)
+    ///MARK: Pop up image picker controller - attach image(s)
     func addImage(naviController : UIViewController) {
         let pickerController = DKImagePickerController()
         pickerController.assetType = .allPhotos
@@ -48,13 +47,13 @@ class HAImagePickerManager: NSObject {
         }
         
         naviController.present(pickerController, animated: true, completion: nil)
-        
     }
     
-    ///MARK: attach video
+    ///MARK: Pop up video picker controller - attach video(s)
     func addVideo(naviController : UIViewController) {
         let pickerController = DKImagePickerController()
         pickerController.assetType = .allVideos
+        
         // when click cancel button
         pickerController.didCancel = {
             guard let _callBack = self.callBack else {
@@ -77,10 +76,5 @@ class HAImagePickerManager: NSObject {
         }
         
         naviController.present(pickerController, animated: true, completion: nil)
-
-        
-        
     }
-    
-    
 }
