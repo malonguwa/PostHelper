@@ -183,7 +183,7 @@ class HAPostVC: UIViewController {
             self.textView.text = ""
         }
     }
-    // MARK: FB - Send Image Only
+    // MARK: FB - Send Image or Image with Text
     func FB_SendImageOnly(avAssetsForSend : [DKAsset]!) {
         //        guard let _avAssetsForSend = avAssetsForSend else {
         //            print("image Array == nil")
@@ -204,9 +204,7 @@ class HAPostVC: UIViewController {
         if _photos.count == 0 {
             
         } else {
-            //            postImagesToFB(images: _photos)
-            //            facebookMgr.sendGroupPhotos(images: _photos, albumID: postHelperAblumID)
-            facebookMgr.findAlbum(images: _photos)
+            facebookMgr.sendGroupPhotos(images: _photos, text: textView.text)
         }
     }
     
@@ -234,11 +232,10 @@ class HAPostVC: UIViewController {
     
     
     // MARK: FB - Send Non-Resumable Video Only
-    func FB_SendVideoOnly(avAssetsForSend : [DKAsset]!) {
+    func FB_SendVideoOnly(avAssetsForSend : [DKAsset]!, text: String?) {
         let queue = DispatchQueue(label: "serialQForVideoUpload")// 创建了一个串行队列
         
         var _videos = [NSData]()
-        let connection = GraphRequestConnection()
         
         for asset in avAssetsForSend.enumerated() {
             queue.async {//将任务代码块加入异步串行队列queue中
@@ -260,61 +257,85 @@ class HAPostVC: UIViewController {
         
         queue.async { //将任务代码块加入异步串行队列queue中
             print("2: end-for")
+            let queue2 = DispatchQueue(label: "qForVideosUploadSquence")
             //发请求
-            
-            for videoData in _videos {
-                let videoParams = [
-                    "test.mov" : videoData,
-                    //                    "description" : "This is test video"
-                    //                    "unpublished_content_type" : "DRAFT"
-                    "published" : "false"
-                    ] as [String : Any]
+//            var flagForVideosUpload = 0
+            for videoData in _videos.enumerated() {
                 
-                let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                queue2.async {
+                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                    
+                    let connection = GraphRequestConnection()
+                    let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
+                        let totalBytesSent_double = Double.init(totalBytesSent)
+                        let totalExpectedBytes_double = Double.init(totalExpectedBytes)
+                        print("Video\(videoData.offset): totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%")
+                    }
+                    
+                    let downloadFailureHandler = { (error: Error) -> () in
+                        print("\(error)")
+                    }
+                    
+                    let videoParams = [
+                        "video.mov" : videoData.element,
+                        "description" : text!,
+                        ] as [String : Any]
+                    
+                    let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                    
+                    connection.add(videoSendRequest, batchParameters: ["omit_response_on_success" : false], completion: {(HTTPURLResponse, GraphRequestResult) in
+                        print(GraphRequestResult)
+                        semaphore2.signal()
+                    })
+                    connection.networkProgressHandler = downloadProgressHandler
+                    connection.networkFailureHandler = downloadFailureHandler
+                    
+                    connection.start()
+                    
+                    semaphore2.wait()
+                }
                 
-                connection.add(videoSendRequest, batchEntryName: nil, completion: { (HTTPURLResponse, GraphRequestResult) in
-                    print(GraphRequestResult)
-                })
             }
             
-            connection.start()
             
-            let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
-                let totalBytesSent_double = Double.init(totalBytesSent)
-                let totalExpectedBytes_double = Double.init(totalExpectedBytes)
-                print("totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double))%\n")
-            }
+
             
-            let downloadFailureHandler = { (error: Error) -> () in
-                print("\(error)")
-            }
-            
-            connection.networkProgressHandler = downloadProgressHandler
-            connection.networkFailureHandler = downloadFailureHandler
         }
     }
     
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
-        let flag = 1
+        var imagesForSend = [DKAsset]()
+        var videosForSend = [DKAsset]()
         
-        //--------------------------------------------send text
-        if textView.text.characters.count != 0{
+        //--------------------------------------------send text only
+        if textView.text.characters.count != 0 && avAssetsForSend.count == 0{
             FB_SendTextOnly(text: textView.text)
         }
         
-        // -------------------------------------------send photo(s)
-        if avAssetsForSend.count > 0 && flag == 0{//判断条件需要更改
+        
+        if avAssetsForSend.count > 0{
+            for avasset in avAssetsForSend {
+                if avasset.isVideo == false {
+                    imagesForSend.append(avasset)
+                } else {
+                    videosForSend.append(avasset)
+                }
+            }
             
-            FB_SendImageOnly(avAssetsForSend: avAssetsForSend)
+        }
+        
+        // -------------------------------------------send photo(s)
+        if imagesForSend.count > 0{
+            
+            FB_SendImageOnly(avAssetsForSend: imagesForSend)
         }
         
         //-------------------------------------------send Video
-        /// TODO: Send mutiple videos and share the same array(avAssetsForSend) with images
-        if avAssetsForSend.count > 0 && flag == 1{
+        if videosForSend.count > 0{
             print("start to send video(s)")
-            
-            FB_SendVideoOnly(avAssetsForSend: avAssetsForSend)
+            print(videosForSend.count)
+            FB_SendVideoOnly(avAssetsForSend: videosForSend, text: textView.text)
         }
     }
     

@@ -17,12 +17,12 @@ class HAFacebookManager: NSObject {
     
     
     
+    /**
     // MARK: Find Album
     func findAlbum(images : [UIImage]) {
         let paramsForAblumExist = [
             "fields" : "id, name"
             ] as [String : Any]
-        
         
         //fetch all exist albums as [Dict]
         GraphRequest(graphPath: "me/albums", parameters: paramsForAblumExist, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.GET, apiVersion: GraphAPIVersion.defaultVersion).start({ (HTTPResponse, GraphRequestResult) in
@@ -46,7 +46,6 @@ class HAFacebookManager: NSObject {
                             //已经有一个相册名字叫MyAlbum_PostHelper，无需创建，拿到该相册ID，直接将照片存入
                             print(dict["name"]!)
                             albumIsFound = true
-//                            self.sendImagesToExistFBAlbum(images: images, albumID: dict["id"] as! String)
                             self.sendGroupPhotos(images: images, albumID: dict["id"] as! String)
                             break
                             
@@ -54,9 +53,34 @@ class HAFacebookManager: NSObject {
                     }
                     
                     if albumIsFound == false {
-                        //需要创建一个相册名字为MyAlbum_PostHelper，本地化保存该相册ID，再将照片存入
-//                        self.sendImagesToNewFBAlbum(images: images, albumName : "MyAlbum_PostHelper")
-                        // TODO
+                        //向FB服务器发送POST请求创建名为"MyAlbum_PostHelper"的相册
+                        let params = [
+                            //                "message" : text,
+                            "name" : "MyAlbum_PostHelper"
+                            ] as [String : Any]
+                        
+                        let requestCreateAlbum = GraphRequest(graphPath: "me/albums", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                        
+                        requestCreateAlbum.start { (response, result) in
+                            print("1-newAlbum + \(result)")
+                            switch result {
+                            case .failed(let error):
+                                // Handle the result's error
+                                print(error)
+                                break
+                                
+                            case .success(let graphResponse):
+                                if graphResponse.dictionaryValue != nil {
+                                    // Do something with your responseDictionary
+                                    let responseDictionary = graphResponse.dictionaryValue!
+                                    //取出刚刚创建好的 "MyAlbum_PostHelper"的AlbumID
+                                    let albumID = (responseDictionary["id"] as! String)
+                                    self.sendGroupPhotos(images: images, albumID: albumID)
+                                }
+                                
+                            }
+                        }
+                        
                         break
                     }
                 }
@@ -64,26 +88,27 @@ class HAFacebookManager: NSObject {
         })
 
     }
+*/
     
     // MARK: Send Photos
-    func sendGroupPhotos(images: [UIImage], albumID: String!) {
-        
-        self.HAFaceebook_albumID = albumID
+    func sendGroupPhotos(images: [UIImage], text: String?) {
         
         let connection = GraphRequestConnection()
+        
+        var dic = Dictionary<String,String>()
+        dic.updateValue(text!, forKey: "message")
         
         for image in images.enumerated() {
             
             let imageData = UIImageJPEGRepresentation(image.element, 90)
             
             let params = [
-                //                "message" : text,
-                "source" : imageData!,
-                "published" : false
-                ] as [String : Any]
+                    "source" : imageData!,
+                    "published" : false
+                    ] as [String : Any]
             
-            
-            let request = GraphRequest(graphPath: "\(self.HAFaceebook_albumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+            // self.HAFaceebook_albumID不使用了，因为FB会自动创建一个叫timeline的相册，改为me/photos
+            let request = GraphRequest(graphPath: "me/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
 
             connection.add(request, batchParameters: ["name" : "\(image.offset)"], completion: { (HTTPURLResponse, GraphRequestResult) in
                 print("request \(image.offset) + \(GraphRequestResult)")
@@ -102,8 +127,8 @@ class HAFacebookManager: NSObject {
                         print(self.photoIDs)
                         
                         if image.offset == images.count - 1{
-                            var dic = Dictionary<String,String>()
-                            
+
+
                             for photoID in self.photoIDs.enumerated(){
                                 let value = "{\"media_fbid\":\"\(photoID.element)\"}"
                                 dic.updateValue(value, forKey: "attached_media[\(photoID.offset)]")
@@ -118,6 +143,7 @@ class HAFacebookManager: NSObject {
                                     print(error)
                                     break
                                 case .success(let response):
+                                    self.photoIDs.removeAll()
                                     print("Final response - : \(response)")
                                 }
                             })
@@ -127,7 +153,6 @@ class HAFacebookManager: NSObject {
             })
             
         }//END for
-        
         
         
         /**
@@ -153,7 +178,7 @@ class HAFacebookManager: NSObject {
         connection.networkProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
             let totalBytesSent_double = Double.init(totalBytesSent)
             let totalExpectedBytes_double = Double.init(totalExpectedBytes)
-            print("totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double))%\n")
+            print("Image: totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%\n")
         }
 
     }//END func
