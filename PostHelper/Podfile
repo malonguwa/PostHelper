@@ -1,0 +1,10 @@
+target 'PostHelper' do
+use_frameworks!
+pod 'FacebookCore'
+pod 'FacebookLogin'
+pod 'FacebookShare'
+pod 'DKImagePickerController'
+pod 'Fabric'
+pod 'TwitterKit'
+pod 'TwitterCore'
+end
