@@ -8,6 +8,8 @@
 
 import UIKit
 import FacebookCore
+import Fabric
+import TwitterKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,13 +19,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
-        return true
+        
+        Fabric.with([Twitter.self])
+        
+        return SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+
+        
     }
+    /**
+     func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+     
+     if Twitter.sharedInstance().application(app, openURL:url, options: options) {
+        return true
+     }
+     
+     let sourceApplication: String? = options[UIApplicationOpenURLOptionsSourceApplicationKey] as? String
+        return FBSDKApplicationDelegate.sharedInstance().application(app, openURL: url, sourceApplication: sourceApplication, annotation: nil)
+     }
+     */
     
 
+
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        return SDKApplicationDelegate.shared.application(app, open: url, options: options)
+        
+        if Twitter.sharedInstance().application(app, open:url, options: options) {
+            return true
+        }
+        
+        if SDKApplicationDelegate.shared.application(app, open: url, options:  options) {
+            return true
+        }
+ 
+        return false
     }
     
     func applicationWillResignActive(_ application: UIApplication) {

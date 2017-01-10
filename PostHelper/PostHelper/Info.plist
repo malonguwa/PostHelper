@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>此 App 需要您的同意才能读取媒体资料库</string>
-    <key>NSCameraUsageDescription</key>
-    <string>此 App 需要您的同意才能照相</string>
-    
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -30,9 +24,36 @@
 				<string>fb1610843345884366</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>twitterkit-t8RMdndNDbMlrVCbbHy2dEO0n</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>92763f24a6e5b44254acebbfbde88411728d436a</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict>
+					<key>consumerKey</key>
+					<string>t8RMdndNDbMlrVCbbHy2dEO0n</string>
+					<key>consumerSecret</key>
+					<string>11B7h70dkDdG7AN7P3tpNxhmJnpULwWWesQQO83RpYdyJPduZF</string>
+				</dict>
+				<key>KitName</key>
+				<string>Twitter</string>
+			</dict>
+		</array>
+	</dict>
 	<key>FacebookAppID</key>
 	<string>1610843345884366</string>
 	<key>FacebookDisplayName</key>
@@ -46,6 +67,10 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>此 App 需要您的同意才能照相</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>此 App 需要您的同意才能读取媒体资料库</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

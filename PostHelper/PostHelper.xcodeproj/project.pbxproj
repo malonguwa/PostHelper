@@ -15,6 +15,8 @@
 		3D65CDE61DDC446C00073AB4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD91DDC423D00073AB4 /* LaunchScreen.storyboard */; };
 		3D65CDE71DDC446C00073AB4 /* AppDelegate.swift in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */; };
 		3D65CDE81DDC446C00073AB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD61DDC423D00073AB4 /* Assets.xcassets */; };
+		3D832FC31E238D6800D5EF79 /* HAWechatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D832FC21E238D6800D5EF79 /* HAWechatManager.swift */; };
+		3D832FC51E24C08400D5EF79 /* HATwitterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D832FC41E24C08400D5EF79 /* HATwitterManager.swift */; };
 		3D98093F1DDDA0E700BB4FEF /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D98093E1DDDA0E700BB4FEF /* Home.storyboard */; };
 		3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */; };
 		3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */; };
@@ -49,6 +51,8 @@
 		3D65CDDB1DDC423D00073AB4 /* HALogin.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HALogin.storyboard; sourceTree = "<group>"; };
 		3D65CDDC1DDC423D00073AB4 /* HALoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HALoginVC.swift; sourceTree = "<group>"; };
 		3D65CDE91DDC4F1200073AB4 /* PostHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PostHelper.entitlements; sourceTree = "<group>"; };
+		3D832FC21E238D6800D5EF79 /* HAWechatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAWechatManager.swift; sourceTree = "<group>"; };
+		3D832FC41E24C08400D5EF79 /* HATwitterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HATwitterManager.swift; sourceTree = "<group>"; };
 		3D98093E1DDDA0E700BB4FEF /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostVC.swift; sourceTree = "<group>"; };
 		3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAHomeTableController.swift; sourceTree = "<group>"; };
@@ -127,6 +131,8 @@
 				3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */,
 				3DF4CFB51E017A5200423B92 /* HAFacebookManager.swift */,
 				3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */,
+				3D832FC21E238D6800D5EF79 /* HAWechatManager.swift */,
+				3D832FC41E24C08400D5EF79 /* HATwitterManager.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -203,6 +209,7 @@
 				3DB307071DDB2B0E00CFBFC6 /* Resources */,
 				19EA883AB8F31C240A232007 /* [CP] Embed Pods Frameworks */,
 				E82919AF6BDC4FE0743F8081 /* [CP] Copy Pods Resources */,
+				3D832FC61E24C48A00D5EF79 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -365,6 +372,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		3D832FC61E24C48A00D5EF79 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 92763f24a6e5b44254acebbfbde88411728d436a 163eb0fb46080ee495e0a6a77a5cfcbf50449b5a89b49f9c06e5f2eba1e29cc6";
+		};
 		E82919AF6BDC4FE0743F8081 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -387,11 +407,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D832FC51E24C08400D5EF79 /* HATwitterManager.swift in Sources */,
 				3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */,
 				3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */,
 				3DF4CFB61E017A5200423B92 /* HAFacebookManager.swift in Sources */,
 				3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */,
 				3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */,
+				3D832FC31E238D6800D5EF79 /* HAWechatManager.swift in Sources */,
 				3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
