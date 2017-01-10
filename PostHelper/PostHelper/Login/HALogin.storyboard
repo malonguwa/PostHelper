@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="LNd-eK-KR8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="LNd-eK-KR8">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -23,6 +23,9 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5MU-oT-WYp" userLabel="TwitterAdd">
                                 <rect key="frame" x="216" y="170" width="22" height="22"/>
+                                <connections>
+                                    <action selector="addTWAccountClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iPw-me-aXo"/>
+                                </connections>
                             </button>
                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pWJ-G2-kw8">
                                 <rect key="frame" x="128" y="136" width="80" height="30"/>
@@ -61,12 +64,26 @@
                                 </constraints>
                                 <state key="normal" title="Twitter"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="81i-Ci-XXX">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="81i-Ci-XXX">
                                 <rect key="frame" x="250" y="136" width="51" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="4Xf-Iy-oYU"/>
+                                    <constraint firstAttribute="width" constant="51" id="jl0-4u-eul"/>
+                                </constraints>
                                 <state key="normal" title="LogOut"/>
                                 <connections>
                                     <action selector="FBLogOutClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1hl-eH-kgT"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o9g-Wx-kS7">
+                                <rect key="frame" x="250" y="166" width="51" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="51" id="N1w-eU-b6h"/>
+                                    <constraint firstAttribute="height" constant="30" id="Teu-dK-l1C"/>
+                                </constraints>
+                                <state key="normal" title="LogOut"/>
+                                <connections>
+                                    <action selector="TWLogOutClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="boQ-64-dWL"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -77,11 +94,15 @@
                             <constraint firstItem="52b-Wa-eV8" firstAttribute="top" secondItem="pWJ-G2-kw8" secondAttribute="bottom" id="GQD-kc-sbs"/>
                             <constraint firstItem="7VW-Di-bAk" firstAttribute="leading" secondItem="pWJ-G2-kw8" secondAttribute="trailing" constant="8" id="JfV-kb-FtF"/>
                             <constraint firstItem="pWJ-G2-kw8" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-20" id="MB3-J8-qVa"/>
+                            <constraint firstItem="81i-Ci-XXX" firstAttribute="leading" secondItem="7VW-Di-bAk" secondAttribute="trailing" constant="12" id="Mui-Gb-pSY"/>
                             <constraint firstItem="52b-Wa-eV8" firstAttribute="centerX" secondItem="pWJ-G2-kw8" secondAttribute="centerX" id="ZKA-Qz-WeK"/>
                             <constraint firstItem="7VW-Di-bAk" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="76" id="ZcE-EY-iX0"/>
                             <constraint firstItem="7xz-s0-jJd" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="100" id="fX9-7L-4SJ"/>
+                            <constraint firstItem="81i-Ci-XXX" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="72" id="kXl-NL-cJl"/>
+                            <constraint firstItem="o9g-Wx-kS7" firstAttribute="top" secondItem="81i-Ci-XXX" secondAttribute="bottom" id="x43-jk-hxE"/>
                             <constraint firstItem="5MU-oT-WYp" firstAttribute="leading" secondItem="52b-Wa-eV8" secondAttribute="trailing" constant="8" id="xEk-mN-ibt"/>
                             <constraint firstItem="pWJ-G2-kw8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="72" id="xS0-hN-hr0"/>
+                            <constraint firstItem="o9g-Wx-kS7" firstAttribute="leading" secondItem="5MU-oT-WYp" secondAttribute="trailing" constant="12" id="yif-op-yw2"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -90,7 +111,10 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
+                        <outlet property="FBDisconnectBtn" destination="81i-Ci-XXX" id="lTG-xm-hOK"/>
+                        <outlet property="TWDisconnectBtn" destination="o9g-Wx-kS7" id="INZ-yB-7Dg"/>
                         <outlet property="addFBAccountBtn" destination="7VW-Di-bAk" id="r1D-2F-9qf"/>
+                        <outlet property="addTWAccountBtn" destination="5MU-oT-WYp" id="vzF-qt-Wve"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
