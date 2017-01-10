@@ -27,6 +27,7 @@ class HAPostVC: UIViewController {
     var postHelperAblumID : String?
     var facebookMgr = HAFacebookManager()
 
+    
     //    var imageArrayForSend : [DKAsset]?
     //    var videoArrayForSend : [DKAsset]?
     

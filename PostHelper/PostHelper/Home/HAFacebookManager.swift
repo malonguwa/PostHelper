@@ -15,8 +15,6 @@ class HAFacebookManager: NSObject {
     var HAFaceebook_albumID : String?
     var photoIDs = [String]()
     
-    
-    
     /**
     // MARK: Find Album
     func findAlbum(images : [UIImage]) {
