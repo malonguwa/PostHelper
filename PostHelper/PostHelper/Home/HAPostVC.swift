@@ -26,7 +26,8 @@ class HAPostVC: UIViewController {
     var avAssetsForDisplay = [UIImage]()
     var postHelperAblumID : String?
     var facebookMgr = HAFacebookManager()
-
+    var twitterMgr = HATwitterManager()
+    
     
     //    var imageArrayForSend : [DKAsset]?
     //    var videoArrayForSend : [DKAsset]?
@@ -205,7 +206,8 @@ class HAPostVC: UIViewController {
         if _photos.count == 0 {
             
         } else {
-            facebookMgr.sendGroupPhotos(images: _photos, text: textView.text)
+            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text)
+//            facebookMgr.sendGroupPhotos(images: _photos, text: textView.text)
         }
     }
     
@@ -330,6 +332,7 @@ class HAPostVC: UIViewController {
         if imagesForSend.count > 0{
             
             FB_SendImageOnly(avAssetsForSend: imagesForSend)
+            
         }
         
         //-------------------------------------------send Video
