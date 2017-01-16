@@ -339,7 +339,9 @@ class HAPostVC: UIViewController {
         if videosForSend.count > 0{
             print("start to send video(s)")
             print(videosForSend.count)
-            FB_SendVideoOnly(avAssetsForSend: videosForSend, text: textView.text)
+//            twitterMgr.sendTWvideos(avAssetsForSend: videosForSend, text: textView.text)
+            twitterMgr.sendTweetWithTextandVideos(avAssetsForSend: videosForSend, text: textView.text)
+//            FB_SendVideoOnly(avAssetsForSend: videosForSend, text: textView.text)
         }
     }
     

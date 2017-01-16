@@ -77,4 +77,8 @@ class HAImagePickerManager: NSObject {
         
         naviController.present(pickerController, animated: true, completion: nil)
     }
+    
+    deinit {
+        print("HAImagePickerManager deinit")
+    }
 }
