@@ -24,6 +24,7 @@
 		3DB307221DDB2B0E00CFBFC6 /* PostHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */; };
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
 		3DF4CFB61E017A5200423B92 /* HAFacebookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF4CFB51E017A5200423B92 /* HAFacebookManager.swift */; };
+		3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,9 @@
 		3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperUITests.swift; sourceTree = "<group>"; };
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DF4CFB51E017A5200423B92 /* HAFacebookManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFacebookManager.swift; sourceTree = "<group>"; };
+		3DF5471A1E2CB16400A5FF27 /* SocialVideoHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialVideoHelper.h; sourceTree = "<group>"; };
+		3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialVideoHelper.m; sourceTree = "<group>"; };
+		3DF5471D1E2CB1A600A5FF27 /* PostHelper-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PostHelper-Bridging-Header.h"; sourceTree = "<group>"; };
 		747A69839BDFCDEF9138C8E0 /* Pods_PostHelperUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostHelperUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FFDBA34AE057E37144E9A72 /* Pods-PostHelper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostHelper.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper.release.xcconfig"; sourceTree = "<group>"; };
 		939F7C730FC13A127E23CEAA /* Pods-PostHelper.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostHelper.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PostHelper/Pods-PostHelper.debug.xcconfig"; sourceTree = "<group>"; };
@@ -115,6 +119,7 @@
 				3D65CDE91DDC4F1200073AB4 /* PostHelper.entitlements */,
 				3D65CDDA1DDC423D00073AB4 /* Login */,
 				3D65CDD71DDC423D00073AB4 /* Home */,
+				3DF547121E2CAD4A00A5FF27 /* Other */,
 				3D65CDD81DDC423D00073AB4 /* Info.plist */,
 				3D65CDD91DDC423D00073AB4 /* LaunchScreen.storyboard */,
 				3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */,
@@ -185,6 +190,16 @@
 				3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */,
 			);
 			path = PostHelperUITests;
+			sourceTree = "<group>";
+		};
+		3DF547121E2CAD4A00A5FF27 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				3DF5471A1E2CB16400A5FF27 /* SocialVideoHelper.h */,
+				3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */,
+				3DF5471D1E2CB1A600A5FF27 /* PostHelper-Bridging-Header.h */,
+			);
+			path = Other;
 			sourceTree = "<group>";
 		};
 		BFAB604D503CC05C2D567932 /* Pods */ = {
@@ -270,6 +285,7 @@
 					3DB307081DDB2B0E00CFBFC6 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = Q42V28CTZ7;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -408,6 +424,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D832FC51E24C08400D5EF79 /* HATwitterManager.swift in Sources */,
+				3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */,
 				3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */,
 				3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */,
 				3DF4CFB61E017A5200423B92 /* HAFacebookManager.swift in Sources */,
@@ -546,12 +563,15 @@
 			baseConfigurationReference = 939F7C730FC13A127E23CEAA /* Pods-PostHelper.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PostHelper/PostHelper.entitlements;
 				DEVELOPMENT_TEAM = Q42V28CTZ7;
 				INFOPLIST_FILE = PostHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.HnA.PostHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PostHelper/Other/PostHelper-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -561,12 +581,14 @@
 			baseConfigurationReference = 8FFDBA34AE057E37144E9A72 /* Pods-PostHelper.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PostHelper/PostHelper.entitlements;
 				DEVELOPMENT_TEAM = Q42V28CTZ7;
 				INFOPLIST_FILE = PostHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.HnA.PostHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PostHelper/Other/PostHelper-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
