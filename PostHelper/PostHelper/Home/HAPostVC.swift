@@ -27,7 +27,9 @@ class HAPostVC: UIViewController {
     var postHelperAblumID : String?
     var facebookMgr = HAFacebookManager()
     var twitterMgr = HATwitterManager()
-    
+    fileprivate lazy var isPresent : Bool = false
+
+//    var mutiPlatform
     
     //    var imageArrayForSend : [DKAsset]?
     //    var videoArrayForSend : [DKAsset]?
@@ -185,8 +187,8 @@ class HAPostVC: UIViewController {
             self.textView.text = ""
         }
     }
-    // MARK: FB - Send Image or Image with Text
-    func FB_SendImageOnly(avAssetsForSend : [DKAsset]!) {
+    // MARK: Send Image or Image with Text
+    func sendImageOnly(avAssetsForSend : [DKAsset]!) {
         //        guard let _avAssetsForSend = avAssetsForSend else {
         //            print("image Array == nil")
         //            return
@@ -206,8 +208,10 @@ class HAPostVC: UIViewController {
         if _photos.count == 0 {
             
         } else {
-            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text)
-//            facebookMgr.sendGroupPhotos(images: _photos, text: textView.text)
+//            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, sendToSinglePlatform:,  completion: {
+//                facebookMgr.sendGroupPhotos(images: _photos, text: textView.text)
+//            })
+//            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, completion: )
         }
     }
     
@@ -306,6 +310,27 @@ class HAPostVC: UIViewController {
         }
     }
     
+    // MARK: Select Platforms Button click
+    @IBAction func selectPlatformsBtnClick(_ sender: UIButton) {
+        print("selectPlatformsBtnClick")
+//        sender.isSelected = !sender.isSelected
+        let sb = UIStoryboard(name: "HAPlatformSelectionController", bundle: nil)
+        guard let popoverMenuView = sb.instantiateInitialViewController() else {
+            return
+        }
+        
+        popoverMenuView.transitioningDelegate = self
+        
+        popoverMenuView.modalPresentationStyle = .custom
+        
+        present(popoverMenuView, animated: true, completion: nil)
+        
+        
+    }
+    
+    
+    
+    
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
         var imagesForSend = [DKAsset]()
@@ -331,7 +356,7 @@ class HAPostVC: UIViewController {
         // -------------------------------------------send photo(s)
         if imagesForSend.count > 0{
             
-            FB_SendImageOnly(avAssetsForSend: imagesForSend)
+            sendImageOnly(avAssetsForSend: imagesForSend)
             
         }
         
@@ -536,6 +561,70 @@ extension HAPostVC: UITextViewDelegate {
         }
     }
 }
+
+extension HAPostVC: UIViewControllerTransitioningDelegate {
+
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return HAPresentationController(presentedViewController: presented, presenting: presenting)
+    }
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        isPresent = true
+        return self
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        isPresent = false
+        return self
+    }
+    
+}
+
+
+extension HAPostVC: UIViewControllerAnimatedTransitioning {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0.2
+    }
+    
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        isPresent ? animateTransitionForPresent(transitionContext: transitionContext) : animateTransitionForDismiss(transitionContext: transitionContext)
+    }
+    
+    fileprivate func animateTransitionForPresent(transitionContext: UIViewControllerContextTransitioning) {
+        
+        guard let presentView = transitionContext.view(forKey: UITransitionContextViewKey.to)  else {
+                return
+        }
+        
+        transitionContext.containerView.addSubview(presentView)
+        presentView.transform = CGAffineTransform(scaleX: 1.0, y: 0.0)
+        presentView.layer.anchorPoint = CGPoint(x: 0.5, y: 0)
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: { 
+            presentView.transform = CGAffineTransform.identity
+
+        }) { (_) in
+            transitionContext.completeTransition(true)
+        }
+    }
+    
+    fileprivate func animateTransitionForDismiss(transitionContext: UIViewControllerContextTransitioning) {
+        guard let dismissView = transitionContext.view(forKey: UITransitionContextViewKey.from)  else {
+            return
+        }
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: { 
+            dismissView.transform = CGAffineTransform(scaleX: 1.0, y: 0.001)
+        }) { (_) in
+            dismissView.removeFromSuperview()
+            transitionContext.completeTransition(true)
+        }
+    }
+    
+    
+}
+
+
+
 
 // MARK: UIImage - HA_resizeImage
 extension UIImage {
