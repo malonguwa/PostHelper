@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		369C90B253ABC6DA4733A587 /* Pods_PostHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF7280D41AB2AAB696B055B5 /* Pods_PostHelper.framework */; };
+		3D6251BF1E2F41ED00B01BAA /* HAPlatformSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D6251BE1E2F41ED00B01BAA /* HAPlatformSelectionController.swift */; };
+		3D6251C11E2F42A400B01BAA /* HAPlatformSelectionController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D6251C01E2F42A400B01BAA /* HAPlatformSelectionController.storyboard */; };
+		3D6251C31E2F552A00B01BAA /* HAPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D6251C21E2F552A00B01BAA /* HAPresentationController.swift */; };
 		3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */; };
 		3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D65CDDC1DDC423D00073AB4 /* HALoginVC.swift */; };
 		3D65CDE31DDC446C00073AB4 /* HALogin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDDB1DDC423D00073AB4 /* HALogin.storyboard */; };
@@ -45,6 +48,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D6251BE1E2F41ED00B01BAA /* HAPlatformSelectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPlatformSelectionController.swift; sourceTree = "<group>"; };
+		3D6251C01E2F42A400B01BAA /* HAPlatformSelectionController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAPlatformSelectionController.storyboard; sourceTree = "<group>"; };
+		3D6251C21E2F552A00B01BAA /* HAPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPresentationController.swift; sourceTree = "<group>"; };
 		3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D65CDD61DDC423D00073AB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D65CDD81DDC423D00073AB4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -134,6 +140,9 @@
 				3D98093E1DDDA0E700BB4FEF /* Home.storyboard */,
 				3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */,
 				3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */,
+				3D6251BE1E2F41ED00B01BAA /* HAPlatformSelectionController.swift */,
+				3D6251C01E2F42A400B01BAA /* HAPlatformSelectionController.storyboard */,
+				3D6251C21E2F552A00B01BAA /* HAPresentationController.swift */,
 				3DF4CFB51E017A5200423B92 /* HAFacebookManager.swift */,
 				3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */,
 				3D832FC21E238D6800D5EF79 /* HAWechatManager.swift */,
@@ -338,6 +347,7 @@
 				3D98093F1DDDA0E700BB4FEF /* Home.storyboard in Resources */,
 				3D65CDE71DDC446C00073AB4 /* AppDelegate.swift in Resources */,
 				3D65CDE81DDC446C00073AB4 /* Assets.xcassets in Resources */,
+				3D6251C11E2F42A400B01BAA /* HAPlatformSelectionController.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,6 +433,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D6251C31E2F552A00B01BAA /* HAPresentationController.swift in Sources */,
 				3D832FC51E24C08400D5EF79 /* HATwitterManager.swift in Sources */,
 				3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */,
 				3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */,
@@ -431,6 +442,7 @@
 				3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */,
 				3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */,
 				3D832FC31E238D6800D5EF79 /* HAWechatManager.swift in Sources */,
+				3D6251BF1E2F41ED00B01BAA /* HAPlatformSelectionController.swift in Sources */,
 				3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
