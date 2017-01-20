@@ -165,7 +165,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IeD-Ne-NGq">
-                                <rect key="frame" x="262" y="16" width="113" height="30"/>
+                                <rect key="frame" x="131" y="16" width="113" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Gxa-tM-9Td"/>
                                     <constraint firstAttribute="width" constant="113" id="Qo5-Ul-U9q"/>
@@ -187,8 +187,8 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                             <constraint firstAttribute="trailing" secondItem="UZu-DB-l0Q" secondAttribute="trailing" id="KWm-69-MFH"/>
                             <constraint firstItem="UZu-DB-l0Q" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" id="ZBG-l8-VMr"/>
                             <constraint firstItem="nO5-vu-df5" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" id="e7z-Yl-QzU"/>
+                            <constraint firstItem="IeD-Ne-NGq" firstAttribute="centerX" secondItem="j5G-IA-anu" secondAttribute="centerX" id="iJ1-FQ-qvb"/>
                             <constraint firstAttribute="trailing" secondItem="SNE-yg-4OF" secondAttribute="trailing" id="jbv-JZ-kCP"/>
-                            <constraint firstAttribute="trailing" secondItem="IeD-Ne-NGq" secondAttribute="trailing" id="oSi-g6-hiy"/>
                             <constraint firstItem="2Df-C5-UA5" firstAttribute="top" secondItem="SNE-yg-4OF" secondAttribute="bottom" id="q3F-RX-39a"/>
                             <constraint firstItem="nO5-vu-df5" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" constant="140" id="qtq-ct-y6W"/>
                         </constraints>

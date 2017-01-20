@@ -208,9 +208,9 @@ class HAPostVC: UIViewController {
         if _photos.count == 0 {
             
         } else {
-//            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, sendToSinglePlatform:,  completion: {
+            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, sendToSinglePlatform: true,  completion: {
 //                facebookMgr.sendGroupPhotos(images: _photos, text: textView.text)
-//            })
+            })
 //            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, completion: )
         }
     }
