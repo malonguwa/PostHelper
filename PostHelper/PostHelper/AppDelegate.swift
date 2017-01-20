@@ -19,13 +19,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
+
         Fabric.with([Twitter.self])
+        let result = SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         
-        return SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        hasAccessToTwitter()
+        hasAccessToFacebook()
+        
+        
+        return result
 
         
     }
+    
+   public func hasAccessToTwitter() -> Bool {
+        if Twitter.sharedInstance().sessionStore.session() == nil {
+            print("Twitter session = nil")
+            return false
+        } else {
+            print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")
+            return true
+        }
+    }
+    
+   public func hasAccessToFacebook() -> Bool {
+
+        if AccessToken.current == nil{
+            print("Facebook AccessToken = nil")
+            return false
+        } else {
+            print("Facebook AccessToken expirationDate = \(AccessToken.current?.expirationDate)")
+            return true
+        }
+    }
+    
     /**
      func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
      
