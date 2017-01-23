@@ -29,6 +29,7 @@ class HAPostVC: UIViewController {
     var twitterMgr = HATwitterManager()
     fileprivate lazy var isPresent : Bool = false
 
+
 //    var mutiPlatform
     
     //    var imageArrayForSend : [DKAsset]?
@@ -46,6 +47,11 @@ class HAPostVC: UIViewController {
         textView.becomeFirstResponder()
         textView.delegate = self
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostVC.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        
+        if hasAuthToTwitter == false && hasAuthToFacebook == false {
+            sendBtn.isEnabled = false
+            //TODO HUD提醒用户至少选择一个平台
+        }
         
     }
     
@@ -208,10 +214,20 @@ class HAPostVC: UIViewController {
         if _photos.count == 0 {
             
         } else {
-            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, sendToSinglePlatform: true,  completion: {
-//                facebookMgr.sendGroupPhotos(images: _photos, text: textView.text)
+            
+            if platforms.count == 0 {
+                print("Non of platforms has been selected")
+                return
+            }
+            
+            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, sendToPlatforms: platforms,  completion: { (array_platforms) in
+                print("~~~~~~~~~~1.Twitter sendGroupPhotos DONE~~~~~~~~~~")
+
+                self.facebookMgr.sendGroupPhotos(images: _photos, text: self.textView.text, sendToPlatforms: array_platforms, completion: { (array_platforms) in
+                    print("~~~~~~~~~~2.Facebook sendGroupPhotos DONE~~~~~~~~~~")
+                })
             })
-//            twitterMgr.sendTweetWithTextandImages(images: _photos, text: textView.text, completion: )
+            
         }
     }
     
@@ -314,6 +330,7 @@ class HAPostVC: UIViewController {
     @IBAction func selectPlatformsBtnClick(_ sender: UIButton) {
         print("selectPlatformsBtnClick")
 //        sender.isSelected = !sender.isSelected
+//        platforms.removeAll()
         let sb = UIStoryboard(name: "HAPlatformSelectionController", bundle: nil)
         guard let popoverMenuView = sb.instantiateInitialViewController() else {
             return
@@ -333,6 +350,7 @@ class HAPostVC: UIViewController {
     
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
+
         var imagesForSend = [DKAsset]()
         var videosForSend = [DKAsset]()
         

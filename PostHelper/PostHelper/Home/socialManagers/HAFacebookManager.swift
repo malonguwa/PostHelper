@@ -89,7 +89,26 @@ class HAFacebookManager: NSObject {
 */
     
     // MARK: Send Photos
-    func sendGroupPhotos(images: [UIImage], text: String?) {
+    func sendGroupPhotos(images: [UIImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+        print("HAFacebook : \(sendToPlatforms)")
+        
+        if sendToPlatforms.count == 0 {
+            completion!(sendToPlatforms)
+            return
+        }
+        
+        for platform in sendToPlatforms {
+            print("in for")
+            if platform == .HAFacebook {
+                break
+            } else {
+                print("Facebook completion start")
+                completion!(sendToPlatforms)
+                return
+            }
+        }
+        print("should not see here")
+
         
         let connection = GraphRequestConnection()
         
@@ -142,7 +161,11 @@ class HAFacebookManager: NSObject {
                                     break
                                 case .success(let response):
                                     self.photoIDs.removeAll()
+                                    var array_platforms = [SocialPlatform]()
+                                    array_platforms.append(contentsOf: sendToPlatforms)
+                                    array_platforms.remove(at: 0)
                                     print("Final response - : \(response)")
+                                    completion!(array_platforms)
                                 }
                             })
                         }

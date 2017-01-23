@@ -11,6 +11,14 @@ import FacebookCore
 import Fabric
 import TwitterKit
 
+
+public var hasAuthToTwitter : Bool?
+public var hasAuthToFacebook : Bool?
+public var platforms = [SocialPlatform]()
+public enum SocialPlatform { // send squence
+    case HATwitter
+    case HAFacebook
+}
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -23,10 +31,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Fabric.with([Twitter.self])
         let result = SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         
-        hasAccessToTwitter()
-        hasAccessToFacebook()
+        hasAuthToTwitter = hasAccessToTwitter()
+        hasAuthToFacebook = hasAccessToFacebook()
         
+        if hasAuthToTwitter! == true {
+            platforms.append(.HATwitter) // send squence: Twitter -> Facebook
+        }
         
+        if hasAuthToFacebook! == true {
+            platforms.append(.HAFacebook)
+        }
+        
+        print("didFinishLaunchingWithOptions: \(platforms)")
+
         return result
 
         

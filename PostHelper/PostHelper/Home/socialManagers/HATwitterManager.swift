@@ -15,7 +15,26 @@ class HATwitterManager: NSObject {
     let uploadURL = "https://upload.twitter.com/1.1/media/upload.json"
     let statusURL = "https://api.twitter.com/1.1/statuses/update.json"
     /// MARK: TweetWithTextandImages
-    func sendTweetWithTextandImages(images: [UIImage], text: String?,sendToSinglePlatform: Bool, completion: (()->())?){
+    func sendTweetWithTextandImages(images: [UIImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+        
+//        guard let sendOrNot = sendToPlatforms else {
+//            print("None platforms are selected")
+//            return
+//        }
+        
+        for platform in sendToPlatforms {
+            if platform == .HATwitter {
+                break
+            } else {
+//                var array_platforms = [SocialPlatform]()
+//                array_platforms.append(contentsOf: sendToPlatforms)
+//                array_platforms.remove(at: 0)
+                completion!(sendToPlatforms)
+                return
+            }
+        }
+        
+        
         let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
         var mediaIDs = [String]()
         let queue = DispatchQueue(label: "serialQForTWImageUpload")// 创建了一个串行队列
@@ -79,8 +98,11 @@ class HATwitterManager: NSObject {
                 if httpResponse.statusCode == 200 {
                     print("Tweet sucessfully")
                     
-                
-                    completion!()
+                    var array_platforms = [SocialPlatform]()
+                    array_platforms.append(contentsOf: sendToPlatforms)
+                    array_platforms.remove(at: 0)
+                    print("array_platforms: \(array_platforms)")
+                    completion!(array_platforms)
                 } else {
                     print("\(response)\n\n\(data)\n\n\(error)")
                 }
