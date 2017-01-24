@@ -28,47 +28,53 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
+        SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         Fabric.with([Twitter.self])
-        let result = SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         
-        hasAuthToTwitter = hasAccessToTwitter()
-        hasAuthToFacebook = hasAccessToFacebook()
+        print("facebook 1 didFinishLaunchingWithOptions\(AccessToken.current?.userId)\n")
+        hasAuthToTwitter = HALoginVC.hasAccessToTwitter()
+        hasAuthToFacebook = HALoginVC.hasAccessToFacebook()
+        print("facebook 2 didFinishLaunchingWithOptions\(AccessToken.current?.userId)\n")
+
         
-        if hasAuthToTwitter! == true {
-            platforms.append(.HATwitter) // send squence: Twitter -> Facebook
+        if platforms.count != 0 {
+            if hasAuthToTwitter == true && platforms[0] != .HATwitter {
+                platforms.insert(.HATwitter, at: 0)
+            } else if hasAuthToFacebook == true {
+                var flag : Bool = false
+                for platform in platforms.enumerated() {
+                    if platform.element == .HAFacebook {
+                        flag = true
+                    }
+                }
+                if flag == false {
+                    platforms.append(.HAFacebook)
+                }
+            }
+        } else {
+            if hasAuthToTwitter == true {
+                platforms.append(.HATwitter)
+            }
+            if hasAuthToFacebook == true {
+                platforms.append(.HAFacebook)
+            }
         }
         
-        if hasAuthToFacebook! == true {
-            platforms.append(.HAFacebook)
-        }
+//        if hasAuthToTwitter! == true {
+//            platforms.append(.HATwitter) // send squence: Twitter -> Facebook
+//        }
+//        
+//        if hasAuthToFacebook! == true {
+//            platforms.append(.HAFacebook)
+//        }
         
         print("didFinishLaunchingWithOptions: \(platforms)")
 
-        return result
+        return true
 
         
     }
     
-   public func hasAccessToTwitter() -> Bool {
-        if Twitter.sharedInstance().sessionStore.session() == nil {
-            print("Twitter session = nil")
-            return false
-        } else {
-            print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")
-            return true
-        }
-    }
-    
-   public func hasAccessToFacebook() -> Bool {
-
-        if AccessToken.current == nil{
-            print("Facebook AccessToken = nil")
-            return false
-        } else {
-            print("Facebook AccessToken expirationDate = \(AccessToken.current?.expirationDate)")
-            return true
-        }
-    }
     
     /**
      func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {

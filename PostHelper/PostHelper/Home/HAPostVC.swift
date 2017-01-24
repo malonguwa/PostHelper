@@ -172,6 +172,17 @@ class HAPostVC: UIViewController {
         }
     }
     
+    // MARK: Close Button click
+    @IBAction func closeBtnClick(_ sender: Any) {
+        print("closeBtn")
+//        textView.resignFirstResponder()
+        textView.endEditing(true)
+        dismiss(animated: true) {
+            
+        }
+        
+    }
+    
     
     // MARK: Pic Button click
     @IBAction func picBtnClick(_ sender: UIButton) {

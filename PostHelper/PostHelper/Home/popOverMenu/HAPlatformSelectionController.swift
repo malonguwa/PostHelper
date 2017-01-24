@@ -14,19 +14,47 @@ class HAPlatformSelectionController: UIViewController {
     
     @IBAction func TWSwitchBtnClick(_ sender: UISwitch) {
         if sender.isOn == false{
-            platforms.remove(at:0)
+            for platform in platforms.enumerated() {
+                if platform.element == .HATwitter {
+                    platforms.remove(at: platform.offset)
+                }
+            }
+            
         } else {
-            platforms.append(.HATwitter)
+            if platforms.count == 0{
+                if hasAuthToTwitter == true {
+                    print("\(hasAuthToTwitter)")
+                    platforms.insert(.HATwitter, at: 0)
+                }
+            } else {
+                if hasAuthToTwitter == true && platforms[0] != .HATwitter{
+                    print("\(hasAuthToTwitter)")
+                    platforms.insert(.HATwitter, at: 0)
+                }
+            }
         }
-        print(platforms)
+        print("TWSwitchBtnClick - \(platforms)")
     }
     
     @IBAction func FBSwitchBtnClick(_ sender: UISwitch) {
         if sender.isOn == false{
-            platforms.remove(at:1)
+            for platform in platforms.enumerated() {
+                if platform.element == .HAFacebook {
+                    platforms.remove(at: platform.offset)
+                }
+            }
         } else {
-            platforms.append(.HAFacebook)
+
+            if hasAuthToFacebook == true {
+                print("\(hasAuthToFacebook)")
+                platforms.append(.HAFacebook)
+            }
+            
+            
+            
+            
         }
+        print("FBSwitchBtnClick - \(platforms)")
     }
     
     
@@ -34,23 +62,21 @@ class HAPlatformSelectionController: UIViewController {
         print("HAPlatformSelectionController viewDidLoad")
         view.backgroundColor = UIColor.purple
         
-        
-//        if hasAuthToTwitter == true && platforms[0] != .HATwitter {
-//        }
-//        TwitterSwitchBtn.isOn = hasAuthToTwitter!
-//        if platforms.count == 0{
-//            
-//        }
-//        
-//        
-//        FacebookSwitchBtn.isOn = hasAuthToFacebook!
-
+//        HALoginVC.setPlatformsInOrder()
         if platforms.count != 0 {
-            if hasAuthToTwitter == true && hasAuthToFacebook == true && platforms[0] != .HATwitter {
+            if hasAuthToTwitter == true && platforms[0] != .HATwitter {
                 platforms.insert(.HATwitter, at: 0)
+            } else if hasAuthToFacebook == true {
+                var flag : Bool = false
+                for platform in platforms.enumerated() {
+                    if platform.element == .HAFacebook {
+                        flag = true
+                    }
+                }
+                if flag == false {
+                    platforms.append(.HAFacebook)
+                }
             }
-            
-            
         } else {
             if hasAuthToTwitter == true {
                 platforms.append(.HATwitter)
@@ -69,7 +95,7 @@ class HAPlatformSelectionController: UIViewController {
             FacebookSwitchBtn.isOn = false
             FacebookSwitchBtn.isEnabled = false
         }
-        print(platforms)
+        print("viewDidLoad - \(platforms)")
 
         
     }

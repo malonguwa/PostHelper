@@ -25,19 +25,19 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
     // MARK: Function
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(HALoginVC.HAFacebookCheckLogin), name: NSNotification.Name.FBSDKAccessTokenDidChange, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(HALoginVC.HAFacebookCheckLogin), name: NSNotification.Name.FBSDKAccessTokenDidChange, object: nil)
 
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+/*
     func HAFacebookCheckLogin() {
         if AccessToken.current != nil {// User is already logged in, do work such as go to next view controller.
-            print("Connected to facebook already")
+            print("~~~******** Connected to facebook already \(AccessToken.current)\n")
         } else {
-            print("Not connect to facebook")
+            print("~~~Not connect to facebook")
         }
     }
-    
+    */
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -56,7 +56,11 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
             case .cancelled:
                 print("User cancelled login.")
             case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-                
+                hasAuthToFacebook = true
+
+                if hasAuthToFacebook! == true {
+                    platforms.append(.HAFacebook)
+                }
                 print("Logged in with write permission!, \n\n grantedPermissions: \(grantedPermissions), \n\n declinedPermissions: \(declinedPermissions),\n\n accessToken: \(accessToken)")
         }
     }
@@ -66,7 +70,27 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
     @IBAction func addTWAccountClick(_ sender: Any) {
         Twitter.sharedInstance().logIn { (session, error) in
             if session != nil {
+                
+                hasAuthToTwitter = HALoginVC.hasAccessToTwitter()
+                
+//                if hasAuthToTwitter == true && hasAuthToFacebook == true && platforms[0] != .HATwitter {
+//                    platforms.insert(.HATwitter, at: 0)
+//                }
+                
+                if platforms.count != 0 {
+                    if hasAuthToTwitter == true && platforms[0] != .HATwitter {
+                        platforms.insert(.HATwitter, at: 0)
+                    }
+                    
+                    
+                } else {
+                    if hasAuthToTwitter == true {
+                        platforms.append(.HATwitter)
+                    }
+                }
+                
                 print("signed in as \(session?.userName)")
+                
             } else {
                 print("error : \(error?.localizedDescription)")
             }
@@ -124,6 +148,14 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 
     @IBAction func TWLogOutClick(_ sender: Any) {
         let store = Twitter.sharedInstance().sessionStore
+        if platforms.count != 0 {
+            for platform in platforms.enumerated() {
+                if platform.element == .HATwitter {
+                    platforms.remove(at: platform.offset)
+                    hasAuthToTwitter = false
+                }
+            }
+        }
         
         if let userID = store.session()?.userID {
             store.logOutUserID(userID)
@@ -133,6 +165,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
     }
     
     @IBAction func FBLogOutClick(_ sender: Any) {
+        
         guard let token = AccessToken.current else {
             print("token is nil")
             return
@@ -150,10 +183,58 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 
         GraphRequest(graphPath: "/me/permissions", parameters:[:], accessToken: token, httpMethod: GraphRequestHTTPMethod.DELETE, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
             print("\(response)\n\(requestResult)")
+            if platforms.count != 0 {
+                for platform in platforms.enumerated() {
+                    if platform.element == .HAFacebook {
+                        platforms.remove(at: platform.offset)
+                        hasAuthToFacebook = false
+                        print("facebook remove from array \(platforms)")
+                    }
+                }
+            }
         }
         
         let loginManager = LoginManager()
         loginManager.logOut()
 
     }
+    
+    public class func setPlatformsInOrder() {
+        if platforms.count != 0 {
+            if hasAuthToTwitter == true && hasAuthToFacebook == true && platforms[0] != .HATwitter {
+                platforms.insert(.HATwitter, at: 0)
+            }
+        } else {
+            if hasAuthToTwitter == true {
+                platforms.append(.HATwitter)
+            }
+            if hasAuthToFacebook == true {
+                platforms.append(.HAFacebook)
+            }
+        }
+    
+    }
+    
+    public class func hasAccessToTwitter() -> Bool {
+        if Twitter.sharedInstance().sessionStore.session() == nil {
+            print("Twitter session = nil")
+            return false
+        } else {
+            print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")
+            return true
+        }
+    }
+    
+    public class func hasAccessToFacebook() -> Bool {
+        
+        if AccessToken.current == nil{
+            print("hasAccessToFacebook(): Facebook AccessToken = nil")
+            return false
+        } else {
+            print("hasAccessToFacebook(): Facebook AccessToken expirationDate = \(AccessToken.current?.expirationDate)")
+            return true
+        }
+    }
+
+    
 }

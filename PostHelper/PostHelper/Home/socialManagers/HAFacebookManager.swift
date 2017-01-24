@@ -107,7 +107,7 @@ class HAFacebookManager: NSObject {
                 return
             }
         }
-        print("should not see here")
+//        print("should not see here")
 
         
         let connection = GraphRequestConnection()
@@ -117,7 +117,12 @@ class HAFacebookManager: NSObject {
         
         for image in images.enumerated() {
             
-            let imageData = UIImageJPEGRepresentation(image.element, 90)
+            let imageData = UIImageJPEGRepresentation(image.element, 0.6)
+
+            if imageData == nil {
+                print("facebook: -> image data error")
+                return
+            }
             
             let params = [
                     "source" : imageData!,

@@ -46,7 +46,7 @@ class HATwitterManager: NSObject {
                 let imgData = UIImageJPEGRepresentation(image.element, 0.6)
                 
                 if imgData == nil {
-                    print("image data error")
+                    print("twitter: -> image data error")
                 } else {
                     client.uploadMedia(imgData!, contentType: "image/jpeg", completion: { (mediaID, error) in
                         if error != nil {
@@ -102,6 +102,9 @@ class HATwitterManager: NSObject {
                     array_platforms.append(contentsOf: sendToPlatforms)
                     array_platforms.remove(at: 0)
                     print("array_platforms: \(array_platforms)")
+                    
+                    print("after send success in Twitter: \(platforms)")
+                    
                     completion!(array_platforms)
                 } else {
                     print("\(response)\n\n\(data)\n\n\(error)")
