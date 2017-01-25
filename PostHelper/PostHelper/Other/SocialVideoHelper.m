@@ -246,7 +246,9 @@
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://api.twitter.com/1.1/statuses/update.json"];
     
     if (comment == nil) {
-        comment = [NSString stringWithFormat:@"#SocialVideoHelper# https://github.com/liu044100/SocialVideoHelper"];
+//        comment = [NSString stringWithFormat:@"#SocialVideoHelper# https://github.com/liu044100/SocialVideoHelper"];
+        comment = [NSString stringWithFormat:@"PostHelper# - created by HnA"];
+
     }
     
     // Set the parameters for the third twitter video request.

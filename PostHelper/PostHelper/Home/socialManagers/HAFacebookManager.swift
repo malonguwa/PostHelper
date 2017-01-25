@@ -9,6 +9,8 @@
 import UIKit
 import FacebookCore
 import FacebookShare
+import DKImagePickerController
+import AVFoundation
 
 class HAFacebookManager: NSObject {
     
@@ -209,6 +211,169 @@ class HAFacebookManager: NSObject {
 
     }//END func
 
+    
+    
+    // MARK: FB - Send Non-Resumable Video Only
+    func FB_SendVideoOnly(avAssetsForSend : [DKAsset]!, text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+        
+        if sendToPlatforms.count == 0 {
+            completion!(sendToPlatforms)
+            return
+        }
+        
+        for platform in sendToPlatforms {
+            print("in for")
+            if platform == .HAFacebook {
+                break
+            } else {
+                print("Facebook completion start")
+                completion!(sendToPlatforms)
+                return
+            }
+        }
+
+        let queue = DispatchQueue(label: "serialQForVideoUpload")// 创建了一个串行队列
+        
+        var _videos = [NSData]()
+        
+        for asset in avAssetsForSend.enumerated() {
+            queue.async {//将任务代码块加入异步串行队列queue中
+                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
+                    let avurl = av as! AVURLAsset
+                    if av != nil && asset.element.isVideo == true{
+                        
+                        let videoData = NSData(contentsOf: avurl.url)
+                        _videos.append(videoData!)
+                        print("1: \(_videos.count)")
+                        
+                        semaphore.signal()//当满足条件时，向队列发送信号
+                    }
+                })
+                semaphore.wait()//阻塞并等待信号
+            }
+        }
+        
+        queue.async { //将任务代码块加入异步串行队列queue中
+            print("2: end-for")
+            let queue2 = DispatchQueue(label: "qForVideosUploadSquence")
+            //发请求
+            //            var flagForVideosUpload = 0
+            for videoData in _videos.enumerated() {
+                
+                queue2.async {
+                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                    
+                    let connection = GraphRequestConnection()
+                    let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
+                        let totalBytesSent_double = Double.init(totalBytesSent)
+                        let totalExpectedBytes_double = Double.init(totalExpectedBytes)
+                        print("Video\(videoData.offset): totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%")
+                    }
+                    
+                    let downloadFailureHandler = { (error: Error) -> () in
+                        print("\(error)")
+                    }
+                    
+                    let videoParams = [
+                        "video.mov" : videoData.element,
+                        "description" : text!,
+                        ] as [String : Any]
+                    
+                    let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+                    
+                    connection.add(videoSendRequest, batchParameters: ["omit_response_on_success" : false], completion: {(HTTPURLResponse, GraphRequestResult) in
+                        print(GraphRequestResult)
+                        
+                        switch GraphRequestResult {
+                        case .failed(let error):
+                            print(error)
+                            break
+                        case .success(let response):
+                            if videoData.offset == _videos.count - 1 {
+                                var array_platforms = [SocialPlatform]()
+                                array_platforms.append(contentsOf: sendToPlatforms)
+                                array_platforms.remove(at: 0)
+                                print("Final response - : \(response)")
+                                completion!(array_platforms)                                
+                            }
+                            
+                        }
+                        semaphore2.signal()
+                    })
+                    connection.networkProgressHandler = downloadProgressHandler
+                    connection.networkFailureHandler = downloadFailureHandler
+                    
+                    connection.start()
+                    
+                    semaphore2.wait()
+                }
+                
+            }
+            
+            
+            
+            
+        }
+    }
+    
+    // MARK: FB - Send Resumable Video Only
+    func FB_SendResumableVideoOnly(avAssetsForSend : [DKAsset]!, text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+        
+        let accountStore = ACAccountStore()
+        let accountType = accountStore.accountType(withAccountTypeIdentifier: ACAccountTypeIdentifierFacebook)
+        guard let accounts = accountStore.accounts(with: accountType) else {
+            print("account = nil")
+            return
+        }
+        let queue = DispatchQueue(label: "serialQForVideoUpload")// 创建了一个串行队列
+        
+        var _videos = [NSData]()
+        
+        for asset in avAssetsForSend.enumerated() {
+            queue.async {//将任务代码块加入异步串行队列queue中
+                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
+                    let avurl = av as! AVURLAsset
+                    if av != nil && asset.element.isVideo == true{
+                        
+                        let videoData = NSData(contentsOf: avurl.url)
+                        _videos.append(videoData!)
+                        print("1: \(_videos.count)")
+                        
+                        semaphore.signal()//当满足条件时，向队列发送信号
+                    }
+                })
+                semaphore.wait()//阻塞并等待信号
+            }
+        }
+
+        queue.async(flags: .barrier) {
+            for videoData in _videos {
+                
+                SocialVideoHelper.uploadFacebookVideo(videoData as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessage) in
+                    if success == true {
+                        print("Twitter video upload success")
+                        var array_platforms = [SocialPlatform]()
+                        array_platforms.append(contentsOf: sendToPlatforms)
+                        array_platforms.remove(at: 0)
+                        print("array_platforms: \(array_platforms)")
+                        
+                        print("after send success in Twitter: \(platforms)")
+                        
+                        completion!(array_platforms)
+                        
+                    } else {
+                        print(errorMessage!)
+                    }
+                })
+            }//end for
+        }
+    }
+
+    
+    
+    
 //    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
 //    initWithGraphPath:@"/me/photos"
 //    parameters:@{ @"url": @"http://www.w3schools.com/w3images/fjords.jpg",@"attached_media[0]": @"156791928136678",@"attached_media[1]": @"156791931470011",}

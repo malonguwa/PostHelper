@@ -391,11 +391,19 @@ class HAPostVC: UIViewController {
         
         //-------------------------------------------send Video
         if videosForSend.count > 0{
+            
+            if platforms.count == 0 {
+                print("Non of platforms has been selected")
+                return
+            }
+            
             print("start to send video(s)")
             print(videosForSend.count)
-//            twitterMgr.sendTWvideos(avAssetsForSend: videosForSend, text: textView.text)
-            twitterMgr.sendTweetWithTextandVideos(avAssetsForSend: videosForSend, text: textView.text)
-//            FB_SendVideoOnly(avAssetsForSend: videosForSend, text: textView.text)
+            
+            twitterMgr.sendTweetWithTextandVideos(avAssetsForSend: videosForSend, text: textView.text, sendToPlatforms: platforms,  completion: { (array_platforms) in
+//                self.facebookMgr.FB_SendResumableVideoOnly(avAssetsForSend: videosForSend, text: self.textView.text, sendToPlatforms: array_platforms, completion: { (array_platforms) in })
+                self.facebookMgr.FB_SendVideoOnly(avAssetsForSend: videosForSend, text: self.textView.text, sendToPlatforms: array_platforms,  completion:{ (array_platforms) in })
+            })
         }
     }
     

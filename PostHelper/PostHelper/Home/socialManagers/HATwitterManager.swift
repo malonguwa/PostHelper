@@ -14,6 +14,7 @@ import DKImagePickerController
 class HATwitterManager: NSObject {
     let uploadURL = "https://upload.twitter.com/1.1/media/upload.json"
     let statusURL = "https://api.twitter.com/1.1/statuses/update.json"
+    
     /// MARK: TweetWithTextandImages
     func sendTweetWithTextandImages(images: [UIImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
         
@@ -117,8 +118,22 @@ class HATwitterManager: NSObject {
 
 
     /// MARK: TweetWithTextandVideos
-    func sendTweetWithTextandVideos(avAssetsForSend: [DKAsset], text: String?) {
+    func sendTweetWithTextandVideos(avAssetsForSend: [DKAsset], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
 
+        
+        for platform in sendToPlatforms {
+            if platform == .HATwitter {
+                break
+            } else {
+                //                var array_platforms = [SocialPlatform]()
+                //                array_platforms.append(contentsOf: sendToPlatforms)
+                //                array_platforms.remove(at: 0)
+                completion!(sendToPlatforms)
+                return
+            }
+        }
+        
+        
         let accountStore = ACAccountStore()
         let accountType = accountStore.accountType(withAccountTypeIdentifier: ACAccountTypeIdentifierTwitter)
         guard let accounts = accountStore.accounts(with: accountType) else {
@@ -154,17 +169,35 @@ class HATwitterManager: NSObject {
         }//end for
         
         queue.async(flags: .barrier) {
-            for videoData in _videos {
-                
-            SocialVideoHelper.uploadTwitterVideo(videoData as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessage) in
-                if success == true {
-                    print("video upload success")
-                } else {
-                    print(errorMessage!)
+            
+            let queue2 = DispatchQueue(label: "qForTWVideosUploadSquence")
+
+            for videoData in _videos.enumerated() {
+                queue2.async {
+                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+
+                    SocialVideoHelper.uploadTwitterVideo(videoData.element as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessage) in
+                        if success == true {
+                            print("Twitter video upload success")
+                            
+                            if videoData.offset == _videos.count - 1 {
+                                var array_platforms = [SocialPlatform]()
+                                array_platforms.append(contentsOf: sendToPlatforms)
+                                array_platforms.remove(at: 0)
+                                print("array_platforms: \(array_platforms)")
+                                
+                                print("after send success in Twitter: \(platforms)")
+                                
+                                completion!(array_platforms)
+                            }
+                        } else {
+                            print(errorMessage!)
+                        }
+                        semaphore2.signal()
+                    })
+                    
+                    semaphore2.wait()
                 }
-            })
-                
-                
             }//end for
         }
     }
