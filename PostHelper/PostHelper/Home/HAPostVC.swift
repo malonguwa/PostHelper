@@ -100,6 +100,10 @@ class HAPostVC: UIViewController {
                     } else { //video
                         asset.element.fetchAVAsset(true, options: nil, completeBlock: { (Asset, info) in
                             let avurl = Asset as! AVURLAsset
+                            
+                            //TODO判断是否压缩后的视频是否满足条件： 视频格式和尺寸
+                            
+                            
                             let videoImage = self.getVideoImage(videoURL: avurl.url)
                             let resizedImg = UIImage.HA_resizeImage(image: videoImage)
                             self.addImageAndDeleteBtn(image: resizedImg, offset: self.avAssetsForDisplay.count)

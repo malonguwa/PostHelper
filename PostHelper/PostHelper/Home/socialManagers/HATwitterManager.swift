@@ -150,9 +150,14 @@ class HATwitterManager: NSObject {
         for asset in avAssetsForSend.enumerated() {
             queue.async {//将任务代码块加入异步串行队列queue中
                 let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+//                asset.element.fetchAVAsset(PHVideoRequestOptions, completeBlock: <#T##(AVAsset?, [AnyHashable : Any]?) -> Void#>)
                 asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
                     let avurl = av as! AVURLAsset
                     if av != nil && asset.element.isVideo == true{
+                        
+                        //
+                        
+                        
                         let videoData = NSData(contentsOf: avurl.url)
                         if videoData == nil{
                             print("data == nil")

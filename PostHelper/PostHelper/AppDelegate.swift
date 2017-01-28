@@ -10,7 +10,7 @@ import UIKit
 import FacebookCore
 import Fabric
 import TwitterKit
-
+import FBSDKCoreKit
 
 public var hasAuthToTwitter : Bool?
 public var hasAuthToFacebook : Bool?
@@ -29,12 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
 
         SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+//        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         Fabric.with([Twitter.self])
         
-        print("facebook 1 didFinishLaunchingWithOptions\(AccessToken.current?.userId)\n")
+        /*
         hasAuthToTwitter = HALoginVC.hasAccessToTwitter()
         hasAuthToFacebook = HALoginVC.hasAccessToFacebook()
-        print("facebook 2 didFinishLaunchingWithOptions\(AccessToken.current?.userId)\n")
 
         
         if platforms.count != 0 {
@@ -60,16 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
-//        if hasAuthToTwitter! == true {
-//            platforms.append(.HATwitter) // send squence: Twitter -> Facebook
-//        }
-//        
-//        if hasAuthToFacebook! == true {
-//            platforms.append(.HAFacebook)
-//        }
-        
         print("didFinishLaunchingWithOptions: \(platforms)")
-
+*/
         return true
 
         
@@ -89,16 +81,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      */
     
 
+//    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+//        
+//        if Twitter.sharedInstance().application(app, open:url, options: options) {
+//            return true
+//        }
+//        
+//        if FBSDKApplicationDelegate.sharedInstance().application(app, open: url, sourceApplication: options[.sourceApplication] as! String!, annotation: options[.annotation]) {
+//            return true
+//        }
+//        
+//        return false
+//        
+//    }
+
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         
+//        if  FBSDKApplicationDelegate.sharedInstance().application(app, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as! String!, annotation: options[UIApplicationOpenURLOptionsKey.annotation]) {
+//            return true
+//        }
+        
+
+        let appId = SDKSettings.appId
+        if url.scheme != nil && url.scheme!.hasPrefix("fb\(appId)") && url.host ==  "authorize" { // facebook
+            return SDKApplicationDelegate.shared.application(app, open: url, options: options)
+        }
+
         if Twitter.sharedInstance().application(app, open:url, options: options) {
             return true
         }
-        
-        if SDKApplicationDelegate.shared.application(app, open: url, options:  options) {
-            return true
-        }
+
+//        if SDKApplicationDelegate.shared.application(app, open: url, options:  options) {
+//            return true
+//        }
  
         return false
     }
@@ -106,6 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        FBSDKAppEvents.activateApp()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -119,6 +136,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+//        AppEventsLogger.activate(application) //Facebook Swift SDK
+        FBSDKAppEvents.activateApp()
+
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

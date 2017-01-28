@@ -11,6 +11,10 @@ import DKImagePickerController
 
 class HAImagePickerManager: NSObject {
 
+//    lazy var pickerController = DKImagePickerController()
+    
+    
+    
     // closure for HAPostVC.textViewDidChange
     var callBack : (() -> ())?
     // closure for add images in scrollView
@@ -24,7 +28,8 @@ class HAImagePickerManager: NSObject {
     func addImage(naviController : UIViewController) {
         let pickerController = DKImagePickerController()
         pickerController.assetType = .allPhotos
-
+        pickerController.maxSelectableCount = 9
+        pickerController.showsCancelButton = true
         // when click cancel button
         pickerController.didCancel = {
             guard let _callBack = self.callBack else {
@@ -53,7 +58,9 @@ class HAImagePickerManager: NSObject {
     func addVideo(naviController : UIViewController) {
         let pickerController = DKImagePickerController()
         pickerController.assetType = .allVideos
-        
+        pickerController.maxSelectableCount = 4
+        pickerController.showsCancelButton = true
+
         // when click cancel button
         pickerController.didCancel = {
             guard let _callBack = self.callBack else {

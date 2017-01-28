@@ -1,7 +1,8 @@
 //
 //  SocialVideoHelper.m
 //
-//  Created by ryu-ushin on 6/5/15.
+//  Originally Created by ryu-ushin on 6/5/15.
+//  Updated by LongMA and YuSong on 29/1/17.
 //  Copyright (c) 2015 ryu-ushin. All rights reserved.
 //
 
@@ -140,8 +141,9 @@
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
     
     NSDictionary *postParams = @{@"command": @"INIT",
-                                @"total_bytes" : [NSNumber numberWithInteger: videoData.length].stringValue,
-                                @"media_type" : @"video/mov"
+                                 @"media_category" : @"amplify_video",
+                                 @"total_bytes" : [NSNumber numberWithInteger: videoData.length].stringValue,
+                                 @"media_type" : @"video/mp4"
                                 };
     
     SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:twitterPostURL parameters:postParams];
@@ -225,7 +227,7 @@
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
     
     NSDictionary *postParams = @{@"command": @"FINALIZE",
-                               @"media_id" : mediaID };
+                                 @"media_id" : mediaID };
     
     SLRequest *postRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:twitterPostURL parameters:postParams];
     
@@ -242,12 +244,70 @@
     }];
 }
 
+
 +(void)tweetVideoStage4:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
+    
+    NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
+    
+    NSDictionary *postParams = @{@"command": @"STATUS",
+                                 @"media_id" : mediaID };
+    SLRequest *postRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:twitterPostURL parameters:postParams];
+    
+    postRequest.account = account;
+    
+    [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        //        NSLog(@"Twitter Stage4 HTTP Response: %li", (long)[urlResponse statusCode]);
+//        NSLog(@"Twitter stage 4 urlResponse - %@", urlResponse);
+        NSLog(@"Twitter Stage4 HTTP Response: %li, %@", (long)[urlResponse statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+
+        if (error) {
+            NSLog(@"Twitter Error stage 4 - %@", error);
+            NSLog(@"Twitter Error stage 4 - %@", urlResponse);
+            [SocialVideoHelper uploadError:error withCompletion:completion];
+        } else {
+            if ([urlResponse statusCode] == 200){
+//                NSLog(@"Twitter STATUS upload success !");
+                
+                NSMutableDictionary *returnedData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+                NSDictionary *processing_infor = [returnedData valueForKey:@"processing_info"];
+                
+                NSString *state = [NSString stringWithFormat:@"%@", [processing_infor valueForKey:@"state"]];
+                NSString *check_after_secs = [NSString stringWithFormat:@"%@", [processing_infor valueForKey:@"check_after_secs"]];
+                NSString *progress_percent = [NSString stringWithFormat:@"%@", [processing_infor valueForKey:@"progress_percent"]];
+                NSLog(@"state : %@, check_after_secs: %@, progress_percent: %@\n",state, check_after_secs, progress_percent);
+                
+                if ([state  isEqual: @"in_progress"]) {
+                    NSLog(@"%@",[NSThread currentThread]);
+                    sleep([check_after_secs intValue]);
+                    [SocialVideoHelper tweetVideoStage4:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
+                } else if ([state  isEqual: @"pending"]){
+                    NSLog(@"%@",[NSThread currentThread]);
+                    sleep([check_after_secs intValue]);
+                    [SocialVideoHelper tweetVideoStage4:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
+                } else if ([state  isEqual: @"failed"]) {
+                    NSLog(@"tweetVideoStage4 return state : failed");
+                    return; //TODO HUD
+                } else if ([state  isEqual: @"succeeded"]) {
+                    [SocialVideoHelper tweetVideoStage5:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
+                }
+            }
+        }
+    }];
+    
+}
+
+//{"media_id" : 825379284617355264,
+// "media_id_string" : "825379284617355264",
+// "processing_info" : {"state":"in_progress","check_after_secs":5,"progress_percent":5}
+//}
+
+
++(void)tweetVideoStage5:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://api.twitter.com/1.1/statuses/update.json"];
     
     if (comment == nil) {
 //        comment = [NSString stringWithFormat:@"#SocialVideoHelper# https://github.com/liu044100/SocialVideoHelper"];
-        comment = [NSString stringWithFormat:@"PostHelper# - created by HnA"];
+        comment = [NSString stringWithFormat:@"  "];
 
     }
     
@@ -259,10 +319,10 @@
     postRequest.account = account;
     [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
 //        NSLog(@"Twitter Stage4 HTTP Response: %li", (long)[urlResponse statusCode]);
-        NSLog(@"Twitter stage 4 urlResponse - %@", urlResponse);
+        NSLog(@"Twitter stage 5 urlResponse - %@", urlResponse);
         if (error) {
-            NSLog(@"Twitter Error stage 4 - %@", error);
-            NSLog(@"Twitter Error stage 4 - %@", urlResponse);
+            NSLog(@"Twitter Error stage 5 - %@", error);
+            NSLog(@"Twitter Error stage 5 - %@", urlResponse);
             [SocialVideoHelper uploadError:error withCompletion:completion];
         } else {
             if ([urlResponse statusCode] == 200){
