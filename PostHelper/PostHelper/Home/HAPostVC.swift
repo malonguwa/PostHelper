@@ -72,17 +72,25 @@ class HAPostVC: UIViewController {
     // MARK: Button target - Pic/Video Button is clicked
     func displayAVAssets(whichBtn : WhichButton) {
         imagePickerManager.callBack = {
-            self.imageScrollView.isHidden = true
+            if self.avAssetsForDisplay.count == 0 {
+                self.imageScrollView.isHidden = true
+            } else {
+                self.imageScrollView.isHidden = false
+            }
             self.textView.becomeFirstResponder()
         }
+
         
         imagePickerManager.HnA_selectedAVAssets = { (HnA_DKAssetArray) in
-            
+
             if HnA_DKAssetArray.count == 0 {
                 self.imageScrollView.isHidden = false
                 self.textView.becomeFirstResponder()
                 return
             }
+            
+            self.avAssetsForDisplay.removeAll()
+            self.avAssetsForSend.removeAll()
             
             self.avAssetsForSend.append(contentsOf: HnA_DKAssetArray)
             print(self.avAssetsForSend.count)
@@ -114,8 +122,9 @@ class HAPostVC: UIViewController {
             }
             self.imageScrollView.isHidden = false
             self.textView.becomeFirstResponder()
-        }
+        }//end block
         
+
         if whichBtn == .Pic{
             imagePickerManager.addImage(naviController: self)
         } else if whichBtn == .Video{
@@ -135,11 +144,13 @@ class HAPostVC: UIViewController {
     // MARK: Button - addImageAndDeleteBtn
     func addImageAndDeleteBtn(image: UIImage, offset: Int) {
         print("addImageAndDeleteBtn : \(offset)")
-        
+        print("\(image.size)")
         let HAimageView = UIImageView(image: image)
-        HAimageView.frame = CGRect(x: (offset * 100) + 20 * offset, y: 0, width: Int(image.size.width), height: Int(image.size.height))
+//        HAimageView.frame = CGRect(x: (offset * 100) + 20 * offset, y: 0, width: Int(image.size.width), height: Int(image.size.height))
+        HAimageView.frame = CGRect(x: (offset * 100) + 20 * offset, y: 0, width: 100, height: 100)
+        HAimageView.backgroundColor = UIColor.lightGray
         HAimageView.isUserInteractionEnabled = true
-        
+        HAimageView.contentMode = UIViewContentMode.scaleAspectFit
         let deleteBtn = UIButton.init(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         deleteBtn.backgroundColor = UIColor.black
         deleteBtn.tag = offset
@@ -157,6 +168,8 @@ class HAPostVC: UIViewController {
     
     // MARK: Button - deleteBtnClick
     func deleteImageInScrollView(_ sender: UIButton) {
+        
+
         print("avAssetsForSend beforeDelete: \(self.avAssetsForSend.count)")
         print("avAssetsForSend deleteIndex: \(sender.tag)")
         self.avAssetsForSend.remove(at: sender.tag)
@@ -164,16 +177,21 @@ class HAPostVC: UIViewController {
         
         print("avAssetsForSend afterDelete: \(self.avAssetsForSend.count)")
         
-        for delete in self.contentView.subviews{
-            delete.removeFromSuperview()
+
+        if avAssetsForDisplay.count == 0 {
+            imageScrollView.isHidden = true
+        } else {
+            imageScrollView.isHidden = false
+            for delete in self.contentView.subviews{
+                delete.removeFromSuperview()
+            }
+            for asset in self.avAssetsForDisplay.enumerated(){
+                print("~~~~~~~\(avAssetsForDisplay.count)~~~~~~~~~")
+                print("\(asset.offset): \(asset.element)")
+                self.addImageAndDeleteBtn(image: asset.element, offset: asset.offset)
+            }
         }
         
-        for asset in self.avAssetsForDisplay.enumerated(){
-            print("~~~~~~~\(avAssetsForDisplay.count)~~~~~~~~~")
-            
-            print("\(asset.offset): \(asset.element)")
-            self.addImageAndDeleteBtn(image: asset.element, offset: asset.offset)
-        }
     }
     
     // MARK: Close Button click
@@ -670,7 +688,8 @@ extension HAPostVC: UIViewControllerAnimatedTransitioning {
 // MARK: UIImage - HA_resizeImage
 extension UIImage {
     class func HA_resizeImage(image: UIImage!) -> UIImage {
-        let rect = CGRect(x: 0, y: 0, width: 100, height: 100)
+        
+        let rect = CGRect(x: 0, y: 0, width: image.size.width * 0.06, height: image.size.height * 0.06)
         UIGraphicsBeginImageContext(rect.size)
         image.draw(in: rect)
         let picture1 = UIGraphicsGetImageFromCurrentImageContext()

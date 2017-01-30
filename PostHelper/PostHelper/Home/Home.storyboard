@@ -148,13 +148,13 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9jc-5Z-9qR" userLabel="contentView">
                                         <rect key="frame" x="0.0" y="0.0" width="400" height="128"/>
-                                        <color key="backgroundColor" red="0.93432844479999999" green="1" blue="0.090557705860000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="400" id="mkh-mq-oyq"/>
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" white="0.25" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="7hl-vF-Uhx"/>
                                     <constraint firstItem="9jc-5Z-9qR" firstAttribute="centerY" secondItem="nO5-vu-df5" secondAttribute="centerY" id="DQU-9B-nMM"/>
