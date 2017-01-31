@@ -81,23 +81,32 @@ class HAPostVC: UIViewController {
         }
 
         
-        imagePickerManager.HnA_selectedAVAssets = { (HnA_DKAssetArray) in
+        imagePickerManager.HnA_selectedAVAssets = { (combinedArray) in
 
-            if HnA_DKAssetArray.count == 0 {
-                self.imageScrollView.isHidden = false
+            print("DONE \(combinedArray)")
+            //HnA_DKAssetArray 当前选择的
+            //combinedArray image+video一共选择的
+            if combinedArray.count == 0 {
+                self.imageScrollView.isHidden = true
                 self.textView.becomeFirstResponder()
                 return
             }
             
             self.avAssetsForDisplay.removeAll()
             self.avAssetsForSend.removeAll()
+
+            for imageView in self.contentView.subviews {
+                imageView.removeFromSuperview()
+            }
             
-            self.avAssetsForSend.append(contentsOf: HnA_DKAssetArray)
+//            self.avAssetsForSend.append(contentsOf: HnA_DKAssetArray)
+            self.avAssetsForSend.append(contentsOf: combinedArray)
+
             print(self.avAssetsForSend.count)
             
             let serialQueue2 = DispatchQueue(label: "serialQ2ForAVSelection")
             
-            for asset in HnA_DKAssetArray.enumerated() {
+            for asset in combinedArray.enumerated() {
                 serialQueue2.async {
                     if asset.element.isVideo == false { //image
                         asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
@@ -108,10 +117,6 @@ class HAPostVC: UIViewController {
                     } else { //video
                         asset.element.fetchAVAsset(true, options: nil, completeBlock: { (Asset, info) in
                             let avurl = Asset as! AVURLAsset
-                            
-                            //TODO判断是否压缩后的视频是否满足条件： 视频格式和尺寸
-                            
-                            
                             let videoImage = self.getVideoImage(videoURL: avurl.url)
                             let resizedImg = UIImage.HA_resizeImage(image: videoImage)
                             self.addImageAndDeleteBtn(image: resizedImg, offset: self.avAssetsForDisplay.count)
@@ -122,6 +127,7 @@ class HAPostVC: UIViewController {
             }
             self.imageScrollView.isHidden = false
             self.textView.becomeFirstResponder()
+            print("avAssetsForSend.count: \(self.avAssetsForSend.count)")
         }//end block
         
 
@@ -168,12 +174,25 @@ class HAPostVC: UIViewController {
     
     // MARK: Button - deleteBtnClick
     func deleteImageInScrollView(_ sender: UIButton) {
-        
-
+        print("deleteImageInScrollView\(sender.tag)")
         print("avAssetsForSend beforeDelete: \(self.avAssetsForSend.count)")
         print("avAssetsForSend deleteIndex: \(sender.tag)")
         self.avAssetsForSend.remove(at: sender.tag)
         self.avAssetsForDisplay.remove(at: sender.tag)
+        
+        var images = [DKAsset]()
+        var videos = [DKAsset]()
+        for asset in avAssetsForSend.enumerated() {
+            
+            if asset.element.isVideo == false {//Image
+                images.append(asset.element)
+            } else {//Video
+                videos.append(asset.element)
+            }
+        }
+        imagePickerManager.selectedImagesArray = images
+        imagePickerManager.selectedVideosArray = videos
+
         
         print("avAssetsForSend afterDelete: \(self.avAssetsForSend.count)")
         
@@ -191,6 +210,8 @@ class HAPostVC: UIViewController {
                 self.addImageAndDeleteBtn(image: asset.element, offset: asset.offset)
             }
         }
+        
+        print("+++++++&&&&&&&&&&+++++++ \(self.avAssetsForSend.count) ---> \(self.avAssetsForSend)")
         
     }
     

@@ -57,23 +57,20 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 
         print("HALoginVC viewDidLoad: \(platforms)")
         
-        if HALoginVC.hasAccessToFacebook() == false {
+        if HALoginVC.hasAccessToFacebook() == false && HALoginVC.hasAccessToTwitter() == false{
             addFBAccountBtn.isEnabled = true
             FBDisconnectBtn.isEnabled = false
-            readyBtn.isEnabled = false
-        } else {
-            addFBAccountBtn.isEnabled = false
-            FBDisconnectBtn.isEnabled = true
-            readyBtn.isEnabled = true
-        }
-        
-        if HALoginVC.hasAccessToTwitter() == false {
             addTWAccountBtn.isEnabled = true
             TWDisconnectBtn.isEnabled = false
+
             readyBtn.isEnabled = false
         } else {
-            addTWAccountBtn.isEnabled = false
-            TWDisconnectBtn.isEnabled = true
+
+            HALoginVC.hasAccessToFacebook() == true ?  (addFBAccountBtn.isEnabled = false) : (addFBAccountBtn.isEnabled = true)
+//            addFBAccountBtn.isEnabled = HALoginVC.hasAccessToFacebook() == true ? false : true
+            FBDisconnectBtn.isEnabled = HALoginVC.hasAccessToFacebook() == true ? true : false
+            addTWAccountBtn.isEnabled = HALoginVC.hasAccessToTwitter() == true ? false : true
+            TWDisconnectBtn.isEnabled = HALoginVC.hasAccessToTwitter() == true ? true : false
             readyBtn.isEnabled = true
         }
         
