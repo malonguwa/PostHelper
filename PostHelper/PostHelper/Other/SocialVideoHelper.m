@@ -2,7 +2,7 @@
 //  SocialVideoHelper.m
 //
 //  Originally Created by ryu-ushin on 6/5/15.
-//  Updated by LongMA and YuSong on 29/1/17.
+//  Updated async upload methods by LongMA and YuSong on 29/1/17.
 //  Copyright (c) 2015 ryu-ushin. All rights reserved.
 //
 

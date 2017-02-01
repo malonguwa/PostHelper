@@ -8,6 +8,6 @@
 
 import UIKit
 
-class HAWechatManager: NSObject {
+class HAWechatManager: HASocialPlatformsBaseManager {
 
 }

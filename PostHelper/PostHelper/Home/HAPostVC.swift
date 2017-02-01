@@ -84,6 +84,13 @@ class HAPostVC: UIViewController {
         imagePickerManager.HnA_selectedAVAssets = { (combinedArray) in
 
             print("DONE \(combinedArray)")
+            
+            if combinedArray.count > 0 {
+                self.sendBtn.isEnabled = true
+            } else if combinedArray.count == 0 && self.textView.text.lengthOfBytes(using: .utf8) == 0{
+                self.sendBtn.isEnabled = false
+            }
+            
             //HnA_DKAssetArray 当前选择的
             //combinedArray image+video一共选择的
             if combinedArray.count == 0 {
@@ -173,12 +180,18 @@ class HAPostVC: UIViewController {
     }
     
     // MARK: Button - deleteBtnClick
-    func deleteImageInScrollView(_ sender: UIButton) {
-        print("deleteImageInScrollView\(sender.tag)")
+    func deleteImageInScrollView(_ sender: UIButton?) {
+        print("deleteImageInScrollView\(sender!.tag)")
         print("avAssetsForSend beforeDelete: \(self.avAssetsForSend.count)")
-        print("avAssetsForSend deleteIndex: \(sender.tag)")
-        self.avAssetsForSend.remove(at: sender.tag)
-        self.avAssetsForDisplay.remove(at: sender.tag)
+        print("avAssetsForSend deleteIndex: \(sender!.tag)")
+        self.avAssetsForSend.remove(at: sender!.tag)
+        self.avAssetsForDisplay.remove(at: sender!.tag)
+        
+        if self.avAssetsForDisplay.count > 0 {
+            self.sendBtn.isEnabled = true
+        } else if textView.text.lengthOfBytes(using: .utf8) == 0 && self.avAssetsForDisplay.count == 0{
+            self.sendBtn.isEnabled = false
+        }
         
         var images = [DKAsset]()
         var videos = [DKAsset]()
@@ -271,6 +284,7 @@ class HAPostVC: UIViewController {
             
             if platforms.count == 0 {
                 print("Non of platforms has been selected")
+                //FIXME: - Add HUD here!!
                 return
             }
             
@@ -279,6 +293,14 @@ class HAPostVC: UIViewController {
 
                 self.facebookMgr.sendGroupPhotos(images: _photos, text: self.textView.text, sendToPlatforms: array_platforms, completion: { (array_platforms) in
                     print("~~~~~~~~~~2.Facebook sendGroupPhotos DONE~~~~~~~~~~")
+                    for index in self.avAssetsForDisplay.enumerated() {
+                        let tempBtn = UIButton()
+                        tempBtn.tag = index.offset
+                        self.deleteImageInScrollView(tempBtn)
+                    }
+                    self.textView.text = ""
+                    self.placeHolderLabel.alpha = 1
+                    self.sendBtn.isEnabled = false
                 })
             })
             
@@ -410,7 +432,12 @@ class HAPostVC: UIViewController {
         
         //--------------------------------------------send text only
         if textView.text.characters.count != 0 && avAssetsForSend.count == 0{
-            FB_SendTextOnly(text: textView.text)
+            twitterMgr.sendTweetWithTextOnly(text: textView.text, sendToPlatforms: platforms, completion: { (array_platforms) in
+                self.facebookMgr.sendTextOnly(text: self.textView.text, sendToPlatforms: platforms, completion: { (array_platforms) in
+                    self.textView.text = ""
+                    self.placeHolderLabel.alpha = 1
+                })
+            })
         }
         
         
@@ -437,6 +464,7 @@ class HAPostVC: UIViewController {
             
             if platforms.count == 0 {
                 print("Non of platforms has been selected")
+                //FIXME: - Add HUD here!!
                 return
             }
             
@@ -444,8 +472,20 @@ class HAPostVC: UIViewController {
             print(videosForSend.count)
             
             twitterMgr.sendTweetWithTextandVideos(avAssetsForSend: videosForSend, text: textView.text, sendToPlatforms: platforms,  completion: { (array_platforms) in
-//                self.facebookMgr.FB_SendResumableVideoOnly(avAssetsForSend: videosForSend, text: self.textView.text, sendToPlatforms: array_platforms, completion: { (array_platforms) in })
-                self.facebookMgr.FB_SendVideoOnly(avAssetsForSend: videosForSend, text: self.textView.text, sendToPlatforms: array_platforms,  completion:{ (array_platforms) in })
+                
+                self.facebookMgr.FB_SendVideoOnly(avAssetsForSend: videosForSend, text: self.textView.text, sendToPlatforms: array_platforms,  completion:{ (array_platforms) in
+                    self.textView.text = ""
+                    self.placeHolderLabel.alpha = 1
+                    for imageView in self.contentView.subviews {
+                        imageView.removeFromSuperview()
+                    }
+                    self.avAssetsForDisplay.removeAll()
+                    self.avAssetsForSend.removeAll()
+                    self.imagePickerManager.selectedImagesArray.removeAll()
+                    self.imagePickerManager.selectedVideosArray.removeAll()
+                    self.imageScrollView.isHidden = true
+                    self.sendBtn.isEnabled = false
+                })
             })
         }
     }
@@ -635,7 +675,7 @@ extension HAPostVC: UITextViewDelegate {
             sendBtn.isEnabled = true
             self.placeHolderLabel.alpha = 0
             
-        } else {
+        } else if avAssetsForDisplay.count == 0 && textView.text.lengthOfBytes(using: .utf8) == 0{
             sendBtn.isEnabled = false
             self.placeHolderLabel.alpha = 1
         }

@@ -97,7 +97,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SNE-yg-4OF">
                                 <rect key="frame" x="0.0" y="579" width="375" height="44"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UHK-Yq-BZl">
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UHK-Yq-BZl">
                                         <rect key="frame" x="331" y="7" width="36" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="36" id="IHe-wI-jhG"/>

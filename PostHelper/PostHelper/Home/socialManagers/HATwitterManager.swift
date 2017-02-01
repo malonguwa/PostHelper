@@ -11,25 +11,79 @@ import TwitterKit
 import DKImagePickerController
 
 
-class HATwitterManager: NSObject {
+class HATwitterManager: HASocialPlatformsBaseManager {
     let uploadURL = "https://upload.twitter.com/1.1/media/upload.json"
     let statusURL = "https://api.twitter.com/1.1/statuses/update.json"
     
-    /// MARK: TweetWithTextandImages
-    func sendTweetWithTextandImages(images: [UIImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
-        
-//        guard let sendOrNot = sendToPlatforms else {
-//            print("None platforms are selected")
-//            return
-//        }
+    func sendTweetWithTextOnly(text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?){
         
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
             } else {
-//                var array_platforms = [SocialPlatform]()
-//                array_platforms.append(contentsOf: sendToPlatforms)
-//                array_platforms.remove(at: 0)
+                completion!(sendToPlatforms)
+                return
+            }
+        }
+
+        
+        let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
+        let client = TWTRAPIClient(userID: HATW_userID!)
+        var urlError : NSError? = nil
+        let params = [
+            "status" : text!,
+            ] as [String : Any]
+        let request = client.urlRequest(withMethod: "POST", url: "https://api.twitter.com/1.1/statuses/update.json", parameters: params, error: &urlError)
+        
+        if urlError !== nil {
+//            assert(false, "\(urlError)")
+            //FIXME: 失败也要继续往下一个平台发
+
+            print("something wrong in Twitter, continue to the next platform: \(platforms)")
+            goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+            
+            
+
+            return
+        }
+        client.sendTwitterRequest(request, completion: { (response, data, error) in
+            
+            guard let httpResponse = response as? HTTPURLResponse else{
+                print("\(response)\n\n\(data)\n\n\(error)")
+                //FIXME: 失败也要继续往下一个平台发
+                print("after send success in Twitter: \(platforms)")
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+
+                return
+            }
+            if httpResponse.statusCode == 200 {
+                print("Tweet sucessfully")
+
+                
+                print("after send success in Twitter: \(platforms)")
+                
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+            } else {
+                print("\(response)\n\n\(data)\n\n\(error)")
+                //FIXME: 失败也要继续往下一个平台发
+                
+                print("something wrong in Twitter, continue to the next platform: \(platforms)")
+                
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+            }
+        })
+
+
+    }
+    
+    
+    /// MARK: TweetWithTextandImages
+    func sendTweetWithTextandImages(images: [UIImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+        
+        for platform in sendToPlatforms {
+            if platform == .HATwitter {
+                break
+            } else {
                 completion!(sendToPlatforms)
                 return
             }
@@ -42,25 +96,34 @@ class HATwitterManager: NSObject {
         let client = TWTRAPIClient(userID: HATW_userID!)
         
         for image in images.enumerated() {
-            queue.async {//将任务代码块加入异步串行队列queue中
-                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                let imgData = UIImageJPEGRepresentation(image.element, 0.6)
-                
-                if imgData == nil {
-                    print("twitter: -> image data error")
-                } else {
-                    client.uploadMedia(imgData!, contentType: "image/jpeg", completion: { (mediaID, error) in
-                        if error != nil {
-                            print("\(image.offset): error uploading media to Twitter \(error)")
-                        } else {
-                            mediaIDs.append(mediaID!)
-                            print(mediaIDs)
-                        }
-                        semaphore.signal()//当满足条件时，向队列发送信号
-                    })
-                    semaphore.wait()//阻塞并等待信号
-                }
+            
+            if image.offset <= 3 {
+                queue.async {//将任务代码块加入异步串行队列queue中
+                    let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                    let imgData = UIImageJPEGRepresentation(image.element, 0.6)
+                    
+                    if imgData == nil {
+                        print("twitter: -> image data error")
+                    } else {
+                        client.uploadMedia(imgData!, contentType: "image/jpeg", completion: { (mediaID, error) in
+                            if error != nil {
+                                //FIXME: here to know which twitter image upload faliure
+                                print("\(image.offset): error uploading media to Twitter \(error)")
+                            } else {
+                                mediaIDs.append(mediaID!)
+                                print(mediaIDs)
+                            }
+                            semaphore.signal()//当满足条件时，向队列发送信号
+                        })
+                        semaphore.wait()//阻塞并等待信号
+                    }
+                }//END Queue
+            }//END if
+            else {
+                print("image.offset == \(image.offset)") //5
+                break
             }
+            
         }//END for
         
         queue.async {
@@ -87,28 +150,35 @@ class HATwitterManager: NSObject {
             let request = client.urlRequest(withMethod: "POST", url: "https://api.twitter.com/1.1/statuses/update.json", parameters: params, error: &urlError)
             
             if urlError !== nil {
-                assert(false, "\(urlError)")
+//                assert(false, "\(urlError)")
+                //FIXME: 失败也要继续往下一个平台发
+                print("136 line - urlError != nil")
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+
                 return
             }
             client.sendTwitterRequest(request, completion: { (response, data, error) in
                 
                 guard let httpResponse = response as? HTTPURLResponse else{
-                    print("\(response)\n\n\(data)\n\n\(error)")
+                    print("144 line - response == nil")
+                    print("144 line - \(response)\n\n\(data)\n\n\(error)")
+                    //FIXME: 失败也要继续往下一个平台发
+                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+
                     return
                 }
                 if httpResponse.statusCode == 200 {
-                    print("Tweet sucessfully")
+                    print("154 line - Tweet sucessfully")
+                    //FIXME: 失败也要继续往下一个平台发
+                    print("154 line - httpResponse.statusCode == 200")
+                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
                     
-                    var array_platforms = [SocialPlatform]()
-                    array_platforms.append(contentsOf: sendToPlatforms)
-                    array_platforms.remove(at: 0)
-                    print("array_platforms: \(array_platforms)")
-                    
-                    print("after send success in Twitter: \(platforms)")
-                    
-                    completion!(array_platforms)
                 } else {
-                    print("\(response)\n\n\(data)\n\n\(error)")
+                    //FIXME: 失败也要继续往下一个平台发
+                    print("159 line - else")
+                    print("159 line - \(response)\n\n\(data)\n\n\(error)")
+                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+
                 }
             })
             
@@ -124,10 +194,7 @@ class HATwitterManager: NSObject {
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
-            } else {
-                //                var array_platforms = [SocialPlatform]()
-                //                array_platforms.append(contentsOf: sendToPlatforms)
-                //                array_platforms.remove(at: 0)
+            } else {// has to be HAFacebook
                 completion!(sendToPlatforms)
                 return
             }
@@ -150,7 +217,6 @@ class HATwitterManager: NSObject {
         for asset in avAssetsForSend.enumerated() {
             queue.async {//将任务代码块加入异步串行队列queue中
                 let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-//                asset.element.fetchAVAsset(PHVideoRequestOptions, completeBlock: <#T##(AVAsset?, [AnyHashable : Any]?) -> Void#>)
                 asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
                     let avurl = av as! AVURLAsset
                     if av != nil && asset.element.isVideo == true{
@@ -186,17 +252,19 @@ class HATwitterManager: NSObject {
                             print("Twitter video upload success")
                             
                             if videoData.offset == _videos.count - 1 {
-                                var array_platforms = [SocialPlatform]()
-                                array_platforms.append(contentsOf: sendToPlatforms)
-                                array_platforms.remove(at: 0)
-                                print("array_platforms: \(array_platforms)")
                                 
                                 print("after send success in Twitter: \(platforms)")
-                                
-                                completion!(array_platforms)
+                                //FIXME: 失败也要继续往下一个平台发
+                                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+
                             }
                         } else {
                             print(errorMessage!)
+                            //FIXME: 失败也要继续往下一个平台发
+                            if videoData.offset == _videos.count - 1 {
+                                
+                                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                            }
                         }
                         semaphore2.signal()
                     })

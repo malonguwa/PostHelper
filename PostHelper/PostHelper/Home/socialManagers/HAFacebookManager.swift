@@ -12,7 +12,7 @@ import FacebookShare
 import DKImagePickerController
 import AVFoundation
 
-class HAFacebookManager: NSObject {
+class HAFacebookManager: HASocialPlatformsBaseManager {
     
     var HAFaceebook_albumID : String?
     var photoIDs = [String]()
@@ -89,8 +89,27 @@ class HAFacebookManager: NSObject {
 
     }
 */
+    // MARK: FB - Send Text Only
+    func sendTextOnly(text : String!, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+        
+        for platform in sendToPlatforms {
+            if platform == .HAFacebook {
+                break
+            } else {
+                completion!(sendToPlatforms)
+                return
+            }
+        }
+
+        
+        GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
+            //text send completely
+            print("text send completely + \(response)\n\(requestResult)\n")
+            self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+        }
+    }
     
-    // MARK: Send Photos
+    // MARK: Send Photos and Text
     func sendGroupPhotos(images: [UIImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
         print("HAFacebook : \(sendToPlatforms)")
         
@@ -115,8 +134,6 @@ class HAFacebookManager: NSObject {
         let connection = GraphRequestConnection()
         
         var dic = Dictionary<String,String>()
-        dic.updateValue(text!, forKey: "message")
-        
         for image in images.enumerated() {
             
             let imageData = UIImageJPEGRepresentation(image.element, 0.6)
@@ -134,6 +151,7 @@ class HAFacebookManager: NSObject {
             // self.HAFaceebook_albumID不使用了，因为FB会自动创建一个叫timeline的相册，改为me/photos
             let request = GraphRequest(graphPath: "me/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
 
+//            request.start(<#T##completion: (HTTPURLResponse?, GraphRequestResult<GraphRequest>) -> Void?##(HTTPURLResponse?, GraphRequestResult<GraphRequest>) -> Void?##(HTTPURLResponse?, GraphRequestResult<GraphRequest>) -> Void#>)
             connection.add(request, batchParameters: ["name" : "\(image.offset)"], completion: { (HTTPURLResponse, GraphRequestResult) in
                 print("request \(image.offset) + \(GraphRequestResult)")
                 switch GraphRequestResult {
@@ -143,6 +161,7 @@ class HAFacebookManager: NSObject {
                     break
                     
                 case .success(let graphResponse):
+                    print(" $$$$$$$$$$$+++++++++++ image.offset: \(image.offset) facebook .success ++++++++++")
                     if graphResponse.dictionaryValue != nil {
                         let responseDictionary = graphResponse.dictionaryValue!
                         
@@ -158,6 +177,8 @@ class HAFacebookManager: NSObject {
                                 dic.updateValue(value, forKey: "attached_media[\(photoID.offset)]")
 //                                print("\(dic)")
                             }
+                            dic.updateValue(text!, forKey: "message")
+
 //                            dic.updateValue("{\"media_fbid\":\"156826574799880\"}", forKey: "attached_media[\(1)]")
 //                            print("dic: \(dic)")
                             let publsishedPhotosRequest = GraphRequest(graphPath: "me/feed", parameters: dic, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
@@ -165,14 +186,18 @@ class HAFacebookManager: NSObject {
                                 switch GraphRequestResult {
                                 case .failed(let error):
                                     print(error)
+                                    //FIXME: 失败也要继续往下一个平台发
+                                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+
                                     break
                                 case .success(let response):
                                     self.photoIDs.removeAll()
-                                    var array_platforms = [SocialPlatform]()
-                                    array_platforms.append(contentsOf: sendToPlatforms)
-                                    array_platforms.remove(at: 0)
+
                                     print("Final response - : \(response)")
-                                    completion!(array_platforms)
+
+                                    //FIXME: 成功也要继续往下一个平台发
+                                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+
                                 }
                             })
                         }
