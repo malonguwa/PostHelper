@@ -24,7 +24,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="148"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="X38-aI-usX" id="0xs-Xt-dCk">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="148"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="147"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lvd-l8-ZNC">
@@ -56,7 +56,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                         <rect key="frame" x="0.0" y="204" width="375" height="159"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Md-qq-rZK" id="JJf-kb-NlD">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="159"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="158"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -86,7 +86,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="UZu-DB-l0Q">
-                                <rect key="frame" x="0.0" y="50" width="375" height="200"/>
+                                <rect key="frame" x="0.0" y="30" width="375" height="200"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="eQo-zc-axd"/>
@@ -133,7 +133,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please type in here" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wDc-al-4br">
-                                <rect key="frame" x="6" y="57" width="200" height="21"/>
+                                <rect key="frame" x="20" y="37" width="200" height="21"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="RSz-af-djh"/>
@@ -144,7 +144,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                 <nil key="highlightedColor"/>
                             </label>
                             <scrollView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nO5-vu-df5">
-                                <rect key="frame" x="0.0" y="160" width="375" height="128"/>
+                                <rect key="frame" x="0.0" y="140" width="375" height="128"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9jc-5Z-9qR" userLabel="contentView">
                                         <rect key="frame" x="0.0" y="0.0" width="400" height="128"/>
@@ -176,7 +176,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ri5-q7-8Ek">
-                                <rect key="frame" x="329" y="20" width="46" height="30"/>
+                                <rect key="frame" x="329" y="0.0" width="46" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="KeR-n9-Ctf"/>
                                     <constraint firstAttribute="width" constant="46" id="Yjf-Lo-mQA"/>
@@ -190,7 +190,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                         <color key="backgroundColor" white="0.8657366071" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="SNE-yg-4OF" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" id="0G8-6B-GbD"/>
-                            <constraint firstItem="wDc-al-4br" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" constant="6" id="2Xf-Kw-knb"/>
+                            <constraint firstItem="wDc-al-4br" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" constant="20" id="2Xf-Kw-knb"/>
                             <constraint firstItem="wDc-al-4br" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" constant="37" id="4Dh-6Y-XCe"/>
                             <constraint firstAttribute="trailing" secondItem="nO5-vu-df5" secondAttribute="trailing" id="8kd-4j-5ce"/>
                             <constraint firstItem="UZu-DB-l0Q" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" constant="30" id="98J-6Y-OMj"/>
@@ -207,6 +207,7 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                         </constraints>
                     </view>
                     <toolbarItems/>
+                    <nil key="simulatedStatusBarMetrics"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="contentView" destination="9jc-5Z-9qR" id="ZcH-nV-lE5"/>

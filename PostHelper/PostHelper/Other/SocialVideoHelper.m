@@ -158,9 +158,10 @@
             
             NSString *mediaID = [NSString stringWithFormat:@"%@", [returnedData valueForKey:@"media_id_string"]];
             
+            NSLog(@"stage one success, mediaID -> %@", mediaID);
+            
             [SocialVideoHelper tweetVideoStage2:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
             
-            NSLog(@"stage one success, mediaID -> %@", mediaID);
         }
     }];
 }
@@ -215,6 +216,9 @@
                 if (error) {
                     NSLog(@"Twitter Error stage 2 - final, error - %@", error);
                 } else {
+                    
+                    NSLog(@"stage two success, mediaID -> %@", mediaID);
+
                     [SocialVideoHelper tweetVideoStage3:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
                 }
             }];
@@ -239,6 +243,8 @@
             NSLog(@"Twitter Error stage 3 - %@", error);
             [SocialVideoHelper uploadError:error withCompletion:completion];
         } else {
+            NSLog(@"stage three success, mediaID -> %@", mediaID);
+
             [SocialVideoHelper tweetVideoStage4:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
         }
     }];
@@ -288,6 +294,7 @@
                     NSLog(@"tweetVideoStage4 return state : failed");
                     return; //TODO HUD
                 } else if ([state  isEqual: @"succeeded"]) {
+                    NSLog(@"stage four success, mediaID -> %@", mediaID);
                     [SocialVideoHelper tweetVideoStage5:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
                 }
             }
@@ -326,6 +333,7 @@
             [SocialVideoHelper uploadError:error withCompletion:completion];
         } else {
             if ([urlResponse statusCode] == 200){
+                NSLog(@"stage five success, mediaID -> %@", mediaID);
                 NSLog(@"Twitter upload success !");
                 [SocialVideoHelper uploadSuccessWithCompletion:completion];
             }

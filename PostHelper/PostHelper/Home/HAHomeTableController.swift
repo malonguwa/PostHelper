@@ -20,7 +20,7 @@ class HAHomeTableController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
+        if indexPath.row == 0 && indexPath.section == 0{
             self.performSegue(withIdentifier: "homeToPost", sender: nil)
 
 //            let loginManager = LoginManager()

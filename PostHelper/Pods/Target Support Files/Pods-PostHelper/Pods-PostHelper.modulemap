@@ -1,0 +1,6 @@
+framework module Pods_PostHelper {
+  umbrella header "Pods-PostHelper-umbrella.h"
+
+  export *
+  module * { export * }
+}

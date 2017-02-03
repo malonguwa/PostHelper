@@ -10,5 +10,6 @@
 #define PostHelper_Bridging_Header_h
 
 #import "SocialVideoHelper.h"
+#import "M13ProgressViewRing.h"
 
 #endif /* PostHelper_Bridging_Header_h */

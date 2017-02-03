@@ -328,105 +328,51 @@ class HAPostVC: UIViewController {
         }
     }
     
-    
-    
-    // MARK: FB - Send Non-Resumable Video Only
-    func FB_SendVideoOnly(avAssetsForSend : [DKAsset]!, text: String?) {
-        let queue = DispatchQueue(label: "serialQForVideoUpload")// 创建了一个串行队列
-        
-        var _videos = [NSData]()
-        
-        for asset in avAssetsForSend.enumerated() {
-            queue.async {//将任务代码块加入异步串行队列queue中
-                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
-                    let avurl = av as! AVURLAsset
-                    if av != nil && asset.element.isVideo == true{
-                        
-                        let videoData = NSData(contentsOf: avurl.url)
-                        _videos.append(videoData!)
-                        print("1: \(_videos.count)")
-                        
-                        semaphore.signal()//当满足条件时，向队列发送信号
-                    }
-                })
-                semaphore.wait()//阻塞并等待信号
-            }
-        }
-        
-        queue.async { //将任务代码块加入异步串行队列queue中
-            print("2: end-for")
-            let queue2 = DispatchQueue(label: "qForVideosUploadSquence")
-            //发请求
-//            var flagForVideosUpload = 0
-            for videoData in _videos.enumerated() {
-                
-                queue2.async {
-                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                    
-                    let connection = GraphRequestConnection()
-                    let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
-                        let totalBytesSent_double = Double.init(totalBytesSent)
-                        let totalExpectedBytes_double = Double.init(totalExpectedBytes)
-                        print("Video\(videoData.offset): totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%")
-                    }
-                    
-                    let downloadFailureHandler = { (error: Error) -> () in
-                        print("\(error)")
-                    }
-                    
-                    let videoParams = [
-                        "video.mov" : videoData.element,
-                        "description" : text!,
-                        ] as [String : Any]
-                    
-                    let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-                    
-                    connection.add(videoSendRequest, batchParameters: ["omit_response_on_success" : false], completion: {(HTTPURLResponse, GraphRequestResult) in
-                        print(GraphRequestResult)
-                        semaphore2.signal()
-                    })
-                    connection.networkProgressHandler = downloadProgressHandler
-                    connection.networkFailureHandler = downloadFailureHandler
-                    
-                    connection.start()
-                    
-                    semaphore2.wait()
-                }
-                
-            }
-            
-            
-
-            
-        }
-    }
-    
     // MARK: Select Platforms Button click
     @IBAction func selectPlatformsBtnClick(_ sender: UIButton) {
         print("selectPlatformsBtnClick")
 //        sender.isSelected = !sender.isSelected
 //        platforms.removeAll()
         let sb = UIStoryboard(name: "HAPlatformSelectionController", bundle: nil)
-        guard let popoverMenuView = sb.instantiateInitialViewController() else {
+        guard let popoverMenuViewController = sb.instantiateInitialViewController() else {
             return
         }
         
-        popoverMenuView.transitioningDelegate = self
+        popoverMenuViewController.transitioningDelegate = self
         
-        popoverMenuView.modalPresentationStyle = .custom
+        popoverMenuViewController.modalPresentationStyle = .custom
         
-        present(popoverMenuView, animated: true, completion: nil)
+        present(popoverMenuViewController, animated: true, completion: nil)
         
         
     }
     
-    
-    
-    
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
+        self.textView.resignFirstResponder()
+        let sb = UIStoryboard(name: "HAUploadStatusController", bundle: nil)
+        guard let uploadStatusMenuTableViewController = sb.instantiateInitialViewController() as? UITableViewController else {
+            return
+        }
+        let tempVC = UIApplication.shared.keyWindow?.rootViewController
+        print("\( UIApplication.shared.keyWindow?.rootViewController)")
+        print("\( tempVC)")
 
+        UIApplication.shared.keyWindow?.rootViewController = uploadStatusMenuTableViewController
+        
+        
+        
+//        UIApplication.shared.keyWindow?.addSubview(uploadStatusMenuTableViewController.tableView)
+        
+//        UIApplication.shared.keyWindow?.subviews[(UIApplication.shared.keyWindow?.subviews.count)! - 1].removeFromSuperview()
+//        show(uploadStatusMenuTableViewController, sender: nil)
+        
+//        present(uploadStatusMenuTableViewController, animated: true, completion: nil)
+
+        
+        return
+        
+        
         var imagesForSend = [DKAsset]()
         var videosForSend = [DKAsset]()
         
@@ -512,155 +458,6 @@ class HAPostVC: UIViewController {
         return thumb
     }
     
-    
-    func postImagesToFB(images : [UIImage]) {
-        
-        //
-        //        var ablumID : String?
-        ////        let text = "Text along with image"
-        //        let connectionForAlum = GraphRequestConnection()
-        //        let params = [
-        //            //                "message" : text,
-        //            "name" : "MyAlbum_PostHelper"
-        //            ] as [String : Any]
-        
-        let paramsForAblumExist = [
-            "fields" : "id, name"
-            ] as [String : Any]
-        
-        
-        //fetch all exist albums as [Dict]
-        GraphRequest(graphPath: "me/albums", parameters: paramsForAblumExist, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.GET, apiVersion: GraphAPIVersion.defaultVersion).start({ (HTTPResponse, GraphRequestResult) in
-            
-            switch GraphRequestResult {
-            case .failed(let error):
-                print("postImagesToFB() + \(error)")
-                break;
-                
-            case .success(let graphResponse):
-                if graphResponse.dictionaryValue != nil {
-                    print("Ablum list + \(graphResponse.dictionaryValue!)")
-                    let responseDictionary = graphResponse.dictionaryValue!
-                    
-                    let array = responseDictionary["data"] as! [NSDictionary]
-                    
-                    var albumIsFound = false
-                    for dict in array {
-                        
-                        if dict["name"] as! String == "MyAlbum_PostHelper"{
-                            //已经有一个相册名字叫MyAlbum_PostHelper，无需创建，拿到该相册ID，直接将照片存入
-                            print(dict["name"]!)
-                            albumIsFound = true
-                            self.sendImagesToExistFBAlbum(images: images, albumID: dict["id"] as! String)
-                            break
-                            
-                        }
-                    }
-                    
-                    if albumIsFound == false {
-                        //需要创建一个相册名字为MyAlbum_PostHelper，本地化保存该相册ID，再将照片存入
-                        self.sendImagesToNewFBAlbum(images: images, albumName : "MyAlbum_PostHelper")
-                        break
-                    }
-                }
-            }
-        })
-    }
-    
-    // MARK: - sendImagesToExistFBAlbum
-    private func sendImagesToExistFBAlbum(images: [UIImage], albumID: String!){
-        print("exist - \(albumID)")
-        
-        
-        self.postHelperAblumID = albumID!
-        
-        let connection = GraphRequestConnection()
-        for image in images {
-            
-            let imageData = UIImageJPEGRepresentation(image, 90)
-            
-            //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
-            let params = [
-                //                "message" : text,
-                "source" : imageData!
-                ] as [String : Any]
-            
-            
-            let request = GraphRequest(graphPath: "\(self.postHelperAblumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-            
-            connection.add(request, batchEntryName: nil, completion: { (response, result) in
-                //                            print(response!)
-                print("existAblums + \(result)")
-                
-            })
-            
-        }
-        
-        connection.start()
-        
-    }
-    
-    // MARK: - sendImagesToNewFBAlbum
-    private func sendImagesToNewFBAlbum(images: [UIImage], albumName: String!){
-        //        let connectionForAlum = GraphRequestConnection()
-        let params = [
-            //                "message" : text,
-            "name" : albumName!
-            ] as [String : Any]
-        
-        let requestCreateAlbum = GraphRequest(graphPath: "me/albums", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-        
-        requestCreateAlbum.start { (response, result) in
-            print("1-newAlbum + \(result)")
-            switch result {
-            case .failed(let error):
-                // Handle the result's error
-                print(error)
-                break
-                
-            case .success(let graphResponse):
-                if graphResponse.dictionaryValue != nil {
-                    // Do something with your responseDictionary
-                    let responseDictionary = graphResponse.dictionaryValue!
-                    let connection = GraphRequestConnection()
-                    
-                    let albumID = (responseDictionary["id"] as! String)
-                    
-                    //                    print("\(albumID)")
-                    //                    print("dict : \(responseDictionary) \n")
-                    self.postHelperAblumID = albumID
-                    print(self.postHelperAblumID!)
-                    for image in images {
-                        
-                        let imageData = UIImageJPEGRepresentation(image, 90)
-                        
-                        //        let params = NSMutableDictionary.init(objects: [text, imageData!], forKeys: ["message" as NSCopying, "source" as NSCopying])
-                        let params = [
-                            //                "message" : text,
-                            "source" : imageData!
-                            ] as [String : Any]
-                        
-                        
-                        let request = GraphRequest(graphPath: "\(self.postHelperAblumID!)/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-                        
-                        connection.add(request, batchEntryName: nil, completion: { (response, result) in
-                            //                            print(response!)
-                            print("existAblums + \(result)")
-                            
-                        })
-                        
-                    }
-                    
-                    connection.start()
-                }
-                
-            }
-        }
-        
-    }
-    
-    
-    
     deinit {
         NotificationCenter.default.removeObserver(self)
         textView.resignFirstResponder()
@@ -670,10 +467,11 @@ class HAPostVC: UIViewController {
 // MARK: UITextViewDelegate
 extension HAPostVC: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        print("\(textView.text.characters.count)")
+//        print("\(textView.text.characters.count)")
+        textView.becomeFirstResponder()
         if textView.text.lengthOfBytes(using: .utf8) > 0{
             sendBtn.isEnabled = true
-            self.placeHolderLabel.alpha = 0
+            self.placeHolderLabel.isHidden = true
             
         } else if avAssetsForDisplay.count == 0 && textView.text.lengthOfBytes(using: .utf8) == 0{
             sendBtn.isEnabled = false

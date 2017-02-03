@@ -25,9 +25,14 @@
 		3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */; };
 		3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */; };
 		3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */; };
+		3DA7C0631E44ACC900E4C678 /* star6.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DA7C0621E44ACC900E4C678 /* star6.png */; };
 		3DA8AA7D1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA8AA7C1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift */; };
 		3DB307221DDB2B0E00CFBFC6 /* PostHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */; };
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
+		3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A61E446FC60089C64F /* M13ProgressView.m */; };
+		3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A81E446FC60089C64F /* M13ProgressViewRing.m */; };
+		3DE0E4AD1E4470BC0089C64F /* HAUploadStatusController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DE0E4AC1E4470BC0089C64F /* HAUploadStatusController.storyboard */; };
+		3DE0E4AF1E447A230089C64F /* HAUploadStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4AE1E447A230089C64F /* HAUploadStatusController.swift */; };
 		3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +72,7 @@
 		3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAHomeTableController.swift; sourceTree = "<group>"; };
 		3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAImagePickerManager.swift; sourceTree = "<group>"; };
 		3D9809481DE6CCD800BB4FEF /* ImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DA7C0621E44ACC900E4C678 /* star6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star6.png; sourceTree = "<group>"; };
 		3DA8AA7C1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASocialPlatformsBaseManager.swift; sourceTree = "<group>"; };
 		3DB307091DDB2B0E00CFBFC6 /* PostHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PostHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB3071D1DDB2B0E00CFBFC6 /* PostHelperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +81,12 @@
 		3DB307281DDB2B0E00CFBFC6 /* PostHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperUITests.swift; sourceTree = "<group>"; };
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DE0E4A51E446FC60089C64F /* M13ProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressView.h; sourceTree = "<group>"; };
+		3DE0E4A61E446FC60089C64F /* M13ProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressView.m; sourceTree = "<group>"; };
+		3DE0E4A71E446FC60089C64F /* M13ProgressViewRing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressViewRing.h; sourceTree = "<group>"; };
+		3DE0E4A81E446FC60089C64F /* M13ProgressViewRing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressViewRing.m; sourceTree = "<group>"; };
+		3DE0E4AC1E4470BC0089C64F /* HAUploadStatusController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAUploadStatusController.storyboard; sourceTree = "<group>"; };
+		3DE0E4AE1E447A230089C64F /* HAUploadStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAUploadStatusController.swift; sourceTree = "<group>"; };
 		3DF5471A1E2CB16400A5FF27 /* SocialVideoHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialVideoHelper.h; sourceTree = "<group>"; };
 		3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialVideoHelper.m; sourceTree = "<group>"; };
 		3DF5471D1E2CB1A600A5FF27 /* PostHelper-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PostHelper-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -143,6 +155,7 @@
 				3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */,
 				3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */,
 				3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */,
+				3DE0E4AB1E44708D0089C64F /* uploadStatusMenu */,
 				3D7FA2521E2FC22400876FDB /* socialManagers */,
 				3D7FA24B1E2FC20E00876FDB /* popOverMenu */,
 			);
@@ -220,9 +233,23 @@
 			path = PostHelperUITests;
 			sourceTree = "<group>";
 		};
+		3DE0E4AB1E44708D0089C64F /* uploadStatusMenu */ = {
+			isa = PBXGroup;
+			children = (
+				3DE0E4AC1E4470BC0089C64F /* HAUploadStatusController.storyboard */,
+				3DE0E4AE1E447A230089C64F /* HAUploadStatusController.swift */,
+			);
+			path = uploadStatusMenu;
+			sourceTree = "<group>";
+		};
 		3DF547121E2CAD4A00A5FF27 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				3DA7C0621E44ACC900E4C678 /* star6.png */,
+				3DE0E4A51E446FC60089C64F /* M13ProgressView.h */,
+				3DE0E4A61E446FC60089C64F /* M13ProgressView.m */,
+				3DE0E4A71E446FC60089C64F /* M13ProgressViewRing.h */,
+				3DE0E4A81E446FC60089C64F /* M13ProgressViewRing.m */,
 				3DF5471A1E2CB16400A5FF27 /* SocialVideoHelper.h */,
 				3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */,
 				3DF5471D1E2CB1A600A5FF27 /* PostHelper-Bridging-Header.h */,
@@ -360,6 +387,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DE0E4AD1E4470BC0089C64F /* HAUploadStatusController.storyboard in Resources */,
+				3DA7C0631E44ACC900E4C678 /* star6.png in Resources */,
 				3D65CDE31DDC446C00073AB4 /* HALogin.storyboard in Resources */,
 				3D65CDE41DDC446C00073AB4 /* HALoginVC.swift in Resources */,
 				3D65CDE61DDC446C00073AB4 /* LaunchScreen.storyboard in Resources */,
@@ -452,10 +481,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */,
 				3D7FA2581E2FC22400876FDB /* HAWechatManager.swift in Sources */,
 				3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */,
 				3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */,
+				3DE0E4AF1E447A230089C64F /* HAUploadStatusController.swift in Sources */,
 				3DA8AA7D1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift in Sources */,
+				3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */,
 				3D7FA2511E2FC20E00876FDB /* HAPresentationController.swift in Sources */,
 				3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */,
 				3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */,
@@ -522,7 +554,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
