@@ -16,6 +16,8 @@ class HAUploadStatusController: UITableViewController {
     @IBOutlet weak var FBVideoUploadView: UIView!
     
     var ringforFBphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
+    var ringforFBvideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
+
     var HAPostVC : HAPostVC?
     
     
@@ -64,18 +66,19 @@ class HAUploadStatusController: UITableViewController {
                 FBVideoUploadView.isHidden = !sendVideo
 
                 if sendPhoto == true {
+                    ringforFBphoto.showPercentage = false
+                    ringforFBphoto.indeterminate = true
                     
 //                    let ringforFBphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: TWPhotoUploadView.frame.size.width, height:FBPhotoUploadView.frame.size.height))
-                    ringforFBphoto.indeterminate = true
                     FBPhotoUploadView.addSubview(ringforFBphoto)
                     print("self.ringforFBphoto: \(self.ringforFBphoto)")
 
                 }
                 
                 if sendVideo == true {
-                    let ringforFBVideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: TWVideoUploadView.frame.size.width, height:FBVideoUploadView.frame.size.height))
-                    ringforFBVideo.indeterminate = true
-                    FBVideoUploadView.addSubview(ringforFBVideo)
+//                    let ringforFBVideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: TWVideoUploadView.frame.size.width, height:FBVideoUploadView.frame.size.height))
+                    ringforFBvideo.indeterminate = true
+                    FBVideoUploadView.addSubview(ringforFBvideo)
                 }
             } else {
                 tableView.cellForRow(at: IndexPath.init(row: 1, section: 0))?.isHidden = true
@@ -83,16 +86,40 @@ class HAUploadStatusController: UITableViewController {
 
         }
     
-        HAPostVC?.facebookMgr.updateUploadStatus = {(percentage, success)->() in
-            print("self.ringforFBphoto: \(self.ringforFBphoto)")
+        HAPostVC?.facebookMgr.PhotoUpdateUploadStatus = {(percentage, status)->() in
+//            print("self.ringforFBphoto: \(self.ringforFBphoto)")
+//            print("updateUploadStatus closure")
             self.ringforFBphoto.indeterminate = false
-            if success == true {
-                self.ringforFBphoto.perform(M13ProgressViewActionSuccess, animated: true)
-            } else {
-                self.ringforFBphoto.setProgress(CGFloat(Double(percentage)!)*0.01, animated: true)
-            }
 
+            if status == uploadStatus.Success {
+                self.ringforFBphoto.perform(M13ProgressViewActionSuccess, animated: true)
+
+            } else if status == uploadStatus.Failure{
+                self.ringforFBphoto.perform(M13ProgressViewActionFailure, animated: true)
+
+            } else if status == uploadStatus.Uploading{
+                print("Photo Uploading.........")
+                self.ringforFBphoto.setProgress(percentage*0.01, animated: true)
+
+            }
+        }
+        
+        HAPostVC?.facebookMgr.VideoUpdateUploadStatus = {(percentage, status)->() in
+            //            print("self.ringforFBphoto: \(self.ringforFBphoto)")
+//            print("updateUploadStatus closure")
+            self.ringforFBvideo.indeterminate = false
             
+            if status == uploadStatus.Success {
+                self.ringforFBvideo.perform(M13ProgressViewActionSuccess, animated: true)
+                
+            } else if status == uploadStatus.Failure{
+                self.ringforFBvideo.perform(M13ProgressViewActionFailure, animated: true)
+                
+            } else if status == uploadStatus.Uploading{
+                print("Video Uploading.........")
+                self.ringforFBvideo.setProgress(percentage*0.01, animated: true)
+                
+            }
         }
     }
     

@@ -8,10 +8,18 @@
 
 import Foundation
 
+enum uploadStatus {
+    case Success
+    case Failure
+    case Uploading
+}
+
+
 class HASocialPlatformsBaseManager: NSObject {
     
-    var updateUploadStatus : ((_ percentage: String, _ success: Bool) -> ())?
-    
+    var PhotoUpdateUploadStatus : ((_ percentage: CGFloat, _ status: uploadStatus) -> ())?
+    var VideoUpdateUploadStatus : ((_ percentage: CGFloat, _ status: uploadStatus) -> ())?
+
     func goToNextPlatform(sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
         var array_platforms = [SocialPlatform]()
         array_platforms.append(contentsOf: sendToPlatforms)

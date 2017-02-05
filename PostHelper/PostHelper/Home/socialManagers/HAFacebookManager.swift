@@ -17,6 +17,8 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
     var HAFaceebook_albumID : String?
     var photoIDs = [String]()
     var FBimageSendPercentage : String?
+    var FBvideoSendPercentage : String?
+
     /**
     // MARK: Find Album
     func findAlbum(images : [UIImage]) {
@@ -186,6 +188,10 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                                 switch GraphRequestResult {
                                 case .failed(let error):
                                     print(error)
+                                    if self.PhotoUpdateUploadStatus != nil {
+                                        self.PhotoUpdateUploadStatus!(CGFloat(Double(self.FBimageSendPercentage!)!), uploadStatus.Failure)
+                                    }
+
                                     //FIXME: 失败也要继续往下一个平台发
                                     self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
 
@@ -195,8 +201,8 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
 
                                     print("Final response - : \(response)")
 
-                                    if self.updateUploadStatus != nil {
-                                        self.updateUploadStatus!(self.FBimageSendPercentage!, true)
+                                    if self.PhotoUpdateUploadStatus != nil {
+                                        self.PhotoUpdateUploadStatus!(100.00, uploadStatus.Success)
                                     }
 
                                     //FIXME: 成功也要继续往下一个平台发
@@ -237,8 +243,8 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             let totalExpectedBytes_double = Double.init(totalExpectedBytes)
             print("Image: totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%\n")
             self.FBimageSendPercentage = String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100)
-            if self.updateUploadStatus != nil {
-                self.updateUploadStatus!(self.FBimageSendPercentage!, false)
+            if self.PhotoUpdateUploadStatus != nil {
+                self.PhotoUpdateUploadStatus!(CGFloat(Double(self.FBimageSendPercentage!)!), uploadStatus.Uploading)
             }
         }
     }//END func
@@ -300,7 +306,12 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                     let downloadProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
                         let totalBytesSent_double = Double.init(totalBytesSent)
                         let totalExpectedBytes_double = Double.init(totalExpectedBytes)
-                        print("Video\(videoData.offset): totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%")
+                        print("Video: totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%\n")
+                        self.FBvideoSendPercentage = String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100)
+                        print("\(CGFloat(Double(self.FBvideoSendPercentage!)!))")
+                        if self.VideoUpdateUploadStatus != nil {
+                            self.VideoUpdateUploadStatus!(CGFloat(Double(self.FBvideoSendPercentage!)!) / CGFloat(_videos.count) + (100.00 / CGFloat(_videos.count) * CGFloat(videoData.offset)), uploadStatus.Uploading)
+                        }
                     }
                     
                     let downloadFailureHandler = { (error: Error) -> () in
@@ -320,6 +331,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                         switch GraphRequestResult {
                         case .failed(let error):
                             print(error)
+                            self.VideoUpdateUploadStatus!(100.00, uploadStatus.Failure)
                             break
                         case .success(let response):
                             if videoData.offset == _videos.count - 1 {
@@ -327,7 +339,8 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                                 array_platforms.append(contentsOf: sendToPlatforms)
                                 array_platforms.remove(at: 0)
                                 print("Final response - : \(response)")
-                                completion!(array_platforms)                                
+                                completion!(array_platforms)
+                                self.VideoUpdateUploadStatus!(100.00, uploadStatus.Success)
                             }
                             
                         }
@@ -341,7 +354,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                     semaphore2.wait()
                 }
                 
-            }
+            }//end for
             
             
             
