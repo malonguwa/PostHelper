@@ -293,13 +293,25 @@ class HAPostVC: UIViewController {
 
                 self.facebookMgr.sendGroupPhotos(images: _photos, text: self.textView.text, sendToPlatforms: array_platforms, completion: { (array_platforms) in
                     print("~~~~~~~~~~2.Facebook sendGroupPhotos DONE~~~~~~~~~~")
-                    for index in self.avAssetsForDisplay.enumerated() {
-                        let tempBtn = UIButton()
-                        tempBtn.tag = index.offset
-                        self.deleteImageInScrollView(tempBtn)
-                    }
+//                    for index in self.avAssetsForDisplay.enumerated() {
+//                        let tempBtn = UIButton()
+//                        tempBtn.tag = index.offset
+//                        self.deleteImageInScrollView(tempBtn)
+//                    }
+//                    self.textView.text = ""
+//                    self.placeHolderLabel.alpha = 1
+//                    self.sendBtn.isEnabled = false
+                    
                     self.textView.text = ""
                     self.placeHolderLabel.alpha = 1
+                    for imageView in self.contentView.subviews {
+                        imageView.removeFromSuperview()
+                    }
+                    self.avAssetsForDisplay.removeAll()
+                    self.avAssetsForSend.removeAll()
+                    self.imagePickerManager.selectedImagesArray.removeAll()
+                    self.imagePickerManager.selectedVideosArray.removeAll()
+                    self.imageScrollView.isHidden = true
                     self.sendBtn.isEnabled = false
                 })
             })
@@ -350,16 +362,18 @@ class HAPostVC: UIViewController {
     // MARK: Send Button click
     @IBAction func sendBtnClick(_ sender: Any) {
         self.textView.resignFirstResponder()
+        
         let sb = UIStoryboard(name: "HAUploadStatusController", bundle: nil)
-        guard let uploadStatusMenuTableViewController = sb.instantiateInitialViewController() as? UITableViewController else {
+        guard let uploadStatusMenuTableViewController = sb.instantiateInitialViewController() as? HAUploadStatusController else {
             return
         }
+        uploadStatusMenuTableViewController.HAPostVC = self
         let tempVC = UIApplication.shared.keyWindow?.rootViewController
         print("\( UIApplication.shared.keyWindow?.rootViewController)")
         print("\( tempVC)")
 
         UIApplication.shared.keyWindow?.rootViewController = uploadStatusMenuTableViewController
-        
+
         
         
 //        UIApplication.shared.keyWindow?.addSubview(uploadStatusMenuTableViewController.tableView)
@@ -370,7 +384,7 @@ class HAPostVC: UIViewController {
 //        present(uploadStatusMenuTableViewController, animated: true, completion: nil)
 
         
-        return
+//        return
         
         
         var imagesForSend = [DKAsset]()
@@ -457,6 +471,7 @@ class HAPostVC: UIViewController {
         
         return thumb
     }
+    
     
     deinit {
         NotificationCenter.default.removeObserver(self)

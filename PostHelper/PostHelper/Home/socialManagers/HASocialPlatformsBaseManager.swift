@@ -10,6 +10,7 @@ import Foundation
 
 class HASocialPlatformsBaseManager: NSObject {
     
+    var updateUploadStatus : ((_ percentage: String, _ success: Bool) -> ())?
     
     func goToNextPlatform(sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
         var array_platforms = [SocialPlatform]()

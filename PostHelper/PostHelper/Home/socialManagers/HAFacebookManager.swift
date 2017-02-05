@@ -16,7 +16,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
     
     var HAFaceebook_albumID : String?
     var photoIDs = [String]()
-    
+    var FBimageSendPercentage : String?
     /**
     // MARK: Find Album
     func findAlbum(images : [UIImage]) {
@@ -195,6 +195,10 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
 
                                     print("Final response - : \(response)")
 
+                                    if self.updateUploadStatus != nil {
+                                        self.updateUploadStatus!(self.FBimageSendPercentage!, true)
+                                    }
+
                                     //FIXME: 成功也要继续往下一个平台发
                                     self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
 
@@ -232,8 +236,11 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             let totalBytesSent_double = Double.init(totalBytesSent)
             let totalExpectedBytes_double = Double.init(totalExpectedBytes)
             print("Image: totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%\n")
+            self.FBimageSendPercentage = String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100)
+            if self.updateUploadStatus != nil {
+                self.updateUploadStatus!(self.FBimageSendPercentage!, false)
+            }
         }
-
     }//END func
 
     
