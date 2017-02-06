@@ -17,6 +17,8 @@ class HAUploadStatusController: UITableViewController {
     
     var ringforFBphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
     var ringforFBvideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
+    var ringforTWphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
+    var ringforTWvideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
 
     var HAPostVC : HAPostVC?
     
@@ -46,15 +48,15 @@ class HAUploadStatusController: UITableViewController {
                 TWVideoUploadView.isHidden = !sendVideo
 
                 if sendPhoto == true {
-                    let ringforTWphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: TWPhotoUploadView.frame.size.width, height:TWPhotoUploadView.frame.size.height))
+//                    let ringforTWphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: TWPhotoUploadView.frame.size.width, height:TWPhotoUploadView.frame.size.height))
                     ringforTWphoto.indeterminate = true
                     TWPhotoUploadView.addSubview(ringforTWphoto)
                 }
                 
                 if sendVideo == true {
-                    let ringforTWVideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: TWVideoUploadView.frame.size.width, height:TWVideoUploadView.frame.size.height))
-                    ringforTWVideo.indeterminate = true
-                    TWVideoUploadView.addSubview(ringforTWVideo)
+//                    let ringforTWVideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: TWVideoUploadView.frame.size.width, height:TWVideoUploadView.frame.size.height))
+                    ringforTWvideo.indeterminate = true
+                    TWVideoUploadView.addSubview(ringforTWvideo)
                 }
             } else {
                 tableView.cellForRow(at: IndexPath.init(row: 0, section: 0))?.isHidden = true
@@ -90,17 +92,36 @@ class HAUploadStatusController: UITableViewController {
 //            print("self.ringforFBphoto: \(self.ringforFBphoto)")
 //            print("updateUploadStatus closure")
             self.ringforFBphoto.indeterminate = false
-
+            
             if status == uploadStatus.Success {
+                self.ringforFBphoto.setProgress(100.00, animated: true)
                 self.ringforFBphoto.perform(M13ProgressViewActionSuccess, animated: true)
 
             } else if status == uploadStatus.Failure{
                 self.ringforFBphoto.perform(M13ProgressViewActionFailure, animated: true)
 
             } else if status == uploadStatus.Uploading{
-                print("Photo Uploading.........")
+                print("FB Photo Uploading.........")
                 self.ringforFBphoto.setProgress(percentage*0.01, animated: true)
-
+            }
+        }
+        
+        HAPostVC?.twitterMgr.PhotoUpdateUploadStatus = {(percentage, status)->() in
+            //            print("self.ringforFBphoto: \(self.ringforFBphoto)")
+            //            print("updateUploadStatus closure")
+            self.ringforTWphoto.indeterminate = false
+            
+            if status == uploadStatus.Success {
+                self.ringforTWphoto.setProgress(100.00, animated: true)
+                self.ringforTWphoto.perform(M13ProgressViewActionSuccess, animated: true)
+                
+            } else if status == uploadStatus.Failure{
+                self.ringforTWphoto.perform(M13ProgressViewActionFailure, animated: true)
+                
+            } else if status == uploadStatus.Uploading{
+                print("TW Photo Uploading.........")
+                self.ringforTWphoto.setProgress(percentage*0.01, animated: true)
+                
             }
         }
         
@@ -110,17 +131,38 @@ class HAUploadStatusController: UITableViewController {
             self.ringforFBvideo.indeterminate = false
             
             if status == uploadStatus.Success {
+                self.ringforFBvideo.setProgress(100.00, animated: true)
                 self.ringforFBvideo.perform(M13ProgressViewActionSuccess, animated: true)
                 
             } else if status == uploadStatus.Failure{
                 self.ringforFBvideo.perform(M13ProgressViewActionFailure, animated: true)
                 
             } else if status == uploadStatus.Uploading{
-                print("Video Uploading.........")
+                print("FB Video Uploading.........")
                 self.ringforFBvideo.setProgress(percentage*0.01, animated: true)
                 
             }
         }
+        
+        HAPostVC?.twitterMgr.VideoUpdateUploadStatus = {(percentage, status)->() in
+            //            print("self.ringforFBphoto: \(self.ringforFBphoto)")
+            //            print("updateUploadStatus closure")
+            self.ringforTWvideo.indeterminate = false
+            
+            if status == uploadStatus.Success {
+                self.ringforTWvideo.setProgress(100.00, animated: true)
+                self.ringforTWvideo.perform(M13ProgressViewActionSuccess, animated: true)
+                
+            } else if status == uploadStatus.Failure{
+                self.ringforTWvideo.perform(M13ProgressViewActionFailure, animated: true)
+                
+            } else if status == uploadStatus.Uploading{
+                print("TW Video Uploading.........")
+                self.ringforTWvideo.setProgress(percentage*0.01, animated: true)
+                
+            }
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

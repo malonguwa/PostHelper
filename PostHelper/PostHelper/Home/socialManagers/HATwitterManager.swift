@@ -14,6 +14,12 @@ import DKImagePickerController
 class HATwitterManager: HASocialPlatformsBaseManager {
     let uploadURL = "https://upload.twitter.com/1.1/media/upload.json"
     let statusURL = "https://api.twitter.com/1.1/statuses/update.json"
+    var HAtimer : Timer?
+    var TWimageSendPercentage = 0.00
+    var TWvideoSendPercentage = 0.00
+    var count = 0
+    var offset = 0
+    var parts = 0
     
     func sendTweetWithTextOnly(text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?){
         
@@ -112,6 +118,10 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                             } else {
                                 mediaIDs.append(mediaID!)
                                 print(mediaIDs)
+                                if self.PhotoUpdateUploadStatus != nil {
+                                    self.TWimageSendPercentage = self.TWimageSendPercentage + 15.00
+                                    self.PhotoUpdateUploadStatus!(CGFloat(self.TWimageSendPercentage), uploadStatus.Uploading)
+                                }
                             }
                             semaphore.signal()//当满足条件时，向队列发送信号
                         })
@@ -169,8 +179,11 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 }
                 if httpResponse.statusCode == 200 {
                     print("154 line - Tweet sucessfully")
-                    //FIXME: 失败也要继续往下一个平台发
                     print("154 line - httpResponse.statusCode == 200")
+                    if self.PhotoUpdateUploadStatus != nil {
+                        self.PhotoUpdateUploadStatus!(100.00, uploadStatus.Success)
+                        self.TWimageSendPercentage = 0.00
+                    }
                     self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
                     
                 } else {
@@ -242,19 +255,56 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         queue.async(flags: .barrier) {
             
             let queue2 = DispatchQueue(label: "qForTWVideosUploadSquence")
-
+ 
+            
             for videoData in _videos.enumerated() {
                 queue2.async {
                     let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-
+//                    self.HAtimer = Timer.init(timeInterval: 1, repeats: true, block: { (timer) in
+//                        print("Timer ------")
+//                        if self.VideoUpdateUploadStatus != nil {
+//                            if self.TWvideoSendPercentage >= Double(25 * videoData.offset + 1) {
+//                                self.HAtimer.invalidate()
+//                            } else {
+//                                self.TWvideoSendPercentage = self.TWvideoSendPercentage + 1
+//                                self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage) / CGFloat(_videos.count) + (100.00 / CGFloat(_videos.count) * CGFloat(videoData.offset)), uploadStatus.Uploading)
+//                            }
+//                        }
+//                    })
+//                    RunLoop.current.add(self.HAtimer, forMode: RunLoopMode.commonModes)
+//                    self.HAtimer.fire()
+                    self.count = _videos.count
+                    self.offset = videoData.offset
+                    DispatchQueue.main.async {
+                        self.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
+                    }
+                    
+//                    self.HAtimer = Timer.init(timeInterval: 1, target: self, selector: #selector(HATwitterManager.timerFireMethod(timer:)), userInfo: nil, repeats: true)
+//                    RunLoop.current.add(self.HAtimer, forMode: RunLoopMode.commonModes)
+//                    self.HAtimer.fire()
+                    
+                    
                     SocialVideoHelper.uploadTwitterVideo(videoData.element as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessage) in
                         if success == true {
                             print("Twitter video upload success")
-                            
+                            self.HAtimer?.invalidate()
+                            self.HAtimer = nil
+                            self.TWvideoSendPercentage = 0.00
+//                            self.TWvideoSendPercentage = self.TWvideoSendPercentage + (100.00 / Double(self.count) * Double(self.offset))
+//                            self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage), uploadStatus.Uploading)
+//                            self.TWvideoSendPercentage = self.TWvideoSendPercentage / Double(self.count) + (100.00 / Double(self.count) * Double(self.offset))
+
                             if videoData.offset == _videos.count - 1 {
                                 
                                 print("after send success in Twitter: \(platforms)")
-                                //FIXME: 失败也要继续往下一个平台发
+                                
+                                //FIXME: here
+                                if self.VideoUpdateUploadStatus != nil {
+//                                    self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage) / CGFloat(_videos.count) + (100.00 / CGFloat(_videos.count) * CGFloat(videoData.offset)), uploadStatus.Uploading)
+                                    self.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
+
+                                }
+                                
                                 self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
 
                             }
@@ -262,7 +312,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                             print(errorMessage!)
                             //FIXME: 失败也要继续往下一个平台发
                             if videoData.offset == _videos.count - 1 {
-                                
+                                self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
                                 self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
                             }
                         }
@@ -274,8 +324,38 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             }//end for
         }
     }
+    
+//    func timerFireMethod() {
+//        print("timerFireMethod")
+//        if self.VideoUpdateUploadStatus != nil {
+//            if self.TWvideoSendPercentage == 25 {
+//                self.TWvideoSendPercentage = 32
+//            } else
+//            self.TWvideoSendPercentage = self.TWvideoSendPercentage + 1
+//            
+//        }
+//    }
 
+    func timerFireMethod() {
+        print("timerFireMethod")
+        if self.VideoUpdateUploadStatus != nil {
+            
+            self.TWvideoSendPercentage = self.TWvideoSendPercentage + 1.00
+            if self.TWvideoSendPercentage < (100.00 / Double(count) * Double(offset)) {
+                                print("if \(self.TWvideoSendPercentage)")
+                self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
+            } else if (100.00 / Double(count) * Double(offset)) == 0.00 {
+                self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
+
+            } else {
+                                print("else \(self.TWvideoSendPercentage)")
+                self.HAtimer?.invalidate()
+            }
+        }
+        
+    }
 }
+
   /**
     func uploadTwitterVideo(avAssetsForSend: [DKAsset], text: String?) {
         let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID

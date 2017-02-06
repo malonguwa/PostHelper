@@ -430,7 +430,7 @@ class HAPostVC: UIViewController {
             
             print("start to send video(s)")
             print(videosForSend.count)
-            
+//            var videoText = textView.text
             twitterMgr.sendTweetWithTextandVideos(avAssetsForSend: videosForSend, text: textView.text, sendToPlatforms: platforms,  completion: { (array_platforms) in
                 
                 self.facebookMgr.FB_SendVideoOnly(avAssetsForSend: videosForSend, text: self.textView.text, sendToPlatforms: array_platforms,  completion:{ (array_platforms) in
