@@ -56,12 +56,14 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             
             guard let httpResponse = response as? HTTPURLResponse else{
                 print("\(response)\n\n\(data)\n\n\(error)")
-                //FIXME: 失败也要继续往下一个平台发
-                print("after send success in Twitter: \(platforms)")
+                self.duplicateTextError = error
                 self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
 
                 return
             }
+            
+            self.duplicateTextError = nil
+
             if httpResponse.statusCode == 200 {
                 print("Tweet sucessfully")
 
@@ -190,6 +192,8 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                     //FIXME: 失败也要继续往下一个平台发
                     print("159 line - else")
                     print("159 line - \(response)\n\n\(data)\n\n\(error)")
+                    self.PhotoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
+
                     self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
 
                 }

@@ -28,7 +28,7 @@ class HAPostVC: UIViewController {
     var facebookMgr = HAFacebookManager()
     var twitterMgr = HATwitterManager()
     fileprivate lazy var isPresent : Bool = false
-
+    var currentRootVc : UIViewController?
 
 //    var mutiPlatform
     
@@ -251,15 +251,16 @@ class HAPostVC: UIViewController {
     }
     
     
-    // MARK: FB - Send Text Only
-    func FB_SendTextOnly(text : String!) {
-        GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
-            //text send completely
-            print("text send completely + \(response)\n\(requestResult)\n")
-            
-            self.textView.text = ""
-        }
-    }
+//    // MARK: FB - Send Text Only
+//    func FB_SendTextOnly(text : String!) {
+//        GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
+//            //text send completely
+//            print("text send completely + \(response)\n\(requestResult)\n")
+//            
+//            self.textView.text = ""
+//        }
+//    }
+    
     // MARK: Send Image or Image with Text
     func sendImageOnly(avAssetsForSend : [DKAsset]!) {
         //        guard let _avAssetsForSend = avAssetsForSend else {
@@ -302,17 +303,17 @@ class HAPostVC: UIViewController {
 //                    self.placeHolderLabel.alpha = 1
 //                    self.sendBtn.isEnabled = false
                     
-                    self.textView.text = ""
-                    self.placeHolderLabel.alpha = 1
-                    for imageView in self.contentView.subviews {
-                        imageView.removeFromSuperview()
-                    }
-                    self.avAssetsForDisplay.removeAll()
-                    self.avAssetsForSend.removeAll()
-                    self.imagePickerManager.selectedImagesArray.removeAll()
-                    self.imagePickerManager.selectedVideosArray.removeAll()
-                    self.imageScrollView.isHidden = true
-                    self.sendBtn.isEnabled = false
+//                    self.textView.text = ""
+//                    self.placeHolderLabel.alpha = 1
+//                    for imageView in self.contentView.subviews {
+//                        imageView.removeFromSuperview()
+//                    }
+//                    self.avAssetsForDisplay.removeAll()
+//                    self.avAssetsForSend.removeAll()
+//                    self.imagePickerManager.selectedImagesArray.removeAll()
+//                    self.imagePickerManager.selectedVideosArray.removeAll()
+//                    self.imageScrollView.isHidden = true
+//                    self.sendBtn.isEnabled = false
                 })
             })
             
@@ -363,45 +364,120 @@ class HAPostVC: UIViewController {
     @IBAction func sendBtnClick(_ sender: Any) {
         self.textView.resignFirstResponder()
         
-        let sb = UIStoryboard(name: "HAUploadStatusController", bundle: nil)
-        guard let uploadStatusMenuTableViewController = sb.instantiateInitialViewController() as? HAUploadStatusController else {
-            return
-        }
-        uploadStatusMenuTableViewController.HAPostVC = self
-        let tempVC = UIApplication.shared.keyWindow?.rootViewController
-        print("\( UIApplication.shared.keyWindow?.rootViewController)")
-        print("\( tempVC)")
-
-        UIApplication.shared.keyWindow?.rootViewController = uploadStatusMenuTableViewController
-
-        
-        
-//        UIApplication.shared.keyWindow?.addSubview(uploadStatusMenuTableViewController.tableView)
-        
-//        UIApplication.shared.keyWindow?.subviews[(UIApplication.shared.keyWindow?.subviews.count)! - 1].removeFromSuperview()
-//        show(uploadStatusMenuTableViewController, sender: nil)
-        
-//        present(uploadStatusMenuTableViewController, animated: true, completion: nil)
-
-        
-//        return
-        
-        
         var imagesForSend = [DKAsset]()
         var videosForSend = [DKAsset]()
         
         //--------------------------------------------send text only
         if textView.text.characters.count != 0 && avAssetsForSend.count == 0{
+            let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 40, width: 80, height:80))
+            ringforText.indeterminate = true
+            ringforText.showPercentage = false
+//            ringforText.primaryColor = UIColor(colorLiteralRed: 0.00, green: 162.00, blue: 236.00, alpha: 1)
+            ringforText.primaryColor = UIColor.white
+            ringforText.secondaryColor = UIColor.white
+
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+            let effectView = UIVisualEffectView(effect: blurEffect)
+            effectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            effectView.frame = UIScreen.main.bounds
+            effectView.alpha = 0.8
+
+            effectView.contentView.addSubview(ringforText)
+
+            view.addSubview(effectView)
+            
+            
+//            let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 50, y: UIScreen.main.bounds.size.height * 0.5 - 40, width: 100, height: 80))
+//            label.text = "Uploading"
+//            label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
+//            label.textAlignment = .center
+//            label.textColor = UIColor.white
+//            effectView.contentView.addSubview(label)
+            
+            
             twitterMgr.sendTweetWithTextOnly(text: textView.text, sendToPlatforms: platforms, completion: { (array_platforms) in
-                self.facebookMgr.sendTextOnly(text: self.textView.text, sendToPlatforms: platforms, completion: { (array_platforms) in
-                    self.textView.text = ""
-                    self.placeHolderLabel.alpha = 1
+                self.facebookMgr.sendTextOnly(text: self.textView.text, sendToPlatforms: array_platforms, completion: { (array_platforms) in
+
+                    if self.twitterMgr.duplicateTextError != nil{// Error!
+                        //BlurView
+                        let effectView : UIVisualEffectView
+                        effectView = self.view.subviews.last as! UIVisualEffectView
+                        let temp = effectView.contentView.subviews
+                        temp.last?.removeFromSuperview()
+                        
+                        //Label
+                        let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 100, y: UIScreen.main.bounds.size.height * 0.5 + 40, width: 200, height: 100))
+                        label.numberOfLines = 0
+                        label.text = "You can't send same message twice to Twitter or Facebook!"
+                        label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
+                        label.textColor = UIColor.white
+                        label.textAlignment = .center
+                        effectView.contentView.addSubview(label)
+                        
+                        //RingHUD
+                        let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 40, width: 80, height:80))
+                        ringforText.primaryColor = UIColor.red
+                        ringforText.secondaryColor = UIColor.red
+                        ringforText.indeterminate = false
+                        ringforText.showPercentage = false
+                        ringforText.perform(M13ProgressViewActionFailure, animated: true)
+                        effectView.contentView.addSubview(ringforText)
+                        
+                        DispatchQueue.main.async {
+                            sleep(UInt32(5))
+                            self.view.subviews.last?.removeFromSuperview()
+                            self.textView.becomeFirstResponder()
+                        }
+                    } else {//Success
+                        let effectView : UIVisualEffectView
+                        effectView = self.view.subviews.last as! UIVisualEffectView
+                        let temp = effectView.contentView.subviews
+                        temp.last?.removeFromSuperview()
+                        
+                        let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 40, width: 80, height:80))
+                        ringforText.primaryColor = UIColor.green
+                        ringforText.secondaryColor = UIColor.green
+                        ringforText.indeterminate = false
+                        ringforText.showPercentage = false
+                        ringforText.perform(M13ProgressViewActionSuccess, animated: true)
+                        effectView.contentView.addSubview(ringforText)
+                        
+                        DispatchQueue.main.async {
+                            sleep(UInt32(1.5))
+                            self.view.subviews.last?.removeFromSuperview()
+                            self.textView.text = ""
+                            self.placeHolderLabel.isHidden = false
+                            self.textView.becomeFirstResponder()
+                        }
+                    }
+                    
+//                    let actionSheetController = UIAlertController(title: "Text send sucess", message: "", preferredStyle: UIAlertControllerStyle.alert)
+//                    let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.cancel, handler: { (doneAction) in
+//                        self.view.subviews.last?.removeFromSuperview()
+//                        self.textView.text = ""
+//                        self.placeHolderLabel.isHidden = false
+//                        self.textView.becomeFirstResponder()
+//                    })
+//                    actionSheetController.addAction(doneAction)
+//                    self.present(actionSheetController, animated: true, completion: nil)
+
                 })
             })
         }
         
-        
+       
+
         if avAssetsForSend.count > 0{
+            let sb = UIStoryboard(name: "HAUploadStatusController", bundle: nil)
+            guard let uploadStatusMenuTableViewController = sb.instantiateInitialViewController() as? HAUploadStatusController else {
+                return
+            }
+            uploadStatusMenuTableViewController.HAPostVC = self
+            currentRootVc = UIApplication.shared.keyWindow?.rootViewController
+            print("\( UIApplication.shared.keyWindow?.rootViewController)")
+            
+            UIApplication.shared.keyWindow?.rootViewController = uploadStatusMenuTableViewController
+            
             for avasset in avAssetsForSend {
                 if avasset.isVideo == false {
                     imagesForSend.append(avasset)
@@ -434,17 +510,17 @@ class HAPostVC: UIViewController {
             twitterMgr.sendTweetWithTextandVideos(avAssetsForSend: videosForSend, text: textView.text, sendToPlatforms: platforms,  completion: { (array_platforms) in
                 
                 self.facebookMgr.FB_SendVideoOnly(avAssetsForSend: videosForSend, text: self.textView.text, sendToPlatforms: array_platforms,  completion:{ (array_platforms) in
-                    self.textView.text = ""
-                    self.placeHolderLabel.alpha = 1
-                    for imageView in self.contentView.subviews {
-                        imageView.removeFromSuperview()
-                    }
-                    self.avAssetsForDisplay.removeAll()
-                    self.avAssetsForSend.removeAll()
-                    self.imagePickerManager.selectedImagesArray.removeAll()
-                    self.imagePickerManager.selectedVideosArray.removeAll()
-                    self.imageScrollView.isHidden = true
-                    self.sendBtn.isEnabled = false
+//                    self.textView.text = ""
+//                    self.placeHolderLabel.alpha = 1
+//                    for imageView in self.contentView.subviews {
+//                        imageView.removeFromSuperview()
+//                    }
+//                    self.avAssetsForDisplay.removeAll()
+//                    self.avAssetsForSend.removeAll()
+//                    self.imagePickerManager.selectedImagesArray.removeAll()
+//                    self.imagePickerManager.selectedVideosArray.removeAll()
+//                    self.imageScrollView.isHidden = true
+//                    self.sendBtn.isEnabled = false
                 })
             })
         }
@@ -490,7 +566,7 @@ extension HAPostVC: UITextViewDelegate {
             
         } else if avAssetsForDisplay.count == 0 && textView.text.lengthOfBytes(using: .utf8) == 0{
             sendBtn.isEnabled = false
-            self.placeHolderLabel.alpha = 1
+            self.placeHolderLabel.isHidden = false
         }
     }
 }

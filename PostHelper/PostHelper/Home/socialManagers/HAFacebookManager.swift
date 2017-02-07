@@ -94,10 +94,16 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
     // MARK: FB - Send Text Only
     func sendTextOnly(text : String!, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
         
+        if sendToPlatforms.count == 0 {
+            completion!(sendToPlatforms)
+            return
+        }
+        
         for platform in sendToPlatforms {
             if platform == .HAFacebook {
                 break
             } else {
+                print("FB - Send Text Only else \(platforms)")
                 completion!(sendToPlatforms)
                 return
             }
@@ -189,7 +195,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                                 case .failed(let error):
                                     print(error)
                                     if self.PhotoUpdateUploadStatus != nil {
-                                        self.PhotoUpdateUploadStatus!(CGFloat(Double(self.FBimageSendPercentage!)!), uploadStatus.Failure)
+                                        self.PhotoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
                                     }
 
                                     //FIXME: 失败也要继续往下一个平台发
@@ -331,7 +337,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                         switch GraphRequestResult {
                         case .failed(let error):
                             print(error)
-                            self.VideoUpdateUploadStatus!(100.00, uploadStatus.Failure)
+                            self.VideoUpdateUploadStatus!(0.00, uploadStatus.Failure)
                             break
                         case .success(let response):
                             if videoData.offset == _videos.count - 1 {

@@ -18,6 +18,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                        <button key="tableFooterView" hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="s90-DD-3fo" userLabel="Dismiss">
+                            <rect key="frame" x="0.0" y="296" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.0" green="0.63529411759999999" blue="0.090196078430000007" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                            <state key="normal" title="Done">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="doneBtnClick:" destination="e0x-vb-OQn" eventType="touchUpInside" id="C2W-Cy-VbI"/>
+                            </connections>
+                        </button>
                         <sections>
                             <tableViewSection id="Rpl-KL-Rbv" userLabel="Section 1">
                                 <cells>
@@ -169,6 +182,7 @@
                         <outlet property="FBVideoUploadView" destination="QqR-fO-RA9" id="I9o-dm-pcv"/>
                         <outlet property="TWPhotoUploadView" destination="gPW-9C-yVr" id="m82-uV-0vY"/>
                         <outlet property="TWVideoUploadView" destination="lsm-wO-7rn" id="2zp-YY-Oiv"/>
+                        <outlet property="doneBtn" destination="s90-DD-3fo" id="t92-gK-m4M"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NjI-0D-YZA" userLabel="First Responder" sceneMemberID="firstResponder"/>
