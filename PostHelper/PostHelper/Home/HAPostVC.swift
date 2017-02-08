@@ -58,8 +58,7 @@ class HAPostVC: UIViewController {
         wordCountLabel.text = "???/140"
         view.addSubview(wordCountLabel)
 
-        print("\(textView.frame)")
-//        placeWordCountLimit(hideScrollViewBtnisHidden: hideScrollViewBtn.isHidden)
+        print("wordCountLabel : \(wordCountLabel.frame)")
         
         textView.becomeFirstResponder()
         textView.delegate = self
@@ -100,10 +99,12 @@ class HAPostVC: UIViewController {
         
         imagePickerManager.HnA_selectedAVAssets = { (combinedArray) in
 
-            print("DONE \(combinedArray)")
+            print("DONE !!!!!!!!!!!!!!!!!!!!!! \(combinedArray)")
             
             if combinedArray.count > 0 {
                 self.sendBtn.isEnabled = true
+                self.hideScrollViewBtn.isHidden = false
+                self.placeWordCountLimit()
             } else if combinedArray.count == 0 && self.textView.text.lengthOfBytes(using: .utf8) == 0{
                 self.sendBtn.isEnabled = false
             }
@@ -111,18 +112,17 @@ class HAPostVC: UIViewController {
             //HnA_DKAssetArray 当前选择的
             //combinedArray image+video一共选择的
             if combinedArray.count == 0 {
+                self.placeWordCountLimit()
                 self.imageScrollView.isHidden = true
                 self.hideScrollViewBtn.isHidden = true
-//                self.placeWordCountLimit(hideScrollViewBtnisHidden: self.hideScrollViewBtn.isHidden)
                 self.textView.becomeFirstResponder()
                 return
             }
             
-            self.placeWordCountLimit(scrollView_X: (self.contentView.superview?.frame.origin.x)!)
 
             self.avAssetsForDisplay.removeAll()
             self.avAssetsForSend.removeAll()
-            self.hideScrollViewBtn.isHidden = false
+            print("x : == \((self.contentView.superview?.frame.origin.x)!)")
 
             for imageView in self.contentView.subviews {
                 imageView.removeFromSuperview()
@@ -235,11 +235,10 @@ class HAPostVC: UIViewController {
         if avAssetsForDisplay.count == 0 {
             imageScrollView.isHidden = true
             hideScrollViewBtn.isHidden = true
-            self.placeWordCountLimit(scrollView_X: (self.contentView.superview?.frame.origin.x)!)
+            placeWordCountLimit()
         } else {
             imageScrollView.isHidden = false
             hideScrollViewBtn.isHidden = false
-            self.placeWordCountLimit(scrollView_X: (self.contentView.superview?.frame.origin.x)!)
             for delete in self.contentView.subviews{
                 delete.removeFromSuperview()
             }
@@ -546,7 +545,7 @@ class HAPostVC: UIViewController {
             
             if platforms.count == 0 {
                 print("Non of platforms has been selected")
-                //FIXME: - Add HUD here!!
+                //FIXME: - Add HUD here!! Non of platforms has been selected
                 return
             }
             
@@ -572,21 +571,51 @@ class HAPostVC: UIViewController {
         }
     }
     
-    
+    //FIXME: word count label
     //MARK: showWordCountLimit
-    func placeWordCountLimit(scrollView_X : CGFloat) {
+    func placeWordCountLimit() {
+        print("placeWordCountLimit() ~#################")
 
-        if scrollView_X == CGFloat(0.0) {
-            UIView.animate(withDuration: 1, animations: {
-                self.wordCountLabel.transform = CGAffineTransform.identity
-                self.wordCountLabel.transform = self.wordCountLabel.transform.translatedBy(x: 5.0, y: -120.0)
-            })
-
+        if hideScrollViewBtn.isHidden == false {//Up
             
-        } else {
-            UIView.animate(withDuration: 1, animations: {
-                self.wordCountLabel.transform = CGAffineTransform.identity
-                self.wordCountLabel.transform = self.wordCountLabel.transform.translatedBy(x: 5.0, y: 120.0)
+            if hideScrollViewBtn.isSelected == false {//Up
+                print("hideScrollViewBtn.isSelected == false")
+                if self.wordCountLabel.frame.origin.y == 140 {
+                    UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.curveEaseInOut, animations: {
+                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 220)
+                        self.wordCountLabel.superview?.layoutIfNeeded()
+                    })
+                } else {
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 140)
+                        self.wordCountLabel.superview?.layoutIfNeeded()
+                    })
+
+                }
+
+            } else if hideScrollViewBtn.isSelected == true{//Down
+                print("hideScrollViewBtn.isSelected == true")
+                
+                
+                if self.wordCountLabel.frame.origin.y == 220 {
+                    
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 140)
+                        self.wordCountLabel.superview?.layoutIfNeeded()
+                    })
+                } else {
+                    UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.curveEaseInOut, animations: {
+                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 220)
+                        self.wordCountLabel.superview?.layoutIfNeeded()
+                        
+                    }, completion: nil)
+                }
+            }
+        } else {//Down
+            UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.curveEaseInOut, animations: {
+                print("hideScrollViewBtn.isHidden == true")
+                self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 220)
+                self.wordCountLabel.superview?.layoutIfNeeded()
             })
         }
     }
@@ -597,26 +626,25 @@ class HAPostVC: UIViewController {
         print(wordCountLabel.frame)
         
         if sender.isSelected == true {//show
-            placeWordCountLimit(scrollView_X: (contentView.superview?.frame.origin.x)!)
+            print("hideBtn.isSelected == true")
+            self.placeWordCountLimit()
             UIView.animate(withDuration: 0.5, animations: {
                 print("show")
                 
                 self.hideScrollViewBtn.transform = CGAffineTransform(rotationAngle: 0.0)
                 self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: -(self.contentView.superview?.transform.tx)!, y: (self.contentView.superview?.transform.ty)!))!
-
-            }, completion: { (bool) in
-                sender.isSelected = false
-            })
+            }, completion: nil)
+            sender.isSelected = false
         } else {//hide
-            placeWordCountLimit(scrollView_X: (contentView.superview?.frame.origin.x)!)
+            print("hideBtn.isSelected == false")
+            self.placeWordCountLimit()
             UIView.animate(withDuration: 0.5, delay: 0.2, options: UIViewAnimationOptions.curveEaseInOut, animations: {
                 print("hide")
                 self.hideScrollViewBtn.transform = self.hideScrollViewBtn.transform.rotated(by: CGFloat(M_PI-0.000001))
                 
                 self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: (self.contentView.superview?.transform.tx)! + UIScreen.main.bounds.width, y: (self.contentView.superview?.transform.ty)!))!
-            }, completion: { (bool) in
-                sender.isSelected = true
-            })
+            }, completion: nil)
+            sender.isSelected = true
         }
         
         

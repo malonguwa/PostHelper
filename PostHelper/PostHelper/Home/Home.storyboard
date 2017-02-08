@@ -188,7 +188,6 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7rT-iB-Kzv">
                                 <rect key="frame" x="345" y="105" width="30" height="30"/>
-                                <color key="backgroundColor" red="0.0" green="0.63529411759999999" blue="0.090196078430000007" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="8Mx-9J-lpn"/>
                                     <constraint firstAttribute="height" constant="30" id="P5F-wc-Bnp"/>
