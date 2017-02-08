@@ -16,10 +16,10 @@ class HAUploadStatusController: UITableViewController {
     @IBOutlet weak var FBVideoUploadView: UIView!
     
     @IBOutlet weak var doneBtn: UIButton!
-    var ringforFBphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
-    var ringforFBvideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
-    var ringforTWphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
-    var ringforTWvideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 50, height:50))
+    var ringforFBphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 35, height:35))
+    var ringforFBvideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 35, height:35))
+    var ringforTWphoto = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 35, height:35))
+    var ringforTWvideo = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 35, height:35))
 
     var flagforFBphoto = 0
     var flagforFBvideo = 0
@@ -36,6 +36,12 @@ class HAUploadStatusController: UITableViewController {
         tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: UIScreen.main.bounds.size.height * 0.5 - 180))
 //        tableView.tableFooterView = UIView(frame: CGRect.zero)
    
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+        let effectView = UIVisualEffectView(effect: blurEffect)
+        effectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        effectView.frame = UIScreen.main.bounds
+        effectView.alpha = 0.8
+        tableView.insertSubview(effectView, at: 0)
 
         for asset in (HAPostVC?.avAssetsForSend)!{
             if asset.isVideo == true {
@@ -55,11 +61,15 @@ class HAUploadStatusController: UITableViewController {
 
                 if sendPhoto == true {
                     ringforTWphoto.indeterminate = true
+                    ringforTWphoto.primaryColor = UIColor.white
+                    ringforTWphoto.secondaryColor = UIColor.white
                     TWPhotoUploadView.addSubview(ringforTWphoto)
                 }
                 
                 if sendVideo == true {
                     ringforTWvideo.indeterminate = true
+                    ringforTWvideo.primaryColor = UIColor.white
+                    ringforTWvideo.secondaryColor = UIColor.white
                     TWVideoUploadView.addSubview(ringforTWvideo)
                 }
             } else {
@@ -72,9 +82,11 @@ class HAUploadStatusController: UITableViewController {
                 FBVideoUploadView.isHidden = !sendVideo
 
                 if sendPhoto == true {
-                    ringforFBphoto.showPercentage = false
+//                    ringforFBphoto.showPercentage = false
                     ringforFBphoto.indeterminate = true
-                    
+                    ringforFBphoto.primaryColor = UIColor.white
+                    ringforFBphoto.secondaryColor = UIColor.white
+
                     FBPhotoUploadView.addSubview(ringforFBphoto)
                     print("self.ringforFBphoto: \(self.ringforFBphoto)")
 
@@ -82,6 +94,9 @@ class HAUploadStatusController: UITableViewController {
                 
                 if sendVideo == true {
                     ringforFBvideo.indeterminate = true
+                    ringforFBvideo.primaryColor = UIColor.white
+                    ringforFBvideo.secondaryColor = UIColor.white
+
                     FBVideoUploadView.addSubview(ringforFBvideo)
                 }
             } else {
@@ -98,11 +113,15 @@ class HAUploadStatusController: UITableViewController {
             if status == uploadStatus.Success {
                 self?.ringforFBphoto.setProgress(100.00, animated: true)
                 self?.ringforFBphoto.perform(M13ProgressViewActionSuccess, animated: true)
+                self?.ringforFBphoto.primaryColor = UIColor.green
+                self?.ringforFBphoto.secondaryColor = UIColor.green
                 self?.flagforFBphoto = 1
                 self?.finishUploadCheck(percentage: percentage)
 
             } else if status == uploadStatus.Failure{
                 self?.ringforFBphoto.perform(M13ProgressViewActionFailure, animated: true)
+                self?.ringforFBphoto.primaryColor = UIColor.red
+                self?.ringforFBphoto.secondaryColor = UIColor.red
                 self?.flagforFBphoto = 1
                 self?.finishUploadCheck(percentage: percentage)
 
@@ -120,11 +139,17 @@ class HAUploadStatusController: UITableViewController {
             if status == uploadStatus.Success {
                 self?.ringforTWphoto.setProgress(100.00, animated: true)
                 self?.ringforTWphoto.perform(M13ProgressViewActionSuccess, animated: true)
+                self?.ringforTWphoto.primaryColor = UIColor.green
+                self?.ringforTWphoto.secondaryColor = UIColor.green
+
                 self?.flagforTWphoto = 1
                 self?.finishUploadCheck(percentage: percentage)
 
             } else if status == uploadStatus.Failure{
                 self?.ringforTWphoto.perform(M13ProgressViewActionFailure, animated: true)
+                self?.ringforTWphoto.primaryColor = UIColor.red
+                self?.ringforTWphoto.secondaryColor = UIColor.red
+
                 self?.flagforTWphoto = 1
                 self?.finishUploadCheck(percentage: percentage)
 
@@ -143,11 +168,17 @@ class HAUploadStatusController: UITableViewController {
             if status == uploadStatus.Success {
                 self?.ringforFBvideo.setProgress(100.00, animated: true)
                 self?.ringforFBvideo.perform(M13ProgressViewActionSuccess, animated: true)
+                self?.ringforFBvideo.primaryColor = UIColor.green
+                self?.ringforFBvideo.secondaryColor = UIColor.green
+
                 self?.flagforFBvideo = 1
                 self?.finishUploadCheck(percentage: percentage)
 
             } else if status == uploadStatus.Failure{
                 self?.ringforFBvideo.perform(M13ProgressViewActionFailure, animated: true)
+                self?.ringforFBvideo.primaryColor = UIColor.red
+                self?.ringforFBvideo.secondaryColor = UIColor.red
+
                 self?.flagforFBvideo = 1
                 self?.finishUploadCheck(percentage: percentage)
 
@@ -166,11 +197,15 @@ class HAUploadStatusController: UITableViewController {
             if status == uploadStatus.Success {
                 self?.ringforTWvideo.setProgress(100.00, animated: true)
                 self?.ringforTWvideo.perform(M13ProgressViewActionSuccess, animated: true)
+                self?.ringforTWvideo.primaryColor = UIColor.green
+                self?.ringforTWvideo.secondaryColor = UIColor.green
                 self?.flagforTWvideo = 1
                 self?.finishUploadCheck(percentage: percentage)
 
             } else if status == uploadStatus.Failure{
                 self?.ringforTWvideo.perform(M13ProgressViewActionFailure, animated: true)
+                self?.ringforTWvideo.primaryColor = UIColor.red
+                self?.ringforTWvideo.secondaryColor = UIColor.red
                 self?.flagforTWvideo = 1
                 self?.finishUploadCheck(percentage: percentage)
 

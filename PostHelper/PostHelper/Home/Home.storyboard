@@ -144,19 +144,19 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                 <nil key="highlightedColor"/>
                             </label>
                             <scrollView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nO5-vu-df5">
-                                <rect key="frame" x="0.0" y="140" width="375" height="128"/>
+                                <rect key="frame" x="0.0" y="140" width="375" height="100"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9jc-5Z-9qR" userLabel="contentView">
-                                        <rect key="frame" x="0.0" y="0.0" width="400" height="128"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="400" id="mkh-mq-oyq"/>
+                                            <constraint firstAttribute="height" constant="100" id="waP-W4-ogf"/>
                                         </constraints>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="128" id="7hl-vF-Uhx"/>
                                     <constraint firstItem="9jc-5Z-9qR" firstAttribute="centerY" secondItem="nO5-vu-df5" secondAttribute="centerY" id="DQU-9B-nMM"/>
                                     <constraint firstAttribute="bottom" secondItem="9jc-5Z-9qR" secondAttribute="bottom" id="Xep-0e-cmi"/>
                                     <constraint firstAttribute="trailing" secondItem="9jc-5Z-9qR" secondAttribute="trailing" id="iLF-uu-7sh"/>
@@ -186,6 +186,21 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                                     <action selector="closeBtnClick:" destination="lfj-k7-XS8" eventType="touchUpInside" id="Ai4-BB-n5c"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7rT-iB-Kzv">
+                                <rect key="frame" x="345" y="105" width="30" height="30"/>
+                                <color key="backgroundColor" red="0.0" green="0.63529411759999999" blue="0.090196078430000007" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="8Mx-9J-lpn"/>
+                                    <constraint firstAttribute="height" constant="30" id="P5F-wc-Bnp"/>
+                                </constraints>
+                                <state key="normal" title="Btn"/>
+                                <state key="selected">
+                                    <color key="titleColor" red="0.0" green="0.63529411759999999" blue="0.090196078430000007" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="hideScrollViewBtnClick:" destination="lfj-k7-XS8" eventType="touchUpInside" id="1XX-fF-K9h"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.8657366071" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -196,10 +211,12 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                             <constraint firstItem="UZu-DB-l0Q" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" constant="30" id="98J-6Y-OMj"/>
                             <constraint firstItem="IeD-Ne-NGq" firstAttribute="top" secondItem="j5G-IA-anu" secondAttribute="top" constant="16" id="FXJ-cJ-0Uq"/>
                             <constraint firstAttribute="trailing" secondItem="UZu-DB-l0Q" secondAttribute="trailing" id="KWm-69-MFH"/>
+                            <constraint firstItem="nO5-vu-df5" firstAttribute="top" secondItem="7rT-iB-Kzv" secondAttribute="bottom" constant="5" id="Ngx-yO-j1b"/>
                             <constraint firstItem="UZu-DB-l0Q" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" id="ZBG-l8-VMr"/>
                             <constraint firstItem="nO5-vu-df5" firstAttribute="leading" secondItem="j5G-IA-anu" secondAttribute="leading" id="e7z-Yl-QzU"/>
                             <constraint firstItem="IeD-Ne-NGq" firstAttribute="centerX" secondItem="j5G-IA-anu" secondAttribute="centerX" id="iJ1-FQ-qvb"/>
                             <constraint firstAttribute="trailing" secondItem="SNE-yg-4OF" secondAttribute="trailing" id="jbv-JZ-kCP"/>
+                            <constraint firstAttribute="trailing" secondItem="7rT-iB-Kzv" secondAttribute="trailing" id="nsk-gO-pza"/>
                             <constraint firstItem="2Df-C5-UA5" firstAttribute="top" secondItem="SNE-yg-4OF" secondAttribute="bottom" id="q3F-RX-39a"/>
                             <constraint firstItem="nO5-vu-df5" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" constant="140" id="qtq-ct-y6W"/>
                             <constraint firstItem="Ri5-q7-8Ek" firstAttribute="top" secondItem="fqb-LS-yti" secondAttribute="bottom" id="txK-mA-oyK"/>
@@ -211,9 +228,11 @@ https://www.facebook.com/logout.php?next=http://example.com&amp;access_token=xxx
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="contentView" destination="9jc-5Z-9qR" id="ZcH-nV-lE5"/>
+                        <outlet property="hideScrollViewBtn" destination="7rT-iB-Kzv" id="dqm-I7-heT"/>
                         <outlet property="imageScrollView" destination="nO5-vu-df5" id="MeW-OU-nDI"/>
                         <outlet property="placeHolderLabel" destination="wDc-al-4br" id="TNe-aQ-Hqp"/>
                         <outlet property="scrollViewContentWidth" destination="mkh-mq-oyq" id="Gfc-dE-llR"/>
+                        <outlet property="scrollViewLeadingConstraint" destination="e7z-Yl-QzU" id="FrA-52-p8T"/>
                         <outlet property="sendBtn" destination="UHK-Yq-BZl" id="0aT-gW-Te9"/>
                         <outlet property="textView" destination="UZu-DB-l0Q" id="Tvh-F5-x4U"/>
                         <outlet property="toolBarBottomConstraint" destination="q3F-RX-39a" id="cVn-Yz-Y7K"/>

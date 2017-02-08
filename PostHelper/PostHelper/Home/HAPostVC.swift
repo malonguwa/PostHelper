@@ -21,6 +21,11 @@ class HAPostVC: UIViewController {
     @IBOutlet weak var scrollViewContentWidth: NSLayoutConstraint!
     @IBOutlet weak var imageScrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var scrollViewLeadingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var hideScrollViewBtn: UIButton!
+    
+    var wordCountLabel : UILabel!
     var imagePickerManager : HAImagePickerManager = HAImagePickerManager()
     var avAssetsForSend = [DKAsset]()
     var avAssetsForDisplay = [UIImage]()
@@ -44,6 +49,18 @@ class HAPostVC: UIViewController {
     // MARK: System functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let wordCountLabel_H = CGFloat(20.0)
+        let wordCountLabel_W = CGFloat(100.0)
+        let wordCountLabel_X = CGFloat(5.0)
+        let wordCountLabel_Y = CGFloat(textView.frame.size.height) + wordCountLabel_H
+        wordCountLabel = UILabel(frame: CGRect(x: wordCountLabel_X, y: wordCountLabel_Y, width: wordCountLabel_W, height: wordCountLabel_H))
+        wordCountLabel.text = "???/140"
+        view.addSubview(wordCountLabel)
+
+        print("\(textView.frame)")
+//        placeWordCountLimit(hideScrollViewBtnisHidden: hideScrollViewBtn.isHidden)
+        
         textView.becomeFirstResponder()
         textView.delegate = self
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostVC.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
@@ -95,12 +112,17 @@ class HAPostVC: UIViewController {
             //combinedArray image+video一共选择的
             if combinedArray.count == 0 {
                 self.imageScrollView.isHidden = true
+                self.hideScrollViewBtn.isHidden = true
+//                self.placeWordCountLimit(hideScrollViewBtnisHidden: self.hideScrollViewBtn.isHidden)
                 self.textView.becomeFirstResponder()
                 return
             }
             
+            self.placeWordCountLimit(scrollView_X: (self.contentView.superview?.frame.origin.x)!)
+
             self.avAssetsForDisplay.removeAll()
             self.avAssetsForSend.removeAll()
+            self.hideScrollViewBtn.isHidden = false
 
             for imageView in self.contentView.subviews {
                 imageView.removeFromSuperview()
@@ -212,8 +234,12 @@ class HAPostVC: UIViewController {
 
         if avAssetsForDisplay.count == 0 {
             imageScrollView.isHidden = true
+            hideScrollViewBtn.isHidden = true
+            self.placeWordCountLimit(scrollView_X: (self.contentView.superview?.frame.origin.x)!)
         } else {
             imageScrollView.isHidden = false
+            hideScrollViewBtn.isHidden = false
+            self.placeWordCountLimit(scrollView_X: (self.contentView.superview?.frame.origin.x)!)
             for delete in self.contentView.subviews{
                 delete.removeFromSuperview()
             }
@@ -249,17 +275,6 @@ class HAPostVC: UIViewController {
     @IBAction func videoBtnClick(_ sender: UIButton) {
         displayAVAssets(whichBtn: .Video)
     }
-    
-    
-//    // MARK: FB - Send Text Only
-//    func FB_SendTextOnly(text : String!) {
-//        GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
-//            //text send completely
-//            print("text send completely + \(response)\n\(requestResult)\n")
-//            
-//            self.textView.text = ""
-//        }
-//    }
     
     // MARK: Send Image or Image with Text
     func sendImageOnly(avAssetsForSend : [DKAsset]!) {
@@ -369,7 +384,7 @@ class HAPostVC: UIViewController {
         
         //--------------------------------------------send text only
         if textView.text.characters.count != 0 && avAssetsForSend.count == 0{
-            let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 40, width: 80, height:80))
+            let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 70, width: 80, height:80))
             ringforText.indeterminate = true
             ringforText.showPercentage = false
 //            ringforText.primaryColor = UIColor(colorLiteralRed: 0.00, green: 162.00, blue: 236.00, alpha: 1)
@@ -406,7 +421,7 @@ class HAPostVC: UIViewController {
                         temp.last?.removeFromSuperview()
                         
                         //Label
-                        let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 100, y: UIScreen.main.bounds.size.height * 0.5 + 40, width: 200, height: 100))
+                        let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 100, y: UIScreen.main.bounds.size.height * 0.5 + 30, width: 200, height: 100))
                         label.numberOfLines = 0
                         label.text = "You can't send same message twice to Twitter or Facebook!"
                         label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
@@ -414,41 +429,72 @@ class HAPostVC: UIViewController {
                         label.textAlignment = .center
                         effectView.contentView.addSubview(label)
                         
+                        //Label
+                        let labelatBottom = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 100, y: UIScreen.main.bounds.size.height - 150, width: 200, height: 100))
+                        labelatBottom.numberOfLines = 0
+                        labelatBottom.text = "Tap anywhere"
+                        labelatBottom.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
+                        labelatBottom.textColor = UIColor.white
+                        labelatBottom.textAlignment = .center
+                        effectView.contentView.addSubview(labelatBottom)
+                        
                         //RingHUD
-                        let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 40, width: 80, height:80))
+                        let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 70, width: 80, height:80))
                         ringforText.primaryColor = UIColor.red
                         ringforText.secondaryColor = UIColor.red
                         ringforText.indeterminate = false
                         ringforText.showPercentage = false
                         ringforText.perform(M13ProgressViewActionFailure, animated: true)
                         effectView.contentView.addSubview(ringforText)
+                        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVC.tapOnBlurView(gesture:)))
+                        effectView.addGestureRecognizer(tapGesture)
                         
-                        DispatchQueue.main.async {
-                            sleep(UInt32(5))
-                            self.view.subviews.last?.removeFromSuperview()
-                            self.textView.becomeFirstResponder()
-                        }
+                        
+//                        self.view.subviews.last?.removeFromSuperview()
+//                        self.textView.becomeFirstResponder()
+                        
+//                        DispatchQueue.main.async {
+//                            sleep(UInt32(5))
+//                        }
                     } else {//Success
+                        
+                        //blurView
                         let effectView : UIVisualEffectView
                         effectView = self.view.subviews.last as! UIVisualEffectView
                         let temp = effectView.contentView.subviews
                         temp.last?.removeFromSuperview()
                         
-                        let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 40, width: 80, height:80))
+                        
+                        //Label
+                        let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 100, y: UIScreen.main.bounds.size.height - 150, width: 200, height: 100))
+                        label.numberOfLines = 0
+                        label.text = "Tap anywhere"
+                        label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
+                        label.textColor = UIColor.white
+                        label.textAlignment = .center
+                        effectView.contentView.addSubview(label)
+                        
+                        //ringHUD
+                        let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 40, y: UIScreen.main.bounds.size.height * 0.5 - 70, width: 80, height:80))
                         ringforText.primaryColor = UIColor.green
                         ringforText.secondaryColor = UIColor.green
                         ringforText.indeterminate = false
                         ringforText.showPercentage = false
                         ringforText.perform(M13ProgressViewActionSuccess, animated: true)
                         effectView.contentView.addSubview(ringforText)
+                        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVC.tapOnBlurView(gesture:)))
+                        effectView.addGestureRecognizer(tapGesture)
                         
-                        DispatchQueue.main.async {
-                            sleep(UInt32(1.5))
-                            self.view.subviews.last?.removeFromSuperview()
-                            self.textView.text = ""
-                            self.placeHolderLabel.isHidden = false
-                            self.textView.becomeFirstResponder()
-                        }
+                        self.textView.text = ""
+                        self.placeHolderLabel.isHidden = false
+
+//                        DispatchQueue.main.async {
+//                            sleep(UInt32(1.5))
+//                            self.view.subviews.last?.removeFromSuperview()
+//                            self.textView.text = ""
+//                            self.placeHolderLabel.isHidden = false
+//                            self.textView.becomeFirstResponder()
+//                        }
                     }
                     
 //                    let actionSheetController = UIAlertController(title: "Text send sucess", message: "", preferredStyle: UIAlertControllerStyle.alert)
@@ -526,6 +572,62 @@ class HAPostVC: UIViewController {
         }
     }
     
+    
+    //MARK: showWordCountLimit
+    func placeWordCountLimit(scrollView_X : CGFloat) {
+
+        if scrollView_X == CGFloat(0.0) {
+            UIView.animate(withDuration: 1, animations: {
+                self.wordCountLabel.transform = CGAffineTransform.identity
+                self.wordCountLabel.transform = self.wordCountLabel.transform.translatedBy(x: 5.0, y: -120.0)
+            })
+
+            
+        } else {
+            UIView.animate(withDuration: 1, animations: {
+                self.wordCountLabel.transform = CGAffineTransform.identity
+                self.wordCountLabel.transform = self.wordCountLabel.transform.translatedBy(x: 5.0, y: 120.0)
+            })
+        }
+    }
+    
+    //MARK: hideScrollViewBtnClick
+    @IBAction func hideScrollViewBtnClick(_ sender: UIButton) {
+        
+        print(wordCountLabel.frame)
+        
+        if sender.isSelected == true {//show
+            placeWordCountLimit(scrollView_X: (contentView.superview?.frame.origin.x)!)
+            UIView.animate(withDuration: 0.5, animations: {
+                print("show")
+                
+                self.hideScrollViewBtn.transform = CGAffineTransform(rotationAngle: 0.0)
+                self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: -(self.contentView.superview?.transform.tx)!, y: (self.contentView.superview?.transform.ty)!))!
+
+            }, completion: { (bool) in
+                sender.isSelected = false
+            })
+        } else {//hide
+            placeWordCountLimit(scrollView_X: (contentView.superview?.frame.origin.x)!)
+            UIView.animate(withDuration: 0.5, delay: 0.2, options: UIViewAnimationOptions.curveEaseInOut, animations: {
+                print("hide")
+                self.hideScrollViewBtn.transform = self.hideScrollViewBtn.transform.rotated(by: CGFloat(M_PI-0.000001))
+                
+                self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: (self.contentView.superview?.transform.tx)! + UIScreen.main.bounds.width, y: (self.contentView.superview?.transform.ty)!))!
+            }, completion: { (bool) in
+                sender.isSelected = true
+            })
+        }
+        
+        
+    }
+    
+    //MARK: TapGesture
+    func tapOnBlurView(gesture : UITapGestureRecognizer) {
+        view.subviews.last?.removeFromSuperview()
+        textView.becomeFirstResponder()
+
+    }
     
     //MARK: videoImage
     func getVideoImage(videoURL: URL!) -> UIImage {
