@@ -29,6 +29,7 @@
 		3DA8AA7D1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA8AA7C1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift */; };
 		3DB307221DDB2B0E00CFBFC6 /* PostHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */; };
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
+		3DD551F61E4D8D2200BDBBDF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD551F51E4D8D2200BDBBDF /* Utility.swift */; };
 		3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A61E446FC60089C64F /* M13ProgressView.m */; };
 		3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A81E446FC60089C64F /* M13ProgressViewRing.m */; };
 		3DE0E4AD1E4470BC0089C64F /* HAUploadStatusController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DE0E4AC1E4470BC0089C64F /* HAUploadStatusController.storyboard */; };
@@ -81,6 +82,7 @@
 		3DB307281DDB2B0E00CFBFC6 /* PostHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperUITests.swift; sourceTree = "<group>"; };
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DD551F51E4D8D2200BDBBDF /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		3DE0E4A51E446FC60089C64F /* M13ProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressView.h; sourceTree = "<group>"; };
 		3DE0E4A61E446FC60089C64F /* M13ProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressView.m; sourceTree = "<group>"; };
 		3DE0E4A71E446FC60089C64F /* M13ProgressViewRing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressViewRing.h; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 				3DF5471A1E2CB16400A5FF27 /* SocialVideoHelper.h */,
 				3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */,
 				3DF5471D1E2CB1A600A5FF27 /* PostHelper-Bridging-Header.h */,
+				3DD551F51E4D8D2200BDBBDF /* Utility.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 				3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */,
 				3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */,
 				3D7FA2561E2FC22400876FDB /* HAFacebookManager.swift in Sources */,
+				3DD551F61E4D8D2200BDBBDF /* Utility.swift in Sources */,
 				3D7FA2501E2FC20E00876FDB /* HAPlatformSelectionController.swift in Sources */,
 				3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */,
 				3D7FA2571E2FC22400876FDB /* HATwitterManager.swift in Sources */,

@@ -34,6 +34,7 @@ class HAPostVC: UIViewController {
     var twitterMgr = HATwitterManager()
     fileprivate lazy var isPresent : Bool = false
     var currentRootVc : UIViewController?
+    var TwitterWordCount = 0
 
 //    var mutiPlatform
     
@@ -46,19 +47,26 @@ class HAPostVC: UIViewController {
         case Video
     }
     
+    
+    //MARK: setUpWordCountLabel
+    func setUpWordCountLabel() {
+        let wordCountLabel_H = CGFloat(18.0)
+        let wordCountLabel_W = view.frame.size.width
+        let wordCountLabel_X = CGFloat(0.0)
+        let wordCountLabel_Y = CGFloat(textView.frame.size.height) + wordCountLabel_H + 28
+        wordCountLabel = UILabel.init()
+        wordCountLabel = UILabel(frame: CGRect(x: wordCountLabel_X, y: wordCountLabel_Y, width: wordCountLabel_W, height: wordCountLabel_H))
+        wordCountLabel.font = UIFont.systemFont(ofSize: 12.0)
+        
+        wordCountLabel.text = "\(140 - TwitterWordCount) Twitter, \(63206 - TwitterWordCount) Facebook"
+        wordCountLabel.backgroundColor = UIColor.white
+        view.insertSubview(wordCountLabel, at: view.subviews.count - 3)
+    }
+    
     // MARK: System functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let wordCountLabel_H = CGFloat(20.0)
-        let wordCountLabel_W = CGFloat(100.0)
-        let wordCountLabel_X = CGFloat(5.0)
-        let wordCountLabel_Y = CGFloat(textView.frame.size.height) + wordCountLabel_H
-        wordCountLabel = UILabel(frame: CGRect(x: wordCountLabel_X, y: wordCountLabel_Y, width: wordCountLabel_W, height: wordCountLabel_H))
-        wordCountLabel.text = "???/140"
-        view.addSubview(wordCountLabel)
-
-        print("wordCountLabel : \(wordCountLabel.frame)")
+        setUpWordCountLabel()
         
         textView.becomeFirstResponder()
         textView.delegate = self
@@ -119,6 +127,7 @@ class HAPostVC: UIViewController {
                 return
             }
             
+            //FIXEME: Add HUD here!!!
 
             self.avAssetsForDisplay.removeAll()
             self.avAssetsForSend.removeAll()
@@ -129,34 +138,113 @@ class HAPostVC: UIViewController {
             }
             
 //            self.avAssetsForSend.append(contentsOf: HnA_DKAssetArray)
-            self.avAssetsForSend.append(contentsOf: combinedArray)
-
-            print(self.avAssetsForSend.count)
+            
+//            self.avAssetsForSend.append(contentsOf: combinedArray)
+//
+//            print(self.avAssetsForSend.count)
             
             let serialQueue2 = DispatchQueue(label: "serialQ2ForAVSelection")
-            
+            var overSizeVideoCount = 0
+//            var overSizePhotoCount = 0
+            var overSizeVideoArray = [Int]()
+//            var overSizePhotoArray = [Int]()
             for asset in combinedArray.enumerated() {
                 serialQueue2.async {
                     if asset.element.isVideo == false { //image
+                        
                         asset.element.fetchOriginalImage(true, completeBlock: { (image, info) in
-                            let resizedImg = UIImage.HA_resizeImage(image: image)
-                            self.addImageAndDeleteBtn(image: resizedImg, offset: self.avAssetsForDisplay.count)
-                            self.avAssetsForDisplay.append(resizedImg)
+                            
+                            if image == nil {
+                                
+                            } else {
+//                                let imgData: NSData = NSData(data: UIImageJPEGRepresentation(image!, 1)!)
+//                                let imageSizeInBytes: Int = imgData.length
+//                                let fileSizeInMB = Double(imageSizeInBytes) * 0.000001024
+//
+//                                print("- \(fileSizeInMB) MB")
+//                                print("+ \(Double(data.length) * 0.000001024) MB")
+                                self.avAssetsForSend.append(asset.element)
+                                let data = image!.resetSizeOfImageData(source_image: image, maxSize: 2000)
+                                let resizedImg = UIImage(data: data as Data)
+//                                let resizedImg = UIImage.HA_resizeImage(image: image)
+                                if resizedImg == nil {
+                                    
+                                } else {
+                                    self.addImageAndDeleteBtn(image: resizedImg!, offset: self.avAssetsForDisplay.count)
+                                    self.avAssetsForDisplay.append(resizedImg!)
+                                }
+                            }
                         })
                     } else { //video
                         asset.element.fetchAVAsset(true, options: nil, completeBlock: { (Asset, info) in
                             let avurl = Asset as! AVURLAsset
-                            let videoImage = self.getVideoImage(videoURL: avurl.url)
-                            let resizedImg = UIImage.HA_resizeImage(image: videoImage)
-                            self.addImageAndDeleteBtn(image: resizedImg, offset: self.avAssetsForDisplay.count)
-                            self.avAssetsForDisplay.append(resizedImg)
+                            
+                            //先判断大小
+                            let fileSizeInBytes = avurl.url.relativePath.getFileSize()
+                            let fileSizeInMB = Double(fileSizeInBytes) * 0.000001024
+                            print("fileSize \(asset.offset) : \(Double(fileSizeInBytes) * 0.000001024) MB")
+                            
+                            //尝试压缩
+                            
+                            
+                            //判断压缩后的大小
+                            if fileSizeInMB > 1750.00 {//超过1.75G
+                                overSizeVideoCount = overSizeVideoCount + 1
+                                overSizeVideoArray.append(asset.offset+1)
+
+                            } else {
+                                //是否加入数组
+                                self.avAssetsForSend.append(asset.element)
+                                let videoImage = self.getVideoImage(videoURL: avurl.url)
+                                
+                                let data = videoImage.resetSizeOfImageData(source_image: videoImage, maxSize: 2000)
+                                let resizedImg = UIImage(data: data as Data)
+                                
+//                                let resizedImg = UIImage.HA_resizeImage(image: videoImage)
+                                self.addImageAndDeleteBtn(image: resizedImg!, offset: self.avAssetsForDisplay.count)
+                                self.avAssetsForDisplay.append(resizedImg!)
+                            }
+                            
                         })
                     }
                 }
-            }
+            }//end for
+
+            
             self.imageScrollView.isHidden = false
             self.textView.becomeFirstResponder()
-            print("avAssetsForSend.count: \(self.avAssetsForSend.count)")
+
+            serialQueue2.async {
+                
+                var stringForOverSize: String = ""
+
+    //            print("avAssetsForSend.count: \(self.avAssetsForSend.count)")
+                print("overSizeVideoArray: \(overSizeVideoArray)")
+
+                if overSizeVideoArray.count > 0{
+                    
+                    for oversizevideo in overSizeVideoArray {
+//                        print(oversizevideo)
+                        stringForOverSize.append("\(oversizevideo), ")
+                    }
+                    
+//                    print(stringForOverSize)
+
+                    //HUD显示哪些视频尺寸不合格
+                    let actionSheetController = UIAlertController(title: "Removed over size video from upload list !", message: "selected video number \(stringForOverSize)is over 1.75GB.", preferredStyle: UIAlertControllerStyle.alert)
+                    let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.cancel, handler: { (doneAction) in
+                        print(self.avAssetsForSend.count)
+                        print(self.avAssetsForDisplay.count)
+
+                        //                self.view.subviews.last?.removeFromSuperview()
+                        //                self.textView.becomeFirstResponder()
+                    })
+                    actionSheetController.addAction(doneAction)
+                    DispatchQueue.main.async {
+                        self.present(actionSheetController, animated: true, completion: nil)
+                    }
+                }
+            }
         }//end block
         
 
@@ -167,12 +255,7 @@ class HAPostVC: UIViewController {
         }
     }
     
-    // MARK: @synchronized - Lock
-    public func synchronized(lock: AnyObject, closure: () -> ()) {
-        objc_sync_enter(lock)
-        closure()
-        objc_sync_exit(lock)
-    }
+
     
     
     
@@ -334,26 +417,6 @@ class HAPostVC: UIViewController {
         }
     }
     
-    
-    
-    // MARK: getFileSize
-    func getSize(path: String!){
-        let filePath = path
-        var fileSize : UInt64
-        
-        do {
-            //return [FileAttributeKey : Any]
-            let attr = try FileManager.default.attributesOfItem(atPath: filePath!)
-            fileSize = attr[FileAttributeKey.size] as! UInt64
-            
-            //if you convert to NSDictionary, you can get file size old way as well.
-            let dict = attr as NSDictionary
-            fileSize = dict.fileSize()
-            print(fileSize)
-        } catch {
-            print("Error: \(error)")
-        }
-    }
     
     // MARK: Select Platforms Button click
     @IBAction func selectPlatformsBtnClick(_ sender: UIButton) {
@@ -580,14 +643,19 @@ class HAPostVC: UIViewController {
             
             if hideScrollViewBtn.isSelected == false {//Up
                 print("hideScrollViewBtn.isSelected == false")
-                if self.wordCountLabel.frame.origin.y == 140 {
+                wordCountLabel.alpha = 0
+                if self.wordCountLabel.frame.origin.y == 142 {
                     UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 220)
+                        self.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
+                        self.wordCountLabel.alpha = 1
+
                         self.wordCountLabel.superview?.layoutIfNeeded()
                     })
                 } else {
                     UIView.animate(withDuration: 0.5, animations: {
-                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 140)
+                        self.wordCountLabel.frame.origin = CGPoint(x: 0, y: 142)
+                        self.wordCountLabel.alpha = 1
+
                         self.wordCountLabel.superview?.layoutIfNeeded()
                     })
 
@@ -596,16 +664,19 @@ class HAPostVC: UIViewController {
             } else if hideScrollViewBtn.isSelected == true{//Down
                 print("hideScrollViewBtn.isSelected == true")
                 
-                
-                if self.wordCountLabel.frame.origin.y == 220 {
+                wordCountLabel.alpha = 0
+
+                if self.wordCountLabel.frame.origin.y == 248 {
                     
                     UIView.animate(withDuration: 0.5, animations: {
-                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 140)
+                        self.wordCountLabel.frame.origin = CGPoint(x: 0, y: 142)
+                        self.wordCountLabel.alpha = 1
                         self.wordCountLabel.superview?.layoutIfNeeded()
                     })
                 } else {
                     UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-                        self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 220)
+                        self.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
+                        self.wordCountLabel.alpha = 1
                         self.wordCountLabel.superview?.layoutIfNeeded()
                         
                     }, completion: nil)
@@ -614,7 +685,7 @@ class HAPostVC: UIViewController {
         } else {//Down
             UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.curveEaseInOut, animations: {
                 print("hideScrollViewBtn.isHidden == true")
-                self.wordCountLabel.frame.origin = CGPoint(x: 5, y: 220)
+                self.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
                 self.wordCountLabel.superview?.layoutIfNeeded()
             })
         }
@@ -688,17 +759,51 @@ class HAPostVC: UIViewController {
 // MARK: UITextViewDelegate
 extension HAPostVC: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-//        print("\(textView.text.characters.count)")
         textView.becomeFirstResponder()
+        let currentRange = textView.selectedRange
+//        textView.selectedRange = currentRange
+
         if textView.text.lengthOfBytes(using: .utf8) > 0{
+           TwitterWordCount = textView.text.lengthOfBytes(using: .utf8)
             sendBtn.isEnabled = true
             self.placeHolderLabel.isHidden = true
             
+            
         } else if avAssetsForDisplay.count == 0 && textView.text.lengthOfBytes(using: .utf8) == 0{
+            TwitterWordCount = 0
             sendBtn.isEnabled = false
             self.placeHolderLabel.isHidden = false
+        } else if textView.text.lengthOfBytes(using: .utf8) == 0 {
+            TwitterWordCount = 0
         }
+        else {
+            TwitterWordCount = textView.text.lengthOfBytes(using: .utf8)
+        }
+        
+        if textView.text.lengthOfBytes(using: .utf8) > 140{
+            
+
+            let attributeString = NSMutableAttributedString(string: textView.text)
+                print(">140")
+                attributeString.addAttribute(NSBackgroundColorAttributeName, value: UIColor.init(red: 0.0, green: 162.0, blue: 236.0, alpha: 0.2), range: NSMakeRange(0, 140))
+                attributeString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 14), range: NSMakeRange(0, attributeString.length))
+                textView.attributedText = attributeString
+            
+
+        }else {//<=140
+            
+            print("<=140")
+
+            let attributeString2 = NSMutableAttributedString(string: textView.text)
+            attributeString2.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 14), range: NSMakeRange(0, attributeString2.length))
+            textView.attributedText = attributeString2
+
+        }
+        
+        wordCountLabel.text = "\(140 - TwitterWordCount) Twitter, \(63206 - TwitterWordCount) Facebook"
+        textView.selectedRange = currentRange
     }
+    
 }
 
 extension HAPostVC: UIViewControllerTransitioningDelegate {
@@ -765,19 +870,4 @@ extension HAPostVC: UIViewControllerAnimatedTransitioning {
 
 
 
-// MARK: UIImage - HA_resizeImage
-extension UIImage {
-    class func HA_resizeImage(image: UIImage!) -> UIImage {
-        
-        let rect = CGRect(x: 0, y: 0, width: image.size.width * 0.06, height: image.size.height * 0.06)
-        UIGraphicsBeginImageContext(rect.size)
-        image.draw(in: rect)
-        let picture1 = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        let imageData = UIImagePNGRepresentation(picture1!)
-        let img = UIImage(data: imageData!)
-//        print("resized: \(img)")
-        return img!
-    }
-}
+

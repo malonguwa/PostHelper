@@ -32,12 +32,19 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             }
         }
 
+        var twitterText = text
+        if (text?.lengthOfBytes(using: .utf8))! >= 140 {
+            
+            let index = twitterText?.index((twitterText?.startIndex)!, offsetBy: 139)
+            twitterText = twitterText?.substring(to: index!)
+        }
+        print("\(twitterText?.lengthOfBytes(using: .utf8))")
         
         let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
         let client = TWTRAPIClient(userID: HATW_userID!)
         var urlError : NSError? = nil
         let params = [
-            "status" : text!,
+            "status" : twitterText!,
             ] as [String : Any]
         let request = client.urlRequest(withMethod: "POST", url: "https://api.twitter.com/1.1/statuses/update.json", parameters: params, error: &urlError)
         
@@ -97,7 +104,6 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             }
         }
         
-        
         let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
         var mediaIDs = [String]()
         let queue = DispatchQueue(label: "serialQForTWImageUpload")// 创建了一个串行队列
@@ -108,12 +114,20 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             if image.offset <= 3 {
                 queue.async {//将任务代码块加入异步串行队列queue中
                     let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                    let imgData = UIImageJPEGRepresentation(image.element, 0.6)
+                    
+                    var imgData: NSData = NSData(data: UIImageJPEGRepresentation(image.element, 1)!)
+                    let imageSizeInBytes: Int = imgData.length
+                    let fileSizeInMB = Double(imageSizeInBytes) * 0.000001024
+                    if fileSizeInMB > 5.00 {
+                        imgData = image.element.resetSizeOfImageData(source_image: image.element, maxSize: 5000)
+                    } else {
+                       imgData = NSData(data: UIImageJPEGRepresentation(image.element, 0.6)!)
+                    }
                     
                     if imgData == nil {
                         print("twitter: -> image data error")
                     } else {
-                        client.uploadMedia(imgData!, contentType: "image/jpeg", completion: { (mediaID, error) in
+                        client.uploadMedia(imgData as Data, contentType: "image/jpeg", completion: { (mediaID, error) in
                             if error != nil {
                                 //FIXME: here to know which twitter image upload faliure
                                 print("\(image.offset): error uploading media to Twitter \(error)")
@@ -203,6 +217,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         
     }
 
+    
 
     /// MARK: TweetWithTextandVideos
     func sendTweetWithTextandVideos(avAssetsForSend: [DKAsset], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
@@ -217,115 +232,115 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             }
         }
         
-        
         let accountStore = ACAccountStore()
         let accountType = accountStore.accountType(withAccountTypeIdentifier: ACAccountTypeIdentifierTwitter)
-        guard let accounts = accountStore.accounts(with: accountType) else {
-            print("account = nil")
-            return
-        }
-        
-        
-        let queue = DispatchQueue(label: "serialQForTWVideoUpload")// 创建了一个串行队列
-        
-        var _videos = [NSData]()
-        
-        // step 0: 将DKAsset对象中的video.url转化成NSData
-        for asset in avAssetsForSend.enumerated() {
-            queue.async {//将任务代码块加入异步串行队列queue中
-                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
-                    let avurl = av as! AVURLAsset
-                    if av != nil && asset.element.isVideo == true{
-                        
-                        //
-                        
-                        
-                        let videoData = NSData(contentsOf: avurl.url)
-                        if videoData == nil{
-                            print("data == nil")
-                            semaphore.signal()//当满足条件时，向队列发送信号
+        accountStore.requestAccessToAccounts(with: accountType, options: nil) { (bool, error) in
+            if bool == true {
+                guard let accounts = accountStore.accounts(with: accountType) else {
+                    print("accounts = nil")
+                    completion!(sendToPlatforms)
+                    return
+                }
+
+                if accounts.count > 0 {
+
+                    let queue = DispatchQueue(label: "serialQForTWVideoUpload")// 创建了一个串行队列
+                    
+                    var _videos = [NSData]()
+                    
+                    // step 0: 将DKAsset对象中的video.url转化成NSData
+                    for asset in avAssetsForSend.enumerated() {
+                        queue.async {//将任务代码块加入异步串行队列queue中
+                            let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                            asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
+                                let avurl = av as! AVURLAsset
+                                if av != nil && asset.element.isVideo == true{
+                                    
+                                    let videoData = NSData(contentsOf: avurl.url)
+                                    if videoData == nil{
+                                        print("data == nil")
+                                        semaphore.signal()//当满足条件时，向队列发送信号
+                                    }
+                                    
+                                    if Double((videoData?.length)!) * 0.000001024 > 500.00 {
+                                        print("fileSize \(asset.offset) : \(Double((videoData?.length)!) * 0.000001024) MB")
+                                        
+                                    } else {
+                                        
+                                        _videos.append(videoData!)
+                                        print("1: \(_videos.count)")
+                                        
+                                        semaphore.signal()//当满足条件时，向队列发送信号
+                                    }
+                                    
+                                    
+                                }
+                            })
+                            semaphore.wait()//阻塞并等待信号
                         }
-                        _videos.append(videoData!)
-                        print("1: \(_videos.count)")
+                    }//end for
+                    
+                    queue.async(flags: .barrier) {
                         
-                        semaphore.signal()//当满足条件时，向队列发送信号
-                    }
-                })
-                semaphore.wait()//阻塞并等待信号
-            }
-        }//end for
-        
-        queue.async(flags: .barrier) {
-            
-            let queue2 = DispatchQueue(label: "qForTWVideosUploadSquence")
- 
-            
-            for videoData in _videos.enumerated() {
-                queue2.async {
-                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-//                    self.HAtimer = Timer.init(timeInterval: 1, repeats: true, block: { (timer) in
-//                        print("Timer ------")
-//                        if self.VideoUpdateUploadStatus != nil {
-//                            if self.TWvideoSendPercentage >= Double(25 * videoData.offset + 1) {
-//                                self.HAtimer.invalidate()
-//                            } else {
-//                                self.TWvideoSendPercentage = self.TWvideoSendPercentage + 1
-//                                self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage) / CGFloat(_videos.count) + (100.00 / CGFloat(_videos.count) * CGFloat(videoData.offset)), uploadStatus.Uploading)
-//                            }
-//                        }
-//                    })
-//                    RunLoop.current.add(self.HAtimer, forMode: RunLoopMode.commonModes)
-//                    self.HAtimer.fire()
-                    self.count = _videos.count
-                    self.offset = videoData.offset
-                    DispatchQueue.main.async {
-                        self.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
-                    }
-                    
-//                    self.HAtimer = Timer.init(timeInterval: 1, target: self, selector: #selector(HATwitterManager.timerFireMethod(timer:)), userInfo: nil, repeats: true)
-//                    RunLoop.current.add(self.HAtimer, forMode: RunLoopMode.commonModes)
-//                    self.HAtimer.fire()
-                    
-                    
-                    SocialVideoHelper.uploadTwitterVideo(videoData.element as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessage) in
-                        if success == true {
-                            print("Twitter video upload success")
-                            self.HAtimer?.invalidate()
-                            self.HAtimer = nil
-                            self.TWvideoSendPercentage = 0.00
-//                            self.TWvideoSendPercentage = self.TWvideoSendPercentage + (100.00 / Double(self.count) * Double(self.offset))
-//                            self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage), uploadStatus.Uploading)
-//                            self.TWvideoSendPercentage = self.TWvideoSendPercentage / Double(self.count) + (100.00 / Double(self.count) * Double(self.offset))
+                        let queue2 = DispatchQueue(label: "qForTWVideosUploadSquence")
+                        
+                        
+                        for videoData in _videos.enumerated() {
+                            queue2.async {
+                                let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
 
-                            if videoData.offset == _videos.count - 1 {
-                                
-                                print("after send success in Twitter: \(platforms)")
-                                
-                                //FIXME: here
-                                if self.VideoUpdateUploadStatus != nil {
-//                                    self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage) / CGFloat(_videos.count) + (100.00 / CGFloat(_videos.count) * CGFloat(videoData.offset)), uploadStatus.Uploading)
-                                    self.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
-
+                                self.count = _videos.count
+                                self.offset = videoData.offset
+                                DispatchQueue.main.async {
+                                    self.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
                                 }
                                 
-                                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                                
+                                SocialVideoHelper.uploadTwitterVideo(videoData.element as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessage) in
+                                    if success == true {
+                                        print("Twitter video upload success")
+                                        self.HAtimer?.invalidate()
+                                        self.HAtimer = nil
+                                        self.TWvideoSendPercentage = 0.00
 
+                                        
+                                        if videoData.offset == _videos.count - 1 {
+                                            
+                                            print("after send success in Twitter: \(platforms)")
+                                            
+                                            //FIXME: here
+                                            if self.VideoUpdateUploadStatus != nil {
+                                                self.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
+                                                
+                                            }
+                                            
+                                            self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                                            
+                                        }
+                                    } else {
+                                        print(errorMessage!)
+                                        //FIXME: 失败也要继续往下一个平台发
+                                        if videoData.offset == _videos.count - 1 {
+                                            self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
+                                            self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                                        }
+                                    }
+                                    semaphore2.signal()
+                                })
+                                
+                                semaphore2.wait()
                             }
-                        } else {
-                            print(errorMessage!)
-                            //FIXME: 失败也要继续往下一个平台发
-                            if videoData.offset == _videos.count - 1 {
-                                self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
-                                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-                            }
-                        }
-                        semaphore2.signal()
-                    })
-                    
-                    semaphore2.wait()
+                        }//end for
+                    }//end async q
+
+
+                } else {
+                    print("\(accounts)")
                 }
-            }//end for
+            } else {
+                
+            }
+            
         }
     }
     
