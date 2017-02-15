@@ -7,4 +7,5 @@ pod 'DKImagePickerController'
 pod 'Fabric'
 pod 'TwitterKit'
 pod 'TwitterCore'
+#pod 'TwitterVideoUploader'
 end

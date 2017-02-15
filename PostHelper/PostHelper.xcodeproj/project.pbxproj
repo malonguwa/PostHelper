@@ -23,8 +23,8 @@
 		3D7FA2581E2FC22400876FDB /* HAWechatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D7FA2551E2FC22400876FDB /* HAWechatManager.swift */; };
 		3D98093F1DDDA0E700BB4FEF /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D98093E1DDDA0E700BB4FEF /* Home.storyboard */; };
 		3D9809411DDDAAE400BB4FEF /* HAPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */; };
-		3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */; };
 		3D9809471DE591A900BB4FEF /* HAImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */; };
+		3D9C5F871E53597D005F3C82 /* sample_mpeg4.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 3D9C5F851E53587A005F3C82 /* sample_mpeg4.mp4 */; };
 		3DA7C0631E44ACC900E4C678 /* star6.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DA7C0621E44ACC900E4C678 /* star6.png */; };
 		3DA8AA7D1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA8AA7C1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift */; };
 		3DB307221DDB2B0E00CFBFC6 /* PostHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */; };
@@ -70,9 +70,9 @@
 		3D7FA2551E2FC22400876FDB /* HAWechatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAWechatManager.swift; sourceTree = "<group>"; };
 		3D98093E1DDDA0E700BB4FEF /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostVC.swift; sourceTree = "<group>"; };
-		3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAHomeTableController.swift; sourceTree = "<group>"; };
 		3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAImagePickerManager.swift; sourceTree = "<group>"; };
 		3D9809481DE6CCD800BB4FEF /* ImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D9C5F851E53587A005F3C82 /* sample_mpeg4.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sample_mpeg4.mp4; sourceTree = "<group>"; };
 		3DA7C0621E44ACC900E4C678 /* star6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star6.png; sourceTree = "<group>"; };
 		3DA8AA7C1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASocialPlatformsBaseManager.swift; sourceTree = "<group>"; };
 		3DB307091DDB2B0E00CFBFC6 /* PostHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PostHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +138,7 @@
 		3D65CDD41DDC423D00073AB4 /* PostHelper */ = {
 			isa = PBXGroup;
 			children = (
+				3D9C5F851E53587A005F3C82 /* sample_mpeg4.mp4 */,
 				3D65CDE91DDC4F1200073AB4 /* PostHelper.entitlements */,
 				3D65CDDA1DDC423D00073AB4 /* Login */,
 				3D65CDD71DDC423D00073AB4 /* Home */,
@@ -154,7 +155,6 @@
 			isa = PBXGroup;
 			children = (
 				3D98093E1DDDA0E700BB4FEF /* Home.storyboard */,
-				3D9809421DE31D7900BB4FEF /* HAHomeTableController.swift */,
 				3D9809401DDDAAE400BB4FEF /* HAPostVC.swift */,
 				3D9809461DE591A900BB4FEF /* HAImagePickerManager.swift */,
 				3DE0E4AB1E44708D0089C64F /* uploadStatusMenu */,
@@ -390,6 +390,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D9C5F871E53597D005F3C82 /* sample_mpeg4.mp4 in Resources */,
 				3DE0E4AD1E4470BC0089C64F /* HAUploadStatusController.storyboard in Resources */,
 				3DA7C0631E44ACC900E4C678 /* star6.png in Resources */,
 				3D65CDE31DDC446C00073AB4 /* HALogin.storyboard in Resources */,
@@ -487,7 +488,6 @@
 				3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */,
 				3D7FA2581E2FC22400876FDB /* HAWechatManager.swift in Sources */,
 				3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */,
-				3D9809431DE31D7900BB4FEF /* HAHomeTableController.swift in Sources */,
 				3DE0E4AF1E447A230089C64F /* HAUploadStatusController.swift in Sources */,
 				3DA8AA7D1E41D68E0048FB4B /* HASocialPlatformsBaseManager.swift in Sources */,
 				3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */,

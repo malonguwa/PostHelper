@@ -66,6 +66,8 @@ class HAPostVC: UIViewController {
     // MARK: System functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("parent: \(self.parent)")
+        
         setUpWordCountLabel()
         
         textView.becomeFirstResponder()

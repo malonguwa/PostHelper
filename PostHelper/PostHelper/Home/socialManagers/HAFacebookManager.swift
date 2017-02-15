@@ -321,6 +321,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                     }
                     
                     let downloadFailureHandler = { (error: Error) -> () in
+                        self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
                         print("\(error)")
                     }
                     
@@ -337,7 +338,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                         switch GraphRequestResult {
                         case .failed(let error):
                             print(error)
-                            self.VideoUpdateUploadStatus!(0.00, uploadStatus.Failure)
+                            self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
                             break
                         case .success(let response):
                             if videoData.offset == _videos.count - 1 {

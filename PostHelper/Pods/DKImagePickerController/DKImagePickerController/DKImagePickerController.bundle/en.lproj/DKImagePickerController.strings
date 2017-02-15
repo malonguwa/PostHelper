@@ -26,6 +26,6 @@
 
 "done" = "Done";
 
-"maxLimitReached" = "Max item limit reached";
+"maxLimitReached" = "Max photos limit reached";
 
-"maxLimitReachedMessage" = "You can select no more than %ld items";
+"maxLimitReachedMessage" = "You can select %ld items";

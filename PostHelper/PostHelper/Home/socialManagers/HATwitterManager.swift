@@ -9,6 +9,9 @@
 import UIKit
 import TwitterKit
 import DKImagePickerController
+//import TwitterVideoUploader
+//import STTwitter
+//import RxSwift
 
 
 class HATwitterManager: HASocialPlatformsBaseManager {
@@ -20,6 +23,11 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     var count = 0
     var offset = 0
     var parts = 0
+
+    func active() {
+    }
+    
+    
     
     func sendTweetWithTextOnly(text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?){
         
@@ -31,7 +39,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 return
             }
         }
-
+        
         var twitterText = text
         if (text?.lengthOfBytes(using: .utf8))! >= 140 {
             
@@ -218,11 +226,50 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     }
 
     
+    
+
+
+    func HA_WillResignActive() {
+        print("HA_DidEnterBackground")
+//        operationQueue.cancelAllOperations()
+
+
+        print("finish HA_DidEnterBackground")
+//        HAtimer?.invalidate()
+    }
+    
+    func HA_WillEnterForeground() {
+        print("HA_WillEnterForeground")
+        DispatchQueue.main.async {
+            self.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
+        }
+
+    }
+    
+    let operationQueue = OperationQueue.init()
 
     /// MARK: TweetWithTextandVideos
     func sendTweetWithTextandVideos(avAssetsForSend: [DKAsset], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+        
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(HATwitterManager.HA_WillResignActive),
+//                                               name: NSNotification.Name.UIApplicationWillResignActive,
+//                                               object: nil)
+
+
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(HATwitterManager.HA_DidEnterBackground),
+//                                               name: NSNotification.Name.UIApplicationDidEnterBackground,
+//                                               object: nil)
+
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(HATwitterManager.HA_WillEnterForeground),
+//                                               name: NSNotification.Name.UIApplicationWillEnterForeground,
+//                                               object: nil)
+//        print("234  该黑屏了")
 
         
+//        queueForEnterBackground?.resume()
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
@@ -232,7 +279,9 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             }
         }
         
+
         let accountStore = ACAccountStore()
+        
         let accountType = accountStore.accountType(withAccountTypeIdentifier: ACAccountTypeIdentifierTwitter)
         accountStore.requestAccessToAccounts(with: accountType, options: nil) { (bool, error) in
             if bool == true {
@@ -243,19 +292,19 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 }
 
                 if accounts.count > 0 {
-
-                    let queue = DispatchQueue(label: "serialQForTWVideoUpload")// 创建了一个串行队列
+                    
+                    self.operationQueue.maxConcurrentOperationCount = 1
+                    let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
                     
                     var _videos = [NSData]()
-                    
-                    // step 0: 将DKAsset对象中的video.url转化成NSData
-                    for asset in avAssetsForSend.enumerated() {
-                        queue.async {//将任务代码块加入异步串行队列queue中
-                            let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                    var _videoURLs = [URL]()
+                    self.operationQueue.addOperation({
+                        // step 0: 将DKAsset对象中的video.url转化成NSData
+                        for asset in avAssetsForSend.enumerated() {
                             asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
                                 let avurl = av as! AVURLAsset
                                 if av != nil && asset.element.isVideo == true{
-                                    
+                                    _videoURLs.append(avurl.url)
                                     let videoData = NSData(contentsOf: avurl.url)
                                     if videoData == nil{
                                         print("data == nil")
@@ -277,99 +326,100 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                                 }
                             })
                             semaphore.wait()//阻塞并等待信号
-                        }
-                    }//end for
-                    
-                    queue.async(flags: .barrier) {
-                        
-                        let queue2 = DispatchQueue(label: "qForTWVideosUploadSquence")
-                        
-                        
-                        for videoData in _videos.enumerated() {
-                            queue2.async {
-                                let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-
-                                self.count = _videos.count
-                                self.offset = videoData.offset
-                                DispatchQueue.main.async {
-                                    self.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
-                                }
-                                
-                                
-                                SocialVideoHelper.uploadTwitterVideo(videoData.element as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessage) in
-                                    if success == true {
-                                        print("Twitter video upload success")
-                                        self.HAtimer?.invalidate()
-                                        self.HAtimer = nil
-                                        self.TWvideoSendPercentage = 0.00
-
-                                        
-                                        if videoData.offset == _videos.count - 1 {
-                                            
-                                            print("after send success in Twitter: \(platforms)")
-                                            
-                                            //FIXME: here
-                                            if self.VideoUpdateUploadStatus != nil {
-                                                self.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
-                                                
-                                            }
-                                            
-                                            self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-                                            
-                                        }
-                                    } else {
-                                        print(errorMessage!)
-                                        //FIXME: 失败也要继续往下一个平台发
-                                        if videoData.offset == _videos.count - 1 {
-                                            self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
-                                            self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-                                        }
-                                    }
-                                    semaphore2.signal()
-                                })
-                                
-                                semaphore2.wait()
-                            }
+                            
                         }//end for
-                    }//end async q
+                    })
 
+                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
+                    self.operationQueue.addOperation({ [weak self] in
+                        for videoData in _videos.enumerated() {
+                            print("for videoData")
+                            print("blockOperation2 start")
+                            self?.count = _videos.count
+                            self?.offset = videoData.offset
+                        
+                            DispatchQueue.main.async {
+                                self?.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self!, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
+                            }
+                            
+                            SocialVideoHelper.uploadTwitterVideo(videoData.element as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { [weak self] (success, errorMessage) in
+                                if success == true {
+                                    print("Twitter video upload success")
+                                    //                                        self.HAtimer?.invalidate()
+                                    //                                        self.HAtimer = nil
+                                    self?.TWvideoSendPercentage = 0.00
+                                    
+                                    
+                                    if videoData.offset == _videos.count - 1 {
+                                        
+                                        print("after send success in Twitter: \(platforms)")
 
+                                        self?.HAtimer?.invalidate()
+                                        self?.HAtimer = nil
+                                        //FIXME: here
+                                        if self?.VideoUpdateUploadStatus != nil {
+                                            self?.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
+                                            
+                                        }
+                                        
+                                        self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                                        
+                                    }
+                                } else {
+                                    print("372 - \(errorMessage!)")
+                                    //                                        self.HAtimer?.invalidate()
+                                    //                                        self.HAtimer = nil
+                                    //FIXME: 失败也要继续往下一个平台发
+                                    if videoData.offset == _videos.count - 1 {
+
+                                        self?.HAtimer?.invalidate()
+                                        self?.HAtimer = nil
+                                        self?.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
+                                        self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                                    }
+                                }
+                                semaphore2.signal()
+                            })
+//                            print("\(self.falgForResume)")
+//                            self.falgForResume = true
+                            semaphore2.wait()
+                            
+                        }//end for
+                        
+                    })
                 } else {
                     print("\(accounts)")
                 }
-            } else {
-                
+            } else {//不受权
+                //FIXME: 提示用户自己去授权
             }
             
         }
     }
     
-//    func timerFireMethod() {
-//        print("timerFireMethod")
-//        if self.VideoUpdateUploadStatus != nil {
-//            if self.TWvideoSendPercentage == 25 {
-//                self.TWvideoSendPercentage = 32
-//            } else
-//            self.TWvideoSendPercentage = self.TWvideoSendPercentage + 1
-//            
-//        }
-//    }
+    deinit {
+        DispatchQueue.main.async {
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        }
+    }
 
     func timerFireMethod() {
         print("timerFireMethod")
-        if self.VideoUpdateUploadStatus != nil {
+        if VideoUpdateUploadStatus != nil {
             
-            self.TWvideoSendPercentage = self.TWvideoSendPercentage + 1.00
-            if self.TWvideoSendPercentage < (100.00 / Double(count) * Double(offset)) {
-                                print("if \(self.TWvideoSendPercentage)")
-                self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
+            TWvideoSendPercentage = TWvideoSendPercentage + 1.00
+            if TWvideoSendPercentage < (100.00 / Double(count) * Double(offset)) {
+                                print("if \(TWvideoSendPercentage)")
+                VideoUpdateUploadStatus!(CGFloat(TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
             } else if (100.00 / Double(count) * Double(offset)) == 0.00 {
-                self.VideoUpdateUploadStatus!(CGFloat(self.TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
+                VideoUpdateUploadStatus!(CGFloat(TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
 
             } else {
-                                print("else \(self.TWvideoSendPercentage)")
-                self.HAtimer?.invalidate()
+                                print("else \(TWvideoSendPercentage)")
+                HAtimer?.invalidate()
             }
+            
         }
         
     }

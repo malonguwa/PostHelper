@@ -13,6 +13,15 @@ import SafariServices
 import FBSDKCoreKit
 import TwitterKit
 
+// Global var
+public var hasAuthToTwitter : Bool?
+public var hasAuthToFacebook : Bool?
+public var platforms = [SocialPlatform]()
+public enum SocialPlatform { // send squence
+    case HATwitter
+    case HAFacebook
+}
+
 class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 
     // MARK: Property
@@ -23,15 +32,53 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
     @IBOutlet weak var TWDisconnectBtn: UIButton!
     @IBOutlet weak var readyBtn: UIButton!
     
+    @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("viewDidDisappear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeFromParentViewController()
+        print("viewWillDisappear")
+
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("viewWillAppear")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("viewDidAppear")
+
+    }
+    
+    
+    
+    func setTopConstarint() {
+        topLayoutConstraint.constant = (view.frame.size.height * 0.5 - 125)
+    }
     // MARK: Function
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(HALoginVC.HAFacebookCheckLogin), name: NSNotification.Name.FBSDKAccessTokenDidChange, object: nil)
+        setTopConstarint()
+//        NotificationCenter.default.addObserver(self, selector: #selector(HALoginVC.HAFacebookCheckLogin), name: NSNotification.Name.FBSDKAccessTokenDidChange, object: nil)
 
+        
+        print("HALoginVC\(self)")
+        
+        //check login state
+        print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")
+        print("Facebook AccessToken = \(AccessToken.current?.appId) and expirationDate = \(AccessToken.current?.expirationDate)")
         hasAuthToTwitter = HALoginVC.hasAccessToTwitter()
         hasAuthToFacebook = HALoginVC.hasAccessToFacebook()
         
+        //setup platforms array for collect login state
         if platforms.count != 0 {
             if hasAuthToTwitter == true && platforms[0] != .HATwitter {
                 platforms.insert(.HATwitter, at: 0)
@@ -54,29 +101,41 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                 platforms.append(.HAFacebook)
             }
         }
+        
 
-        print("HALoginVC viewDidLoad: \(platforms)")
         
         if HALoginVC.hasAccessToFacebook() == false && HALoginVC.hasAccessToTwitter() == false{
-            addFBAccountBtn.isEnabled = true
-            FBDisconnectBtn.isEnabled = false
-            addTWAccountBtn.isEnabled = true
-            TWDisconnectBtn.isEnabled = false
+            FBDisconnectBtn.isHidden = true
+            TWDisconnectBtn.isHidden = true
 
             readyBtn.isEnabled = false
         } else {
 
             HALoginVC.hasAccessToFacebook() == true ?  (addFBAccountBtn.isEnabled = false) : (addFBAccountBtn.isEnabled = true)
-//            addFBAccountBtn.isEnabled = HALoginVC.hasAccessToFacebook() == true ? false : true
-            FBDisconnectBtn.isEnabled = HALoginVC.hasAccessToFacebook() == true ? true : false
+            addFBAccountBtn.isEnabled = HALoginVC.hasAccessToFacebook() == true ? false : true
+            switchAddAccBtnImage(isEnabled: addFBAccountBtn.isEnabled, btn: addFBAccountBtn)
+            
+            FBDisconnectBtn.isHidden = !HALoginVC.hasAccessToFacebook()
+
             addTWAccountBtn.isEnabled = HALoginVC.hasAccessToTwitter() == true ? false : true
-            TWDisconnectBtn.isEnabled = HALoginVC.hasAccessToTwitter() == true ? true : false
+            switchAddAccBtnImage(isEnabled: addTWAccountBtn.isEnabled, btn: addTWAccountBtn)
+
+            TWDisconnectBtn.isHidden = !HALoginVC.hasAccessToTwitter()
+            
             readyBtn.isEnabled = true
         }
         
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
+   private func switchAddAccBtnImage (isEnabled : Bool?, btn : UIButton?){
+        if isEnabled == false {
+            btn?.setImage(UIImage(named: "FontAwesome_connected_128"), for: UIControlState.normal)
+        } else {
+            btn?.setImage(UIImage(named: "FontAwesome_add_128"), for: UIControlState.normal)
+        }
+        
+    }
+    
     func HAFacebookCheckLogin() {
         if AccessToken.current != nil {// User is already logged in, do work such as go to next view controller.
             print("~~~******** Connected to facebook already\n")
@@ -104,10 +163,12 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                 print("User cancelled login.")
             case .success(let grantedPermissions, let declinedPermissions, let accessToken):
                 hasAuthToFacebook = true
-                DispatchQueue.main.async {
-                    self.addFBAccountBtn.isEnabled = false
-                    self.FBDisconnectBtn.isEnabled = true
-                    self.readyBtn.isEnabled = true
+                DispatchQueue.main.async { [weak self] in
+                    self?.addFBAccountBtn.isEnabled = false
+                    self?.switchAddAccBtnImage(isEnabled: self?.addFBAccountBtn.isEnabled, btn: self?.addFBAccountBtn)
+
+                    self?.FBDisconnectBtn.isHidden = false
+                    self?.readyBtn.isEnabled = true
                 }
                 
                 if hasAuthToFacebook! == true {
@@ -141,10 +202,13 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                         platforms.append(.HATwitter)
                     }
                 }
-                DispatchQueue.main.async {
-                    self.addTWAccountBtn.isEnabled = false
-                    self.TWDisconnectBtn.isEnabled = true
-                    self.readyBtn.isEnabled = true
+                DispatchQueue.main.async { [weak self] in
+                    self?.addTWAccountBtn.isEnabled = false
+                    self?.switchAddAccBtnImage(isEnabled: self?.addTWAccountBtn.isEnabled, btn: self?.addTWAccountBtn)
+
+                    self?.TWDisconnectBtn.isHidden = false
+                    
+                    self?.readyBtn.isEnabled = true
 
                 }
                 
@@ -156,55 +220,6 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-//        loginManager.logIn([.publicProfile, ReadPermission.custom("user_photos"), ReadPermission.custom("user_videos")], viewController: self) { loginResult in
-//            switch loginResult {
-//            case .failed(let error):
-//                print(error)
-//            case .cancelled:
-//                print("User cancelled login.")
-//            case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-//
-//                print("Logged in with read permission!, \n grantedPermissions: \(grantedPermissions), \n declinedPermissions: \(declinedPermissions),\n accessToken: \(accessToken)")
-//                loginManager.logIn([.publishActions], viewController: self) { loginResult in
-//                    switch loginResult {
-//                    case .failed(let error):
-//                        print(error)
-//                    case .cancelled:
-//                        print("User cancelled login.")
-//                    case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-//
-//                        print("Logged in with read permission!, \n grantedPermissions: \(grantedPermissions), \n declinedPermissions: \(declinedPermissions),\n accessToken: \(accessToken)")
-//                    }
-//
-//                }
-//            }
-//        }
-        
-//        .custom("user_photos")
-//        loginManager.logIn([.publishActions], viewController: self) { loginResult in
-//            switch loginResult {
-//            case .failed(let error):
-//                print(error)
-//            case .cancelled:
-//                print("User cancelled login.")
-//            case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-//
-//                print("Logged in with read permission!, \n grantedPermissions: \(grantedPermissions), \n declinedPermissions: \(declinedPermissions),\n accessToken: \(accessToken)")
-//            }
-//
-        
-
-        
-        
-        
-
     @IBAction func TWLogOutClick(_ sender: Any) {
         let store = Twitter.sharedInstance().sessionStore
         if platforms.count != 0 {
@@ -219,10 +234,12 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         if let userID = store.session()?.userID {
             store.logOutUserID(userID)
             print(store.existingUserSessions())
-            DispatchQueue.main.async {
-                self.addTWAccountBtn.isEnabled = true
-                self.TWDisconnectBtn.isEnabled = false
-                platforms.count > 0 ? (self.readyBtn.isEnabled = true) : (self.readyBtn.isEnabled = false)
+            DispatchQueue.main.async { [weak self] in
+                self?.addTWAccountBtn.isEnabled = true
+                self?.switchAddAccBtnImage(isEnabled: self?.addTWAccountBtn.isEnabled, btn: self?.addTWAccountBtn)
+
+                self?.TWDisconnectBtn.isHidden = true
+                platforms.count > 0 ? (self?.readyBtn.isEnabled = true) : (self?.readyBtn.isEnabled = false)
             }
         }
         
@@ -234,16 +251,6 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
             print("token is nil")
             return
         }
-        
-//        let safariVC = SFSafariViewController.init(url: URL(string: "https://www.facebook.com/logout.php?next=https://example.com&access_token=\(token.authenticationToken)")!)
-//        // https://www.facebook.com/logout.php?next=http://example.com&access_token=xxx
-//
-//        safariVC.delegate = self
-//        present(safariVC, animated: true, completion: {
-//            
-//        })
-        
-        
 
         GraphRequest(graphPath: "/me/permissions", parameters:[:], accessToken: token, httpMethod: GraphRequestHTTPMethod.DELETE, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
 //            print("\(response)\n\(requestResult)")
@@ -252,7 +259,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                     if platform.element == .HAFacebook {
                         platforms.remove(at: platform.offset)
                         hasAuthToFacebook = false
-                        print("facebook remove from array \(platforms)")
+//                        print("facebook remove from array \(platforms)")
                     }
                 }
             }
@@ -262,10 +269,11 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                 print(error)
                 break
             case .success(let response):
-                DispatchQueue.main.async {
-                    self.addFBAccountBtn.isEnabled = true
-                    self.FBDisconnectBtn.isEnabled = false
-                    platforms.count > 0 ? (self.readyBtn.isEnabled = true) : (self.readyBtn.isEnabled = false)
+                DispatchQueue.main.async { [weak self] in
+                    self?.addFBAccountBtn.isEnabled = true
+                    self?.switchAddAccBtnImage(isEnabled: self?.addFBAccountBtn.isEnabled, btn: self?.addFBAccountBtn)
+                    self?.FBDisconnectBtn.isHidden = true
+                    platforms.count > 0 ? (self?.readyBtn.isEnabled = true) : (self?.readyBtn.isEnabled = false)
 
                 }
                 print(response)
@@ -294,13 +302,13 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         }
     
     }
-    
+
     public class func hasAccessToTwitter() -> Bool {
         if Twitter.sharedInstance().sessionStore.session() == nil {
-            print("Twitter session = nil")
+//            print("Twitter session = nil")
             return false
         } else {
-            print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")
+//            print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")
             return true
         }
     }
@@ -308,14 +316,14 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
     public class func hasAccessToFacebook() -> Bool {
         
         if AccessToken.current == nil{
-            print("hasAccessToFacebook(): Facebook AccessToken = nil")
+//            print("hasAccessToFacebook(): Facebook AccessToken = nil")
             return false
         } else {
-            print("hasAccessToFacebook(): Facebook AccessToken expirationDate = \(AccessToken.current?.expirationDate)")
+//            print("hasAccessToFacebook(): Facebook AccessToken expirationDate = \(AccessToken.current?.expirationDate)")
             return true
         }
     }
-
+    
     deinit {
         print("HALoginVC deinit")
     }

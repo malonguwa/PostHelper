@@ -19,6 +19,7 @@
     NSString *errorDes = [error localizedDescription];
     NSLog(@"There was an error:%@", errorDes);
     DispatchMainThread(^(){completion(NO, errorDes);});
+    
 }
 
 +(void)uploadSuccessWithCompletion:(VideoUploadCompletion)completion{
@@ -136,8 +137,10 @@
     return [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
 }
 
+
+
+
 +(void)uploadTwitterVideo:(NSData*)videoData comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
-    
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
     
     NSDictionary *postParams = @{@"command": @"INIT",
@@ -153,6 +156,7 @@
         if (error) {
             NSLog(@"Twitter Error stage 1 - %@", error);
             [SocialVideoHelper uploadError:error withCompletion:completion];
+            return;
         } else {
             NSMutableDictionary *returnedData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
             
@@ -165,6 +169,7 @@
         }
     }];
 }
+
 
 +(void)tweetVideoStage2:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
     
@@ -186,7 +191,59 @@
     }
 
     __block NSError *theError = nil;
-    dispatch_queue_t chunksRequestQueue = dispatch_queue_create("chunksRequestQueue", DISPATCH_QUEUE_SERIAL);
+//    dispatch_queue_t chunksRequestQueue = dispatch_queue_create("chunksRequestQueue", DISPATCH_QUEUE_SERIAL);
+
+    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
+    operationQueue.maxConcurrentOperationCount = 1;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [operationQueue addOperationWithBlock:^{
+        for (int i = 0; i < (requests.count - 1); i++) {
+            SLRequest *postRequest = requests[i];
+            [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                NSLog(@"Twitter Stage2 - %d HTTP Response: %li, %@", (i+1),(long)[urlResponse statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+                if (error) {
+                    NSLog(@"Twitter Error stage 2 - %d, error - %@", (i+1), error);
+                    theError = error;
+                    [SocialVideoHelper uploadError:error withCompletion:completion];
+                    return;
+                } else {
+                    if (i == requests.count - 1) {
+                        [SocialVideoHelper tweetVideoStage3:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
+                    }
+                }
+                dispatch_semaphore_signal(semaphore);
+//                dispatch_group_leave(requestGroup);
+            }];
+
+            
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+//            dispatch_group_wait(requestGroup, DISPATCH_TIME_FOREVER);
+        }
+        
+        if (theError) {
+            [SocialVideoHelper uploadError:theError withCompletion:completion];
+        } else {
+            SLRequest *postRequest = requests.lastObject;
+            [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                NSLog(@"Twitter Stage2 - final, HTTP Response: %li, %@",(long)[urlResponse statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+                if (error) {
+                    NSLog(@"Twitter Error stage 2 - final, error - %@", error);
+                    [SocialVideoHelper uploadError:error withCompletion:completion];
+                    return;
+                } else {
+                    
+                    NSLog(@"stage two success, mediaID -> %@", mediaID);
+                    
+                    [SocialVideoHelper tweetVideoStage3:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
+                }
+            }];
+        }
+    }];
+    
+    
+    
+    
+    /*
     dispatch_async(chunksRequestQueue, ^{
         dispatch_group_t requestGroup = dispatch_group_create();
         for (int i = 0; i < (requests.count - 1); i++) {
@@ -197,6 +254,7 @@
                 if (error) {
                     NSLog(@"Twitter Error stage 2 - %d, error - %@", (i+1), error);
                     theError = error;
+                    return;
                 } else {
                     if (i == requests.count - 1) {
                          [SocialVideoHelper tweetVideoStage3:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
@@ -223,7 +281,8 @@
                 }
             }];
         }
-    });
+     });
+     */
 }
 
 +(void)tweetVideoStage3:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
@@ -242,6 +301,7 @@
         if (error) {
             NSLog(@"Twitter Error stage 3 - %@", error);
             [SocialVideoHelper uploadError:error withCompletion:completion];
+            return;
         } else {
             NSLog(@"stage three success, mediaID -> %@", mediaID);
 
@@ -270,6 +330,7 @@
             NSLog(@"Twitter Error stage 4 - %@", error);
             NSLog(@"Twitter Error stage 4 - %@", urlResponse);
             [SocialVideoHelper uploadError:error withCompletion:completion];
+            return;
         } else {
             if ([urlResponse statusCode] == 200){
 //                NSLog(@"Twitter STATUS upload success !");
@@ -331,6 +392,7 @@
             NSLog(@"Twitter Error stage 5 - %@", error);
             NSLog(@"Twitter Error stage 5 - %@", urlResponse);
             [SocialVideoHelper uploadError:error withCompletion:completion];
+            return;
         } else {
             if ([urlResponse statusCode] == 200){
                 NSLog(@"stage five success, mediaID -> %@", mediaID);

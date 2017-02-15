@@ -31,11 +31,23 @@ class HAUploadStatusController: UITableViewController {
 
     var HAPostVC : HAPostVC?
     
+    func restartRingAnimation() {
+        ringforFBphoto.indeterminate = ringforFBphoto.indeterminate
+        ringforFBvideo.indeterminate = ringforFBvideo.indeterminate
+        ringforTWphoto.indeterminate = ringforTWphoto.indeterminate
+        ringforTWvideo.indeterminate = ringforTWvideo.indeterminate
+
+    }
     
     override func viewDidLoad() {
         tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: UIScreen.main.bounds.size.height * 0.5 - 180))
 //        tableView.tableFooterView = UIView(frame: CGRect.zero)
-   
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(HAUploadStatusController.restartRingAnimation),
+                                               name: NSNotification.Name.UIApplicationWillEnterForeground,
+                                               object: nil)
+
         let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
         let effectView = UIVisualEffectView(effect: blurEffect)
         effectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -236,7 +248,10 @@ class HAUploadStatusController: UITableViewController {
         HAPostVC?.imageScrollView.isHidden = true
         HAPostVC?.sendBtn.isEnabled = false
         HAPostVC?.textView.becomeFirstResponder()
-        
+        HAPostVC?.hideScrollViewBtn.isHidden = true
+        HAPostVC?.TwitterWordCount = 0
+        HAPostVC?.wordCountLabel.text = "\(140 - (HAPostVC?.TwitterWordCount)!) Twitter, \(63206 - (HAPostVC?.TwitterWordCount)!) Facebook"
+        HAPostVC?.placeWordCountLimit()
     }
     
     
@@ -245,7 +260,7 @@ class HAUploadStatusController: UITableViewController {
         
         if percentage == 0.00 {
             doneBtn.backgroundColor = UIColor.red
-            doneBtn.titleLabel?.text = "Failed to upload some files"
+            doneBtn.titleLabel?.text = "Done"
         }
         
         if platforms.count == 2 {
