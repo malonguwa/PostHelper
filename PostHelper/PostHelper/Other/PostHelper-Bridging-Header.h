@@ -11,5 +11,6 @@
 
 #import "SocialVideoHelper.h"
 #import "M13ProgressViewRing.h"
-
+#import "TZImagePickerController.h"
+#import "TZImageManager.h"
 #endif /* PostHelper_Bridging_Header_h */
