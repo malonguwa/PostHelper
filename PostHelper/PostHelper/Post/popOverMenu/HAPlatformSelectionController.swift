@@ -11,6 +11,9 @@ import Foundation
 class HAPlatformSelectionController: UIViewController {
     @IBOutlet weak var FacebookSwitchBtn: UISwitch!
     @IBOutlet weak var TwitterSwitchBtn: UISwitch!
+    weak var platformBtn: UIButton!
+    weak var sendDisableBtn: UIButton!
+    var displayArrayCount = 0
     
     @IBAction func TWSwitchBtnClick(_ sender: UISwitch) {
         if sender.isOn == false{
@@ -59,7 +62,7 @@ class HAPlatformSelectionController: UIViewController {
     
     
     override func viewDidLoad() {
-        print("HAPlatformSelectionController viewDidLoad")
+//        print("HAPlatformSelectionController viewDidLoad")
         view.backgroundColor = UIColor.purple
         
 //        HALoginVC.setPlatformsInOrder()
@@ -95,12 +98,46 @@ class HAPlatformSelectionController: UIViewController {
             FacebookSwitchBtn.isOn = false
             FacebookSwitchBtn.isEnabled = false
         }
-        print("viewDidLoad - \(platforms)")
+//        print("viewDidLoad - \(platforms)")
 
         
     }
     
+    
+   class func switchPlatformImage(button: UIButton) {
+        if platforms.count > 0 {
+            if platforms[0] == .HATwitter && platforms.count == 1{
+                button.backgroundColor = UIColor(colorLiteralRed: 0.0/255.0, green: 162.0/255.0, blue: 236.0/255.0, alpha: 1.0)
+                button.setImage(UIImage(named: "snow_bird_64"), for: UIControlState.normal)
+            } else if platforms[0] == .HAFacebook && platforms.count == 1{
+                button.backgroundColor = UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0)
+                button.setImage(UIImage(named: "Snow_F_64"), for: UIControlState.normal)
+            } else if platforms.count == 2 {
+                button.setImage(UIImage(named: "twitter_and_facebook"), for: UIControlState.normal)
+            }
+        } else { // == 0
+            button.backgroundColor = UIColor(colorLiteralRed: 255.0/255.0, green: 128.0/255.0, blue: 0.0/255.0, alpha: 1.0)
+            button.setImage(UIImage(named: "?_snow_64"), for: UIControlState.normal)
+        }
+    
+        button.layer.cornerRadius = 10
+        button.layer.masksToBounds = true
+        button.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+
+    }
+    
+    class func disableSendBtn(sendBtn: UIButton, displayCount: Int) {
+
+        if platforms.count > 0 && displayCount > 0{
+            sendBtn.isEnabled = true
+        } else {
+            sendBtn.isEnabled = false
+        }
+    }
+    
     deinit {
+        HAPlatformSelectionController.switchPlatformImage(button: platformBtn)
+        HAPlatformSelectionController.disableSendBtn(sendBtn: sendDisableBtn, displayCount: displayArrayCount)
         print("HAPlatformSelectionController deinit")
     }
     

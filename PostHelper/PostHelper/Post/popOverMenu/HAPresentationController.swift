@@ -14,7 +14,7 @@ class HAPresentationController: UIPresentationController {
     //被modal出来的controller，添加在containerView上，这个方法用来改变modal出来的控制器的frame
     override func containerViewWillLayoutSubviews() {
         //1.设置frame
-        presentedView?.frame = CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 90, y: 55, width: 180, height: 250)
+        presentedView?.frame = CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 90, y: 55, width: 180, height: 100)
         //2.设置HUD
         setupCoverView()
     }

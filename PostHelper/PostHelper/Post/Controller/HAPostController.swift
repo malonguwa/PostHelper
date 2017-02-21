@@ -18,6 +18,7 @@ class HAPostController: UIViewController  {
     var TwitterWordCount = 0
     var selected_assets = NSMutableArray()
     var selected_TZModels = NSMutableArray()
+    var wordCountLabelMove = true
 
     //    lazy var picVC : TZImagePickerController = {
     //        return TZImagePickerController(maxImagesCount: 9, delegate: self)
@@ -40,13 +41,14 @@ class HAPostController: UIViewController  {
 
     
     override func viewDidLoad() {
+        textView.becomeFirstResponder()
         videoInGalleryArray = [HAVideo]()
         imageInGalleryArray = [HAImage]()
         setUpWordCountLabel()
         textView.delegate = self
 //        postVCMgr.HA_switchSelectedPlatformImage(button: <#T##UIButton#>)
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostController.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-
+        HAPlatformSelectionController.switchPlatformImage(button: platformSelectionBtn)
     }
     
 
@@ -139,12 +141,16 @@ class HAPostController: UIViewController  {
     func addImageAndDeleteBtnOnGallery(image: UIImage, offset: Int) {
         
         let HAimageView = UIImageView(image: image)
-        HAimageView.frame = CGRect(x: (offset * 100) + 20 * offset, y: 0, width: 100, height: 90)
-        HAimageView.backgroundColor = UIColor.lightGray
+        HAimageView.frame = CGRect(x: (offset * 100) + 10 * offset, y: 0, width: 100, height: 90)
+        HAimageView.backgroundColor = UIColor.black
+        let color = HAimageView.backgroundColor?.withAlphaComponent(0.8)
+        HAimageView.backgroundColor = color
         HAimageView.isUserInteractionEnabled = true
         HAimageView.contentMode = UIViewContentMode.scaleAspectFit
-        let deleteBtn = UIButton.init(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        deleteBtn.setBackgroundImage(UIImage(named: "deletimage"), for: UIControlState.normal)
+//        HAimageView.layer.borderWidth = 2.0
+//        HAimageView.layer.borderColor = UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0).cgColor
+        let deleteBtn = UIButton.init(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        deleteBtn.setImage(UIImage(named: "deletimage"), for: UIControlState.normal)
         deleteBtn.tag = offset
         contentView.addSubview(HAimageView)
         
@@ -184,15 +190,17 @@ class HAPostController: UIViewController  {
             scrollView.isHidden = true
             galleryArrowBtn.isHidden = true
             placeWordCountLimit()
-
+            wordCountLabelMove = !wordCountLabelMove
         } else {
             arrayForDisplay.remove(at: sender.tag)
             reloadScrollViewImages()
         }
     }
 
-    
     internal func reloadScrollViewImages() {
+        
+        wordCountLabelMove = !wordCountLabelMove
+
         for delete in contentView.subviews{
             delete.removeFromSuperview()
         }
@@ -200,6 +208,9 @@ class HAPostController: UIViewController  {
         for image in arrayForDisplay.enumerated() {
             addImageAndDeleteBtnOnGallery(image: image.element, offset: image.offset)
         }
+        
+        HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count)
+
     }
     
     //MARK: UIButton Linked Actions
@@ -255,9 +266,13 @@ class HAPostController: UIViewController  {
         guard let popoverMenuViewController = sb.instantiateInitialViewController() else {
             return
         }
-        popoverMenuViewController.transitioningDelegate = postVCMgr
-        popoverMenuViewController.modalPresentationStyle = .custom
-        present(popoverMenuViewController, animated: true, completion: nil)
+        let popVC = popoverMenuViewController as! HAPlatformSelectionController
+        popVC.transitioningDelegate = postVCMgr
+        popVC.modalPresentationStyle = .custom
+        popVC.platformBtn = platformSelectionBtn
+        popVC.sendDisableBtn = sendBtn
+        popVC.displayArrayCount = arrayForDisplay.count
+        present(popVC, animated: true, completion: nil)
     }
     
 
@@ -279,7 +294,9 @@ extension HAPostController: TZImagePickerControllerDelegate {
         if photos.count > 0 && videoInGalleryArray.count == 0{
             scrollView.isHidden = false
             galleryArrowBtn.isHidden = false
-            placeWordCountLimit()
+            if  wordCountLabelMove == true{
+                placeWordCountLimit()
+            }
             sendBtn.isEnabled = true
         }
 
@@ -295,11 +312,11 @@ extension HAPostController: TZImagePickerControllerDelegate {
                 arrayForDisplay.append(photo.element)
             }
             
-            
             if videoInGalleryArray.count > 0 {
                 arrayForDisplay.append(videoInGalleryArray[0].HAvideoImage!)
             }
 
+//            wordCountLabelMove = !wordCountLabelMove
             reloadScrollViewImages()
 
         }
@@ -312,7 +329,9 @@ extension HAPostController: TZImagePickerControllerDelegate {
                 if self?.imageInGalleryArray.count == 0 {
                     self?.scrollView.isHidden = false
                     self?.galleryArrowBtn.isHidden = false
-                    self?.placeWordCountLimit()
+                    if  self?.wordCountLabelMove == true{
+                        self?.placeWordCountLimit()
+                    }
                     self?.sendBtn.isEnabled = true
                 }
                 
@@ -329,6 +348,7 @@ extension HAPostController: TZImagePickerControllerDelegate {
                     }
                 }
             
+//                self?.wordCountLabelMove = !(self?.wordCountLabelMove)!
                 self?.reloadScrollViewImages()
             }
         }

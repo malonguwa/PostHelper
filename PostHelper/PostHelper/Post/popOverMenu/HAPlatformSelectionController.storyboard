@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Gez-hc-cdk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Gez-hc-cdk">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -27,16 +27,23 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="63T-zX-F8x">
                                         <rect key="frame" x="26" y="49" width="67" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Facebook"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Facebook">
+                                            <color key="titleColor" red="0.22745098039215686" green="0.34901960784313724" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZLV-N4-cdr">
                                         <rect key="frame" x="36" y="9" width="48" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Twitter"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Twitter">
+                                            <color key="titleColor" red="0.0" green="0.63529411764705879" blue="0.92549019607843142" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
                                     </button>
                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xLA-T1-N5R">
                                         <rect key="frame" x="110" y="8" width="51" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="onTintColor" red="0.0" green="0.63529411759999999" blue="0.92549019610000005" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="TWSwitchBtnClick:" destination="Gez-hc-cdk" eventType="valueChanged" id="kvb-vt-qE5"/>
                                         </connections>
@@ -44,12 +51,13 @@
                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mrb-lK-kqw">
                                         <rect key="frame" x="110" y="49" width="51" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="onTintColor" red="0.2274509804" green="0.34901960780000002" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="FBSwitchBtnClick:" destination="Gez-hc-cdk" eventType="valueChanged" id="VHL-dG-GoH"/>
                                         </connections>
                                     </switch>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="IHH-OR-D3r"/>
                                     <constraint firstAttribute="width" constant="180" id="NTe-hW-lw2"/>

@@ -9,10 +9,10 @@
 import Foundation
 
 
-enum WhichButton {
-    case Pic
-    case Video
-}
+//enum WhichButton {
+//    case Pic
+//    case Video
+//}
 
 class HAPostVCManager: NSObject {
 
