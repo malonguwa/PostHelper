@@ -19,7 +19,8 @@ class HAPostController: UIViewController  {
     var selected_assets = NSMutableArray()
     var selected_TZModels = NSMutableArray()
     var wordCountLabelMove = true
-
+//    var twitterMgr : HATwitterManager = HATwitterManager()
+    
     //    lazy var picVC : TZImagePickerController = {
     //        return TZImagePickerController(maxImagesCount: 9, delegate: self)
     //    }()
@@ -108,7 +109,7 @@ class HAPostController: UIViewController  {
                 }
                 
             } else if galleryArrowBtn.isSelected == true{//Down
-                print("hideScrollViewBtn.isSelected == true")
+//                print("hideScrollViewBtn.isSelected == true")
                 
                 wordCountLabel.alpha = 0
                 
@@ -130,7 +131,7 @@ class HAPostController: UIViewController  {
             }
         } else {//Down
             UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-                print("hideScrollViewBtn.isHidden == true")
+//                print("hideScrollViewBtn.isHidden == true")
                 self.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
                 self.wordCountLabel.superview?.layoutIfNeeded()
             })
@@ -170,7 +171,8 @@ class HAPostController: UIViewController  {
         
         
     }
-    
+
+
     // MARK: UIButton Action - delete button cick on gallery image
     func deleteImageInScrollView(_ sender: UIButton) {
         if sender.tag == imageInGalleryArray.count {
@@ -182,10 +184,11 @@ class HAPostController: UIViewController  {
         
         if imageInGalleryArray.count > 0 || videoInGalleryArray.count > 0 {
             self.sendBtn.isEnabled = true
-        } else if textView.text.lengthOfBytes(using: .utf8) == 0 && imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0{
+        } else if textView.text.characters.count == 0 && imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0{
             self.sendBtn.isEnabled = false
         }
         
+        print("\(imageInGalleryArray.count)")
         if imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0 {
             scrollView.isHidden = true
             galleryArrowBtn.isHidden = true
@@ -198,8 +201,9 @@ class HAPostController: UIViewController  {
     }
 
     internal func reloadScrollViewImages() {
-        
-        wordCountLabelMove = !wordCountLabelMove
+        if arrayForDisplay.count == 0{
+            wordCountLabelMove = !wordCountLabelMove
+        }
 
         for delete in contentView.subviews{
             delete.removeFromSuperview()
@@ -211,6 +215,7 @@ class HAPostController: UIViewController  {
         
         HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count)
 
+        print("reloadScrollViewImages: \(wordCountLabelMove)")
     }
     
     //MARK: UIButton Linked Actions
@@ -281,6 +286,16 @@ class HAPostController: UIViewController  {
         dismiss(animated: true, completion: nil)
     }
     
+    
+    @IBAction func sendBtn(_ sender: UIButton) {
+        textView.resignFirstResponder()
+        postVCMgr.sendDataFilter(text: textView.text, images: imageInGalleryArray, video: videoInGalleryArray, presentFrom: self)
+    }
+    
+    
+    
+    
+    
     deinit {
         print("HAPostController deinit")
     }
@@ -291,6 +306,8 @@ class HAPostController: UIViewController  {
 extension HAPostController: TZImagePickerControllerDelegate {
     
     func imagePickerController(_ picker: TZImagePickerController!, didFinishPickingPhotos photos: [UIImage]!, sourceAssets assets: [Any]!, isSelectOriginalPhoto: Bool) {
+        print("didFinishPickingPhotos: \(wordCountLabelMove)")
+
         if photos.count > 0 && videoInGalleryArray.count == 0{
             scrollView.isHidden = false
             galleryArrowBtn.isHidden = false
@@ -316,7 +333,7 @@ extension HAPostController: TZImagePickerControllerDelegate {
                 arrayForDisplay.append(videoInGalleryArray[0].HAvideoImage!)
             }
 
-//            wordCountLabelMove = !wordCountLabelMove
+            wordCountLabelMove = !wordCountLabelMove
             reloadScrollViewImages()
 
         }
@@ -348,7 +365,7 @@ extension HAPostController: TZImagePickerControllerDelegate {
                     }
                 }
             
-//                self?.wordCountLabelMove = !(self?.wordCountLabelMove)!
+                self?.wordCountLabelMove = !(self?.wordCountLabelMove)!
                 self?.reloadScrollViewImages()
             }
         }
@@ -364,25 +381,27 @@ extension HAPostController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         textView.becomeFirstResponder()
         let currentRange = textView.selectedRange
+//        print("\(textView.text) : \(textView.text.unicodeScalars.count)")
+//        textView.text.lengthOfBytes(using: .utf8)
         
-        if textView.text.lengthOfBytes(using: .utf8) > 0{
-            TwitterWordCount = textView.text.lengthOfBytes(using: .utf8)
+        if textView.text.unicodeScalars.count > 0{
+            TwitterWordCount = textView.text.unicodeScalars.count
             sendBtn.isEnabled = true
             placeHolderLabel.isHidden = true
             
             
-        } else if arrayForDisplay.count == 0 && textView.text.lengthOfBytes(using: .utf8) == 0{
+        } else if arrayForDisplay.count == 0 && textView.text.unicodeScalars.count == 0{
             TwitterWordCount = 0
             sendBtn.isEnabled = false
             placeHolderLabel.isHidden = false
-        } else if textView.text.lengthOfBytes(using: .utf8) == 0 {
+        } else if textView.text.unicodeScalars.count == 0 {
             TwitterWordCount = 0
         }
         else {
-            TwitterWordCount = textView.text.lengthOfBytes(using: .utf8)
+            TwitterWordCount = textView.text.unicodeScalars.count
         }
         
-        if textView.text.lengthOfBytes(using: .utf8) > 140{
+        if textView.text.unicodeScalars.count > 140{
             textView.attributedText = postVCMgr.HA_attributedText(textView: textView, textBgColor: UIColor.init(red: 0.0, green: 162.0, blue: 236.0, alpha: 0.2), rangeForBgColor: NSMakeRange(0, 140))
             
         }else {//<=140

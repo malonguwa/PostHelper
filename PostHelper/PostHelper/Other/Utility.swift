@@ -11,6 +11,17 @@ import Foundation
 
 class Utility : NSObject {
     
+    
+    class func getUsrInfoFromError(error: Error) -> String {
+        let str = error.localizedDescription
+        let range = str.range(of: "NSLocalizedDescription=")
+        print(range!)
+        return ""
+    }
+    
+    
+    
+    
     //MARK: getTextCount
     func getTextCount(text: String) -> Int {
         

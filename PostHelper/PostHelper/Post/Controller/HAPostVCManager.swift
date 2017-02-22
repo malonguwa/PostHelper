@@ -8,16 +8,74 @@
 
 import Foundation
 
-
-//enum WhichButton {
-//    case Pic
-//    case Video
-//}
-
 class HAPostVCManager: NSObject {
 
+    weak var postVC : HAPostController!
     fileprivate lazy var isPresented : Bool = false
+    
+    //MARK: TapGesture
+   @objc fileprivate func tapOnBlurView(gesture : UITapGestureRecognizer) {
+        postVC.view.subviews.last?.removeFromSuperview()
+    }
+    
 
+
+    func sendDataFilter(text: String, images: [HAImage], video: [HAVideo], presentFrom: HAPostController){
+        postVC = presentFrom
+        let twitterMgr = HATwitterManager()
+
+        if text.characters.count != 0 && images.count == 0  && video.count == 0{// text Only
+            
+            var hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Uploading")
+            postVC.view.addSubview(hudEffectView)
+            twitterMgr.sendTweetWithTextOnly(text: text, sendToPlatforms: platforms, completion: { [weak self] (platforms, error) in
+                self?.postVC.view.subviews.last?.removeFromSuperview()
+                if error == nil {
+                    hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success")
+                    
+                } else {
+                    let nse = error as! NSError
+                    hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "\(nse.userInfo["NSLocalizedFailureReason"]!)")
+                    
+                }
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVCManager.tapOnBlurView(gesture:)))
+                hudEffectView.addGestureRecognizer(tapGesture)
+
+                self?.postVC.view.addSubview(hudEffectView)
+
+            })
+            
+        } else if images.count != 0 && video.count == 0 {// image Only, text?
+            twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+                
+            })
+            
+        } else if images.count == 0 && video.count != 0 {// video Only, text?
+            twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+                
+            })
+            
+        } else if images.count > 0 && video.count > 0 {// image + video, text?
+            let currentQ = DispatchQueue(label: "currentQForImageAndVideo", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent, autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
+            currentQ.async {
+                twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+                    
+                })
+            }
+            currentQ.async {
+                twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+                    
+                })
+            }
+            
+        }
+        
+        
+        
+        
+    }
+    
+    
     func HA_attributedText (textView: UITextView, textBgColor: UIColor?, rangeForBgColor: NSRange?) -> NSMutableAttributedString {
         let attributeString = NSMutableAttributedString(string: textView.text)
         
@@ -36,6 +94,8 @@ class HAPostVCManager: NSObject {
         
     }
     
+    
+
     
     deinit {
         

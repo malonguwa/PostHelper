@@ -2,69 +2,56 @@
 //  HATwitterManager.swift
 //  PostHelper
 //
-//  Created by LONG MA on 10/1/17.
+//  Created by LONG MA on 22/2/17.
 //  Copyright © 2017 HnA. All rights reserved.
 //
-/*
+
 import UIKit
 import TwitterKit
-//import DKImagePickerController
-//import TwitterVideoUploader
-//import STTwitter
-//import RxSwift
-
 
 class HATwitterManager: HASocialPlatformsBaseManager {
     let uploadURL = "https://upload.twitter.com/1.1/media/upload.json"
     let statusURL = "https://api.twitter.com/1.1/statuses/update.json"
-    var HAtimer : Timer?
-    var TWimageSendPercentage = 0.00
-    var TWvideoSendPercentage = 0.00
-    var count = 0
-    var offset = 0
-    var parts = 0
+//    var HAtimer : Timer?
+//    var TWimageSendPercentage = 0.00
+//    var TWvideoSendPercentage = 0.00
+//    var count = 0
+//    var offset = 0
+//    var parts = 0
 
-    func active() {
-    }
     
-    
-    
-    func sendTweetWithTextOnly(text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?){
-        
+    func sendTweetWithTextOnly(text: String, sendToPlatforms: [SocialPlatform]!, completion: @escaping ([SocialPlatform], Error?)->()){
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
             } else {
-                completion!(sendToPlatforms)
+                completion(sendToPlatforms, nil)// sent to facebook Only, skip Twitter, error = nil
                 return
             }
         }
         
         var twitterText = text
-        if (text?.lengthOfBytes(using: .utf8))! >= 140 {
+        
+        if text.characters.count >= 140 {
             
-            let index = twitterText?.index((twitterText?.startIndex)!, offsetBy: 139)
-            twitterText = twitterText?.substring(to: index!)
+            let index = twitterText.index((twitterText.startIndex), offsetBy: 139)
+            twitterText = twitterText.substring(to: index)
         }
-        print("\(twitterText?.lengthOfBytes(using: .utf8))")
         
         let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
         let client = TWTRAPIClient(userID: HATW_userID!)
         var urlError : NSError? = nil
         let params = [
-            "status" : twitterText!,
+            "status" : twitterText,
             ] as [String : Any]
         let request = client.urlRequest(withMethod: "POST", url: "https://api.twitter.com/1.1/statuses/update.json", parameters: params, error: &urlError)
         
         if urlError !== nil {
-//            assert(false, "\(urlError)")
+            //            assert(false, "\(urlError)")
             //FIXME: 失败也要继续往下一个平台发
-
+            
             print("something wrong in Twitter, continue to the next platform: \(platforms)")
-            goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-            
-            
-
+            goToNextPlatform(sendToPlatforms: sendToPlatforms, error: urlError, completion: completion)
             return
         }
         client.sendTwitterRequest(request, completion: { (response, data, error) in
@@ -72,42 +59,39 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             guard let httpResponse = response as? HTTPURLResponse else{
                 print("\(response)\n\n\(data)\n\n\(error)")
                 self.duplicateTextError = error
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
                 return
             }
             
             self.duplicateTextError = nil
-
+            
             if httpResponse.statusCode == 200 {
                 print("Tweet sucessfully")
-
+                
                 
                 print("after send success in Twitter: \(platforms)")
                 
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: nil, completion: completion)
             } else {
                 print("\(response)\n\n\(data)\n\n\(error)")
                 //FIXME: 失败也要继续往下一个平台发
-                
                 print("something wrong in Twitter, continue to the next platform: \(platforms)")
-                
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
             }
         })
-
-
+        
+        
     }
-    
+
     
     /// MARK: TweetWithTextandImages
-    func sendTweetWithTextandImages(images: [UIImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
+    func sendTweetWithTextandImages(images: [HAImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping ([SocialPlatform], Error?)->()) {
         
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
             } else {
-                completion!(sendToPlatforms)
+                completion(sendToPlatforms, nil)
                 return
             }
         }
@@ -123,29 +107,38 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 queue.async {//将任务代码块加入异步串行队列queue中
                     let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
                     
-                    var imgData: NSData = NSData(data: UIImageJPEGRepresentation(image.element, 1)!)
-                    let imageSizeInBytes: Int = imgData.length
-                    let fileSizeInMB = Double(imageSizeInBytes) * 0.000001024
+                    //判断image size
+                    var imgData: NSData
+                    let fileSizeInMB = Double(image.element.HAimageSize) * 0.000001024
                     if fileSizeInMB > 5.00 {
-                        imgData = image.element.resetSizeOfImageData(source_image: image.element, maxSize: 5000)
+                        imgData = (image.element.HAimage?.resetSizeOfImageData(source_image: image.element.HAimage, maxSize: 5000))!
                     } else {
-                       imgData = NSData(data: UIImageJPEGRepresentation(image.element, 0.6)!)
+                        imgData = NSData(data: UIImageJPEGRepresentation(image.element.HAimage!, 0.6)!)
                     }
                     
-                    if imgData == nil {
+                    if imgData.length <= 0 {
                         print("twitter: -> image data error")
                     } else {
                         client.uploadMedia(imgData as Data, contentType: "image/jpeg", completion: { (mediaID, error) in
                             if error != nil {
                                 //FIXME: here to know which twitter image upload faliure
                                 print("\(image.offset): error uploading media to Twitter \(error)")
+                                                                /*
+                                0: error uploading media to Twitter Optional(Error Domain=NSURLErrorDomain Code=-1001 "The request timed out." UserInfo={NSUnderlyingError=0x170446780 {Error Domain=kCFErrorDomainCFNetwork Code=-1001 "(null)" UserInfo={_kCFStreamErrorCodeKey=-2102, _kCFStreamErrorDomainKey=4}}, NSErrorFailingURLStringKey=https://upload.twitter.com/1.1/media/upload.json, NSErrorFailingURLKey=https://upload.twitter.com/1.1/media/upload.json, _kCFStreamErrorDomainKey=4, _kCFStreamErrorCodeKey=-2102, NSLocalizedDescription=The request timed out.})
+                                 
+                                 
+                                 
+                                 UserInfo={_kCFStreamErrorCodeKey=-2102, _kCFStreamErrorDomainKey=4}}, NSErrorFailingURLStringKey=https://upload.twitter.com/1.1/media/upload.json, NSErrorFailingURLKey=https://upload.twitter.com/1.1/media/upload.json, _kCFStreamErrorDomainKey=4, _kCFStreamErrorCodeKey=-2102, NSLocalizedDescription=The request timed out.}
+                                 UserInfo={NSLocalizedFailureReason=Twitter API error : Status is a duplicate. (code 187), TWTRNetworkingStatusCode=403, NSErrorFailingURLKey=https://api.twitter.com/1.1/statuses/update.json, NSLocalizedDescription=Request failed: forbidden (403)}
+                                */
+                                
                             } else {
                                 mediaIDs.append(mediaID!)
                                 print(mediaIDs)
-                                if self.PhotoUpdateUploadStatus != nil {
-                                    self.TWimageSendPercentage = self.TWimageSendPercentage + 15.00
-                                    self.PhotoUpdateUploadStatus!(CGFloat(self.TWimageSendPercentage), uploadStatus.Uploading)
-                                }
+//                                if self.PhotoUpdateUploadStatus != nil {
+//                                    self.TWimageSendPercentage = self.TWimageSendPercentage + 15.00
+//                                    self.PhotoUpdateUploadStatus!(CGFloat(self.TWimageSendPercentage), uploadStatus.Uploading)
+//                                }
                             }
                             semaphore.signal()//当满足条件时，向队列发送信号
                         })
@@ -184,11 +177,11 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             let request = client.urlRequest(withMethod: "POST", url: "https://api.twitter.com/1.1/statuses/update.json", parameters: params, error: &urlError)
             
             if urlError !== nil {
-//                assert(false, "\(urlError)")
+                //                assert(false, "\(urlError)")
                 //FIXME: 失败也要继续往下一个平台发
                 print("136 line - urlError != nil")
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-
+                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: urlError, completion: completion)
+                
                 return
             }
             client.sendTwitterRequest(request, completion: { (response, data, error) in
@@ -197,27 +190,27 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                     print("144 line - response == nil")
                     print("144 line - \(response)\n\n\(data)\n\n\(error)")
                     //FIXME: 失败也要继续往下一个平台发
-                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-
+                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
+                    
                     return
                 }
                 if httpResponse.statusCode == 200 {
                     print("154 line - Tweet sucessfully")
                     print("154 line - httpResponse.statusCode == 200")
-                    if self.PhotoUpdateUploadStatus != nil {
-                        self.PhotoUpdateUploadStatus!(100.00, uploadStatus.Success)
-                        self.TWimageSendPercentage = 0.00
-                    }
-                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+//                    if self.PhotoUpdateUploadStatus != nil {
+//                        self.PhotoUpdateUploadStatus!(100.00, uploadStatus.Success)
+//                        self.TWimageSendPercentage = 0.00
+//                    }
+                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: nil, completion: completion)
                     
                 } else {
                     //FIXME: 失败也要继续往下一个平台发
                     print("159 line - else")
                     print("159 line - \(response)\n\n\(data)\n\n\(error)")
-                    self.PhotoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
-
-                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-
+//                    self.PhotoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
+                    
+                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
+                    
                 }
             })
             
@@ -226,167 +219,78 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     }
 
     
-    
 
+    /// MARK: TweetWithTextandVideo
+    func sendTweetWithTextandVideo(video: HAVideo, text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping ([SocialPlatform], Error?)->()) {
 
-    func HA_WillResignActive() {
-        print("HA_DidEnterBackground")
-//        operationQueue.cancelAllOperations()
-
-
-        print("finish HA_DidEnterBackground")
-//        HAtimer?.invalidate()
-    }
-    
-    func HA_WillEnterForeground() {
-        print("HA_WillEnterForeground")
-        DispatchQueue.main.async {
-            self.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
-        }
-
-    }
-    
-    let operationQueue = OperationQueue.init()
-
-    /// MARK: TweetWithTextandVideos
-    func sendTweetWithTextandVideos(avAssetsForSend: [DKAsset], text: String?, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform])->())?) {
-        
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(HATwitterManager.HA_WillResignActive),
-//                                               name: NSNotification.Name.UIApplicationWillResignActive,
-//                                               object: nil)
-
-
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(HATwitterManager.HA_DidEnterBackground),
-//                                               name: NSNotification.Name.UIApplicationDidEnterBackground,
-//                                               object: nil)
-
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(HATwitterManager.HA_WillEnterForeground),
-//                                               name: NSNotification.Name.UIApplicationWillEnterForeground,
-//                                               object: nil)
-//        print("234  该黑屏了")
-
-        
-//        queueForEnterBackground?.resume()
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
             } else {// has to be HAFacebook
-                completion!(sendToPlatforms)
+                completion(sendToPlatforms, nil)
                 return
             }
         }
         
-
-        let accountStore = ACAccountStore()
         
+        let accountStore = ACAccountStore()
+
         let accountType = accountStore.accountType(withAccountTypeIdentifier: ACAccountTypeIdentifierTwitter)
-        accountStore.requestAccessToAccounts(with: accountType, options: nil) { (bool, error) in
+        accountStore.requestAccessToAccounts(with: accountType, options: nil) { [weak self] (bool, error) in
             if bool == true {
                 guard let accounts = accountStore.accounts(with: accountType) else {
                     print("accounts = nil")
-                    completion!(sendToPlatforms)
+                    completion(sendToPlatforms, error)
                     return
                 }
-
+                
                 if accounts.count > 0 {
+                    // step 0: 将DKAsset对象中的video.url转化成NSData
+                    let videoData = NSData(contentsOf: video.HAvideoURL!)
+                    if videoData == nil{
+                        print("data == nil")
+                    }
                     
-                    self.operationQueue.maxConcurrentOperationCount = 1
-                    let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                    
-                    var _videos = [NSData]()
-                    var _videoURLs = [URL]()
-                    self.operationQueue.addOperation({
-                        // step 0: 将DKAsset对象中的video.url转化成NSData
-                        for asset in avAssetsForSend.enumerated() {
-                            asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
-                                let avurl = av as! AVURLAsset
-                                if av != nil && asset.element.isVideo == true{
-                                    _videoURLs.append(avurl.url)
-                                    let videoData = NSData(contentsOf: avurl.url)
-                                    if videoData == nil{
-                                        print("data == nil")
-                                        semaphore.signal()//当满足条件时，向队列发送信号
-                                    }
-                                    
-                                    if Double((videoData?.length)!) * 0.000001024 > 500.00 {
-                                        print("fileSize \(asset.offset) : \(Double((videoData?.length)!) * 0.000001024) MB")
-                                        
-                                    } else {
-                                        
-                                        _videos.append(videoData!)
-                                        print("1: \(_videos.count)")
-                                        
-                                        semaphore.signal()//当满足条件时，向队列发送信号
-                                    }
-                                    
-                                    
-                                }
-                            })
-                            semaphore.wait()//阻塞并等待信号
-                            
-                        }//end for
-                    })
-
-                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                    self.operationQueue.addOperation({ [weak self] in
-                        for videoData in _videos.enumerated() {
-                            print("for videoData")
-                            print("blockOperation2 start")
-                            self?.count = _videos.count
-                            self?.offset = videoData.offset
+                    if Double((videoData?.length)!) * 0.000001024 > 500.00 {//不能发往Twitter
+                        print("fileSize : \(Double((videoData?.length)!) * 0.000001024) MB")
                         
-                            DispatchQueue.main.async {
-                                self?.HAtimer = Timer.scheduledTimer(timeInterval: 2, target: self!, selector: #selector(HATwitterManager.timerFireMethod), userInfo: nil, repeats: true)
+                    } else {//符合要求开始上传
+                        SocialVideoHelper.uploadTwitterVideo(videoData as! Data, comment: text, account: accounts[0] as! ACAccount, withCompletion: { [weak self] (success, errorMessageStr) in
+                            if success == true {
+                                print("Twitter video upload success")
+                                //                                        self.HAtimer?.invalidate()
+                                //                                        self.HAtimer = nil
+//                                self?.TWvideoSendPercentage = 0.00
+                                
+                                print("after send success in Twitter: \(platforms)")
+                                
+//                                self?.HAtimer?.invalidate()
+//                                self?.HAtimer = nil
+                                //FIXME: here
+//                                if self?.VideoUpdateUploadStatus != nil {
+//                                    self?.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
+//                                    
+//                                }
+                                
+                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: nil, completion: completion)
+                                
+                                
+                            } else {
+                                print("372 - \(errorMessageStr)")
+                                //                                        self.HAtimer?.invalidate()
+                                //                                        self.HAtimer = nil
+                                //FIXME: 失败也要继续往下一个平台发
+                                
+//                                self?.HAtimer?.invalidate()
+//                                self?.HAtimer = nil
+//                                self?.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
+                               let error = NSError.init(domain: "", code: 0, userInfo: ["NSLocalizedDescriptionKey" : errorMessageStr!])
+                                
+                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
                             }
-                            
-                            SocialVideoHelper.uploadTwitterVideo(videoData.element as Data!, comment: text, account: accounts[0] as! ACAccount, withCompletion: { [weak self] (success, errorMessage) in
-                                if success == true {
-                                    print("Twitter video upload success")
-                                    //                                        self.HAtimer?.invalidate()
-                                    //                                        self.HAtimer = nil
-                                    self?.TWvideoSendPercentage = 0.00
-                                    
-                                    
-                                    if videoData.offset == _videos.count - 1 {
-                                        
-                                        print("after send success in Twitter: \(platforms)")
 
-                                        self?.HAtimer?.invalidate()
-                                        self?.HAtimer = nil
-                                        //FIXME: here
-                                        if self?.VideoUpdateUploadStatus != nil {
-                                            self?.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
-                                            
-                                        }
-                                        
-                                        self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-                                        
-                                    }
-                                } else {
-                                    print("372 - \(errorMessage!)")
-                                    //                                        self.HAtimer?.invalidate()
-                                    //                                        self.HAtimer = nil
-                                    //FIXME: 失败也要继续往下一个平台发
-                                    if videoData.offset == _videos.count - 1 {
-
-                                        self?.HAtimer?.invalidate()
-                                        self?.HAtimer = nil
-                                        self?.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
-                                        self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-                                    }
-                                }
-                                semaphore2.signal()
-                            })
-//                            print("\(self.falgForResume)")
-//                            self.falgForResume = true
-                            semaphore2.wait()
-                            
-                        }//end for
-                        
-                    })
+                        })
+                    }
                 } else {
                     print("\(accounts)")
                 }
@@ -396,484 +300,16 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             
         }
     }
+
     
-    deinit {
-        
-        print("twitterkMgr deinit")
-        
-//        DispatchQueue.main.async {
-//            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
-//            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
-//        }
-    }
-
-    func timerFireMethod() {
-        print("timerFireMethod")
-        if VideoUpdateUploadStatus != nil {
-            
-            TWvideoSendPercentage = TWvideoSendPercentage + 1.00
-            if TWvideoSendPercentage < (100.00 / Double(count) * Double(offset)) {
-                                print("if \(TWvideoSendPercentage)")
-                VideoUpdateUploadStatus!(CGFloat(TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
-            } else if (100.00 / Double(count) * Double(offset)) == 0.00 {
-                VideoUpdateUploadStatus!(CGFloat(TWvideoSendPercentage / Double(count) + (100.00 / Double(count) * Double(offset))), uploadStatus.Uploading)
-
-            } else {
-                                print("else \(TWvideoSendPercentage)")
-                HAtimer?.invalidate()
-            }
-            
-        }
-        
- 
-    }
     
-
+    
+    
+    
+    
+    
+    
+    
 }
-
-  /**
-    func uploadTwitterVideo(avAssetsForSend: [DKAsset], text: String?) {
-        let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
-        let client = TWTRAPIClient(userID: HATW_userID!)
-        var mediaIDs = [String]()
-        
-        let queue = DispatchQueue(label: "serialQForTWVideoUpload")// 创建了一个串行队列
-        
-        var _videos = [NSData]()
-        
-        // step 0: 将DKAsset对象中的video.url转化成NSData
-        for asset in avAssetsForSend.enumerated() {
-            queue.async {//将任务代码块加入异步串行队列queue中
-                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
-                    let avurl = av as! AVURLAsset
-                    if av != nil && asset.element.isVideo == true{
-                        let videoData = NSData(contentsOf: avurl.url)
-                        if videoData == nil{
-                            print("data == nil")
-                            semaphore.signal()//当满足条件时，向队列发送信号
-                        }
-                        _videos.append(videoData!)
-                        print("1: \(_videos.count)")
-                        
-                        semaphore.signal()//当满足条件时，向队列发送信号
-                    }
-                })
-                semaphore.wait()//阻塞并等待信号
-            }
-        }//end for
-        
-        print("End step 0")
-        
-        // step 1: INIT
-        queue.async {
-            for videoData in _videos {
-                let INIT_Params = [
-                    "command" : "INIT",
-                    "total_bytes" : "\(videoData.length)",
-                    "media_type" : "video/mp4"
-                    ] as [String : Any]
-                
-                var urlError : NSError? = nil
-                let request = client.urlRequest(withMethod: "POST", url: self.uploadURL, parameters: INIT_Params, error: &urlError)
-                client.sendTwitterRequest(request, completion: { (response, data, error) in
-                    if error != nil {
-                        print("step 1: sendTwitterRequest ERROR: \(error)")
-                    } else {
-                        var mediaID = ""
-                        do {
-                            let returnedData = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.init(rawValue: 0)) as! NSDictionary
-                            mediaID = returnedData["media_id_string"] as! String
-                        }catch {
-                            print("json error: \(error.localizedDescription)")
-                        }
-                        
-                        self.twitterVideoStage2(videoData: videoData, mediaID: mediaID, text: text, client: client)
-                    }
-                })
-            }//end for
-        }
-    }
-    
-    // step 2: APPEND
-    func twitterVideoStage2(videoData: NSData, mediaID: String, text: String?, client: TWTRAPIClient) {
-        let chunks = separateToMultipartData(videoData: videoData)
-        var requests = [URLRequest]()
- 
-        for i in 0...chunks.count {
-            let seg_index = "\(i)"
-            let APPEND_Params = [
-                "command" : "APPEND",
-                "media_id" : mediaID,
-                "segment_index" : seg_index
-                ] as [String : Any]
-            
-            let postRequest = SLRequest(forServiceType: SLServiceTypeTwitter, requestMethod: SLRequestMethod.POST, url: nil, parameters: APPEND_Params)
-            
-            
-        }
-        
-    }
-    
-    
-    
-    func separateToMultipartData(videoData: NSData) -> Array<NSData> {
-        var multipartData = [NSData]()
-        let length = CGFloat(videoData.length)
-        let standard_length = CGFloat(1000 * 1000 * 5)
-
-        if length <= standard_length {
-            multipartData.append(videoData)
-            print("need not separate as chunk, data size -> \(CLong(videoData.length)) bytes")
-        } else {
-            let count = ceil(length/standard_length)
-            for i in stride(from: CGFloat(0), to: count, by: 1){
-                var range : NSRange
-                if i == count - 1 {
-                    let v1 = i * standard_length
-                    let v2 = length - i * standard_length
-                    range = NSMakeRange(Int(v1), Int(v2))
-                } else {
-                    let v1 = i * standard_length
-                    let v2 = standard_length
-                    range = NSMakeRange(Int(v1), Int(v2))
-                }
-                
-                let part_data = NSData.init(data: videoData.subdata(with: range))
-                multipartData.append(part_data)
-                print("chunk index -> \(Int(i)+1), data size -> \(part_data.length) bytes")
-            }
-            
-        }
-        return multipartData
-    }
-    /**
-    + (NSArray*)separateToMultipartData:(NSData*)videoData{
-        NSMutableArray *multipartData = [NSMutableArray new];
-        CGFloat length = videoData.length;
-        CGFloat standard_length = Video_Chunk_Max_size;
-        if (length <= standard_length) {
-            [multipartData addObject:videoData];
-            NSLog(@"need not separate as chunk, data size -> %ld bytes", (long)videoData.length);
-        } else {
-            NSUInteger count = ceil(length/standard_length);
-            for (int i = 0; i < count; i++) {
-                NSRange range;
-                if (i == count - 1) {
-                    range = NSMakeRange(i * standard_length, length - i * standard_length);
-                } else {
-                    range = NSMakeRange(i * standard_length, standard_length);
-                }
-                NSData *part_data = [videoData subdataWithRange:range];
-                [multipartData addObject:part_data];
-                NSLog(@"chunk index -> %d, data size -> %ld bytes", (i+1), (long)part_data.length);
-            }
-        }
-        return multipartData.copy;
-    }
-    */
-    
-    
-    /**
-    func sendTWvideos(avAssetsForSend: [DKAsset], text: String?) {
-        let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
-        let client = TWTRAPIClient(userID: HATW_userID!)
-        var mediaIDs = [String]()
-        
-        let queue = DispatchQueue(label: "serialQForTWVideoUpload")// 创建了一个串行队列
-        
-        var _videos = [Data]()
-        
-        for asset in avAssetsForSend.enumerated() {
-            queue.async {//将任务代码块加入异步串行队列queue中
-                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
-                    let avurl = av as! AVURLAsset
-                    if av != nil && asset.element.isVideo == true{
-                        var data : Data!
-                        do{
-                            let videoData = try Data(contentsOf: avurl.url)
-                            data = videoData
-                        }
-                        catch let error{
-                            print("videoData: \(error)")
-                        }
-//                        let videoData = NSData(contentsOf: avurl.url)
-                        _videos.append(data)
-                        print("1: \(_videos.count)")
-                        
-                        semaphore.signal()//当满足条件时，向队列发送信号
-                    }
-                })
-                semaphore.wait()//阻塞并等待信号
-            }
-        }
-        
-        queue.async { //将任务代码块加入异步串行队列queue中
-            print("2: end-for")
-//            let queue2 = DispatchQueue(label: "qForTWVideosUploadSquence")
-            //发请求
-            //            var flagForVideosUpload = 0
-            for videoData in _videos.enumerated() {
-                let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                print( "total_bytes : \(videoData.element.count)")
-                
-                client.uploadMedia(videoData.element, contentType: "video/m4v", completion: { (mediaID, error) in
-                    if error != nil {
-                        print("~~~~~~~\(videoData.offset): error uploading video to Twitter \(error)")
-                    } else {
-                        print(mediaID!)
-                        mediaIDs.append(mediaID!)
-                    }
-                    semaphore2.signal()
-
-                })
-                semaphore2.wait()
-            }//END for
-        }//END queue
-        
-        queue.async(flags: .barrier) {
-            print("start to post")
-            let mediaIDArray = mediaIDs
-            var combinedStr = ""
-            for mediaIDString in mediaIDArray.enumerated() {
-                print("in for \(combinedStr)")
-                if mediaIDString.offset == mediaIDArray.count - 1{
-                    combinedStr = combinedStr.appending("\(mediaIDString.element)")
-                    break
-                }
-                combinedStr = combinedStr.appending("\(mediaIDString.element),")
-            }
-            print("combinedStr : \(combinedStr)")
-            print("end for")
-            var input = ""
-            if text == nil {
-            } else {
-                input = text!
-            }
-            var urlError : NSError? = nil
-            let params = [
-                "status" : input,
-                "media_ids" : combinedStr,
-                ] as [String : Any]
-            let request = client.urlRequest(withMethod: "POST", url: "https://api.twitter.com/1.1/statuses/update.json", parameters: params, error: &urlError)
-            
-            if urlError !== nil {
-                assert(false, "\(urlError)")
-                return
-            }
-            client.sendTwitterRequest(request, completion: { (response, data, error) in
-                
-                guard let httpResponse = response as? HTTPURLResponse else{
-                    print("Tweet:\(response)\n\n\(data)\n\n\(error)")
-                    return
-                }
-                if httpResponse.statusCode == 200 {
-                    print("Tweet sucessfully")
-                } else {
-                    print("Tweet:\(response)\n\n\(data)\n\n\(error)")
-                }
-            })
-        }
-    }
-    */
-    
-    
-    
-    /// MARK: TweetWithTextandVideos
-    func sendTweetWithTextAndVideos(avAssetsForSend: [DKAsset], text: String?){
-        let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
-        let client = TWTRAPIClient(userID: HATW_userID!)
-        
-        let queue = DispatchQueue(label: "serialQForTWVideoUpload")// 创建了一个串行队列
-        
-        var _videos = [NSData]()
-        
-        for asset in avAssetsForSend.enumerated() {
-            queue.async {//将任务代码块加入异步串行队列queue中
-                let semaphore = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                asset.element.fetchAVAssetWithCompleteBlock({ (av, info) in
-                    let avurl = av as! AVURLAsset
-                    if av != nil && asset.element.isVideo == true{
-                        print("avurl.url:\(avurl.url.relativePath)")
-
-                        let videoData = try! Data(contentsOf: avurl.url, options: Data.ReadingOptions.init(rawValue: 0))
-//                            NSData(contentsOfFile: avurl.url.relativePath)
-//                        let videoData = NSData(contentsOf: avurl.url)
-                        print("videoData.length: \(videoData.count)")
-                        
-                        _videos.append(videoData as NSData)
-                        print("1: \(_videos.count)")
-                        semaphore.signal()//当满足条件时，向队列发送信号
-                    }
-                })
-                semaphore.wait()//阻塞并等待信号
-            }
-        }
-        
-        queue.async { //将任务代码块加入异步串行队列queue中
-            print("2: end-for")
-            let queue2 = DispatchQueue(label: "qForTWVideosUploadSquence")
-            //发请求
-            //            var flagForVideosUpload = 0
-            for videoData in _videos.enumerated() {
-                
-                queue2.async {
-
-                    let semaphore2 = DispatchSemaphore(value: 0)//创建semaphore对象，用来调整信号量
-                    print( "total_bytes : \(videoData.element.length)")
-                    //Step 1: INIT
-                    let params = [
-                        "command" : "INIT",
-                        "media_type" : "video/mp4",
-                        "total_bytes" : "\(videoData.element.length)"
-//                        "status" : text!
-                        ] as [String : Any]
-                    
-                    var urlError : NSError? = nil
-                    // create request
-                    let request = client.urlRequest(withMethod: "POST", url: self.uploadURL, parameters: params, error: &urlError)
-                    if urlError != nil {
-                        print("step 1: request create failed \(urlError)")
-                        return
-                    }
-                    // send request
-                    client.sendTwitterRequest(request, completion: { (response, data, error) in
-                        if error != nil {
-                            print("Step 1 INIT failed \(error)")
-                            return
-                        }
-                        var mediaID = ""
-
-                        do {
-                             let dict = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.init(rawValue: 0)) as! NSDictionary
-                            mediaID = dict["media_id_string"] as! String
-                        }catch {
-                            print("json error: \(error.localizedDescription)")
-
-                        }
-                        print("step 1: success \(mediaID)")
-                        print("response: \(response)\ndata: \(data)\n")
-
-                        
-                        if mediaID.characters.count <= 0 {
-                            print("mediaID <= 0")
-                        } else {
-                            print("go to step 2")
-                            self.twitterMediaUploadAppend(client: client, data: videoData.element, mediaIDStr: mediaID, text: text)
-                        }
-                        
-                    })
-                }//END queue2
-            }//END for
-        }//END queue
-    }//END sendTweetWithTextAndVideos
-    
-    ///MARK: VideoUpload Step 2: APPEND
-    func twitterMediaUploadAppend(client: TWTRAPIClient, data: NSData, mediaIDStr: String, text: String?) {
-        var index = 0
-        //Step 2: APPEND
-        let dataStr = data.base64EncodedString(options: .init(rawValue: 0))
-//        data.base64EncodedData(options: .init(rawValue: 0))
-        let params = [
-            "command" : "APPEND",
-            "media_id" : mediaIDStr,
-            "media_data" : dataStr,
-            "segment_index" : "\(index)"
-//            "status" : text!
-            ] as [String : Any]
-        
-        var urlError : NSError? = nil
-        // create request
-        let request = client.urlRequest(withMethod: "POST", url: uploadURL, parameters: params, error: &urlError)
-        
-        if urlError != nil {
-            print("step 2: request create failed \(urlError)")
-            return
-        }
-        
-        client.sendTwitterRequest(request) { (reponse, data, error) in
-            if error != nil {
-                print("Step 2 APPEND failed \(error)")
-                return
-            }
-//            index = index + 1
-            print("step 2 APPEND success")
-            print("response: \(reponse)\ndata: \(data)\n")
-            self.twitterMediaUploadFinalize(client: client, mediaIDStr: mediaIDStr, text: text)
-            
-        }
-    }//END twitterMediaUploadAppend
-    
-    ///MARK: VideoUpload Step 3: FINALIZE
-    func twitterMediaUploadFinalize(client: TWTRAPIClient, mediaIDStr: String, text: String?) {
-        //Step 3: FINALIZE
-        let params = [
-            "command" : "FINALIZE",
-            "media_id" : mediaIDStr
-//            "status" : text!
-            ] as [String : Any]
-        
-        var urlError : NSError? = nil
-        // create request
-        let request = client.urlRequest(withMethod: "POST", url: uploadURL, parameters: params, error: &urlError)
-        
-        if urlError != nil {
-            print("step 3: request create failed \(urlError)")
-            return
-        }
-        
-        client.sendTwitterRequest(request) { (reponse, data, error) in
-            if error != nil {
-                print("Step 3 FINALIZE failed \(reponse)\n\n\(data)\n\n\(error)")
-                return
-            }
-            print("step 3 FINALIZE success")
-            print("response: \(reponse)\ndata: \(data)\n")
-
-            
-            self.twitterStatusUpdate(client: client, mediaIDStr: mediaIDStr, text: text)
-            
-            
-        }
-    }
-    
-    ///MARK: VideoUpload Step 4: Tweet the uploaded video
-    func twitterStatusUpdate(client: TWTRAPIClient, mediaIDStr: String, text: String?) {
-        //Step 4: TWEET
-        let params = [
-            "status" : text!,
-            "media_id" : mediaIDStr,
-            "wrap_links" : "true"
-            ] as [String : Any]
-        
-        var urlError : NSError? = nil
-        // create request
-        let request = client.urlRequest(withMethod: "POST", url: statusURL, parameters: params, error: &urlError)
-        
-        if urlError != nil {
-            print("step 4: request create failed \(urlError)")
-            return
-        }
-        
-        client.sendTwitterRequest(request) { (reponse, data, error) in
-            if error != nil {
-                print("Step 4 TWEET failed \(error)")
-                return
-            }
-            print("step 4 TWEET success")
-            print("response: \(reponse)\ndata: \(data)\n")
-
-        }
-    }
-    
-   */
-    
-    
-    
-    
-    
-    */
-    
 
 
