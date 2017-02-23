@@ -110,6 +110,7 @@ static CGSize AssetGridThumbnailSize;
     return NO;
 }
 
+
 - (void)configCollectionView {
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
 
@@ -182,8 +183,12 @@ static CGSize AssetGridThumbnailSize;
     }
     
     UIView *bottomToolBar = [[UIView alloc] initWithFrame:CGRectMake(0, yOffset, self.view.tz_width, 50)];
-    CGFloat rgb = 253 / 255.0;
-    bottomToolBar.backgroundColor = [UIColor colorWithRed:rgb green:rgb blue:rgb alpha:1.0];
+    
+//    CGFloat rgb = 253 / 255.0;
+//    bottomToolBar.backgroundColor = [UIColor colorWithRed:rgb green:rgb blue:rgb alpha:1.0];
+    
+    //PostHelper personal bottom tool bar Config
+    bottomToolBar.backgroundColor = [UIColor colorWithRed:250.0/255.0 green:235.0/255.0 blue:215.0/255.0 alpha:1.0];
     
     CGFloat previewWidth = [tzImagePickerVc.previewBtnTitleStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]} context:nil].size.width + 2;
     if (!tzImagePickerVc.allowPreview) {

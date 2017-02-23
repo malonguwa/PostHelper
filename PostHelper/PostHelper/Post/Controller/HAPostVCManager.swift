@@ -28,6 +28,7 @@ class HAPostVCManager: NSObject {
             
             var hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Uploading")
             postVC.view.addSubview(hudEffectView)
+            
             twitterMgr.sendTweetWithTextOnly(text: text, sendToPlatforms: platforms, completion: { [weak self] (platforms, error) in
                 self?.postVC.view.subviews.last?.removeFromSuperview()
                 if error == nil {

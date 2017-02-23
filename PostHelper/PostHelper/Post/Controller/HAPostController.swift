@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HAPostController: UIViewController  {
+class HAPostController: UIViewController, CAAnimationDelegate  {
     
     var videoInGalleryArray : [HAVideo]!
     var imageInGalleryArray : [HAImage]!
@@ -158,7 +158,14 @@ class HAPostController: UIViewController  {
         HAimageView.addSubview(deleteBtn)
         deleteBtn.addTarget(self, action: #selector(HAPostController.deleteImageInScrollView(_:)), for: UIControlEvents.touchUpInside)
         
+        if videoInGalleryArray.count > 0 && offset == imageInGalleryArray.count{// video image need video label
+            let videoLabelImageView = UIImageView(image: UIImage(named: "snow_video_64"))
+            videoLabelImageView.frame = CGRect(x: 80, y: 70, width: 20, height: 20)
+            HAimageView.addSubview(videoLabelImageView)
+        }
 
+        
+        
         let count = self.imageInGalleryArray.count + self.videoInGalleryArray.count
         if offset == count - 1 {
             DispatchQueue.main.async(){ [weak self] in
@@ -172,32 +179,61 @@ class HAPostController: UIViewController  {
         
     }
 
-
     // MARK: UIButton Action - delete button cick on gallery image
     func deleteImageInScrollView(_ sender: UIButton) {
-        if sender.tag == imageInGalleryArray.count {
+        
+        let imgView = sender.superview! as! UIImageView
+        sender.removeFromSuperview()
+        imgView.backgroundColor = UIColor.white
+        let image = UIImage.animatedImageNamed("red_dot_image_", duration: 0.3)
+        let array = Array.init((image?.images)!)
+        imgView.animationImages = array
+        imgView.animationRepeatCount = 1
+        imgView.animationDuration = 0.2
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            imgView.layer.setAffineTransform(CGAffineTransform(scaleX: 0.5, y: 0.5))
+        }) { (bool) in
+            imgView.image = nil
+            
+            imgView.startAnimating()
+            
+            let when = DispatchTime.now() + 0.3
+            DispatchQueue.main.asyncAfter(deadline: when, execute: {
+                imgView.stopAnimating()
+                self.deleteImageInScrollViewAfterAnimation(tag: sender.tag)
+            })
+        }
+    }
+    
+    
+    internal func deleteImageInScrollViewAfterAnimation (tag: Int){
+
+        if tag == imageInGalleryArray.count {
             videoInGalleryArray.removeAll()
         } else {
-            imageInGalleryArray.remove(at: sender.tag)
-            selected_assets.removeObject(at: sender.tag)
+            imageInGalleryArray.remove(at: tag)
+            selected_assets.removeObject(at: tag)
         }
         
         if imageInGalleryArray.count > 0 || videoInGalleryArray.count > 0 {
-            self.sendBtn.isEnabled = true
-        } else if textView.text.characters.count == 0 && imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0{
-            self.sendBtn.isEnabled = false
+            sendBtn.isEnabled = true
+        } else if self.textView.text.characters.count == 0 && imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0{
+            sendBtn.isEnabled = false
         }
         
-        print("\(imageInGalleryArray.count)")
+        print("\(self.imageInGalleryArray.count)")
         if imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0 {
             scrollView.isHidden = true
             galleryArrowBtn.isHidden = true
             placeWordCountLimit()
             wordCountLabelMove = !wordCountLabelMove
         } else {
-            arrayForDisplay.remove(at: sender.tag)
-            reloadScrollViewImages()
+            
+            self.arrayForDisplay.remove(at: tag)
+            self.reloadScrollViewImages()
         }
+
     }
 
     internal func reloadScrollViewImages() {
@@ -205,6 +241,7 @@ class HAPostController: UIViewController  {
             wordCountLabelMove = !wordCountLabelMove
         }
 
+        
         for delete in contentView.subviews{
             delete.removeFromSuperview()
         }
@@ -244,24 +281,35 @@ class HAPostController: UIViewController  {
     }
 
     
+    internal func customisedTZImagePickerControllerConfig(TZ : TZImagePickerController){
+        if TZ.maxImagesCount == 9 {//ImageVc
+            TZ.allowPickingOriginalPhoto = false
+            TZ.allowPickingVideo = false
+            TZ.selectedAssets = selected_assets
+        } else if TZ.maxImagesCount == 1 {//VideoVc
+            TZ.allowPickingImage = false
+        }
+        
+        TZ.allowPickingGif = false
+        TZ.allowTakePicture = false
+        TZ.barItemTextColor = UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0)
+        TZ.navigationBar.barTintColor = UIColor(colorLiteralRed: 250.0/255.0, green: 235.0/255.0, blue: 215.0/255.0, alpha: 1.0)
+        TZ.navigationBar.isTranslucent = false
+        TZ.navigationBar.tintColor = UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0)
+        TZ.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0)]
+        present(TZ, animated: true, completion: nil)
+    }
+    
     @IBAction func clickpic(_ sender: Any) {
         let picVC = TZImagePickerController(maxImagesCount: 9, delegate: self)!
-        picVC.selectedAssets = selected_assets
-        picVC.allowPickingGif = false
-        picVC.allowPickingVideo = false
-        picVC.allowPickingOriginalPhoto = false
-        picVC.allowTakePicture = false
-        present(picVC, animated: true, completion: nil)
+        customisedTZImagePickerControllerConfig(TZ: picVC)
+        
     }
     
     @IBAction func clickvideo(_ sender: Any) {
         
         let videoVC = TZImagePickerController(maxImagesCount: 1, delegate: self)!
-        videoVC.allowCrop = true
-        videoVC.allowPickingGif = false
-        videoVC.allowPickingImage = false
-        videoVC.allowTakePicture = false
-        present(videoVC, animated: true, completion: nil)
+        customisedTZImagePickerControllerConfig(TZ: videoVC)
     }
     
     
