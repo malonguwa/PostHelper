@@ -46,7 +46,8 @@ class HAPostHUDViewBuilder : NSObject {
             label.textAlignment = .center
             label.textColor = UIColor.white
             label.textAlignment = .center
-            label.adjustsFontSizeToFitWidth = true
+            label.numberOfLines = 0
+            label.adjustsFontSizeToFitWidth = false
             
             effectView.contentView.addSubview(label)
         }
@@ -63,7 +64,6 @@ class HAPostHUDViewBuilder : NSObject {
 
         return effectView
     }
-    
-    
+        
     
 }

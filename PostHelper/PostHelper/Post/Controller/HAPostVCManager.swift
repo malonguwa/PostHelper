@@ -23,27 +23,36 @@ class HAPostVCManager: NSObject {
     func sendDataFilter(text: String, images: [HAImage], video: [HAVideo], presentFrom: HAPostController){
         postVC = presentFrom
         let twitterMgr = HATwitterManager()
-
+        let facebookMgr = HAFacebookManager()
         if text.characters.count != 0 && images.count == 0  && video.count == 0{// text Only
             
             var hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Uploading")
             postVC.view.addSubview(hudEffectView)
             
             twitterMgr.sendTweetWithTextOnly(text: text, sendToPlatforms: platforms, completion: { [weak self] (platforms, error) in
-                self?.postVC.view.subviews.last?.removeFromSuperview()
-                if error == nil {
-                    hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success")
-                    
-                } else {
+                var TWErrorStr = ""
+                if error != nil {
                     let nse = error as! NSError
-                    hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "\(nse.userInfo["NSLocalizedFailureReason"]!)")
-                    
+                    TWErrorStr = "\(nse.userInfo["NSLocalizedFailureReason"]!)\n"
                 }
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVCManager.tapOnBlurView(gesture:)))
-                hudEffectView.addGestureRecognizer(tapGesture)
 
-                self?.postVC.view.addSubview(hudEffectView)
+                facebookMgr.sendTextOnly(text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
 
+                    self?.postVC.view.subviews.last?.removeFromSuperview()//delete outdated HUD
+                    if error == nil {
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success")
+                        
+                    } else {
+                        let nse = error as! NSError
+                        let FBErrorStr = "Facebook error: " + "\(nse.userInfo["com.facebook.sdk:FBSDKErrorLocalizedErrorTitleKey"]!)"
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: TWErrorStr + FBErrorStr)
+                    }
+                    
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVCManager.tapOnBlurView(gesture:)))
+                    hudEffectView.addGestureRecognizer(tapGesture)
+                    
+                    self?.postVC.view.addSubview(hudEffectView)//Add updated HUD
+                })
             })
             
         } else if images.count != 0 && video.count == 0 {// image Only, text?

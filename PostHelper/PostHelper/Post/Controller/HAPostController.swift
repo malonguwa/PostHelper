@@ -39,9 +39,11 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var toolBarBottomConstraint: NSLayoutConstraint!
     
-
+    let image = UIImage.animatedImageNamed("dead0", duration: 0.2)
+    var array = [UIImage]()
     
     override func viewDidLoad() {
+        array = Array.init((image?.images)!)
         textView.becomeFirstResponder()
         videoInGalleryArray = [HAVideo]()
         imageInGalleryArray = [HAImage]()
@@ -178,15 +180,16 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         
         
     }
+    
 
     // MARK: UIButton Action - delete button cick on gallery image
     func deleteImageInScrollView(_ sender: UIButton) {
         
+        contentView.isUserInteractionEnabled = false
+        
         let imgView = sender.superview! as! UIImageView
         sender.removeFromSuperview()
         imgView.backgroundColor = UIColor.white
-        let image = UIImage.animatedImageNamed("red_dot_image_", duration: 0.3)
-        let array = Array.init((image?.images)!)
         imgView.animationImages = array
         imgView.animationRepeatCount = 1
         imgView.animationDuration = 0.2
@@ -198,9 +201,10 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             
             imgView.startAnimating()
             
-            let when = DispatchTime.now() + 0.3
+            let when = DispatchTime.now() + 0.2
             DispatchQueue.main.asyncAfter(deadline: when, execute: {
                 imgView.stopAnimating()
+                imgView.animationImages = nil
                 self.deleteImageInScrollViewAfterAnimation(tag: sender.tag)
             })
         }
@@ -209,6 +213,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     
     internal func deleteImageInScrollViewAfterAnimation (tag: Int){
 
+        // process image and video array for send
         if tag == imageInGalleryArray.count {
             videoInGalleryArray.removeAll()
         } else {
@@ -216,13 +221,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             selected_assets.removeObject(at: tag)
         }
         
-        if imageInGalleryArray.count > 0 || videoInGalleryArray.count > 0 {
-            sendBtn.isEnabled = true
-        } else if self.textView.text.characters.count == 0 && imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0{
-            sendBtn.isEnabled = false
-        }
-        
-        print("\(self.imageInGalleryArray.count)")
+        //process image array for display
         if imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0 {
             scrollView.isHidden = true
             galleryArrowBtn.isHidden = true
@@ -233,6 +232,15 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             self.arrayForDisplay.remove(at: tag)
             self.reloadScrollViewImages()
         }
+        
+        //sendBtn status change
+        if imageInGalleryArray.count > 0 || videoInGalleryArray.count > 0 {
+            sendBtn.isEnabled = true
+        } else if self.textView.text.characters.count == 0 && imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0{
+            sendBtn.isEnabled = false
+        }
+        
+
 
     }
 
@@ -250,6 +258,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             addImageAndDeleteBtnOnGallery(image: image.element, offset: image.offset)
         }
         
+        contentView.isUserInteractionEnabled = true
+
         HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count)
 
         print("reloadScrollViewImages: \(wordCountLabelMove)")
