@@ -16,6 +16,7 @@ class HAPostVCManager: NSObject {
     //MARK: TapGesture
    @objc fileprivate func tapOnBlurView(gesture : UITapGestureRecognizer) {
         postVC.view.subviews.last?.removeFromSuperview()
+        postVC = nil
     }
     
 
@@ -23,57 +24,62 @@ class HAPostVCManager: NSObject {
     func sendDataFilter(text: String, images: [HAImage], video: [HAVideo], presentFrom: HAPostController){
         postVC = presentFrom
         let twitterMgr = HATwitterManager()
-        let facebookMgr = HAFacebookManager()
+
         if text.characters.count != 0 && images.count == 0  && video.count == 0{// text Only
             
             var hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Uploading")
             postVC.view.addSubview(hudEffectView)
             
-            twitterMgr.sendTweetWithTextOnly(text: text, sendToPlatforms: platforms, completion: { [weak self] (platforms, error) in
-                var TWErrorStr = ""
-                if error != nil {
-                    let nse = error as! NSError
-                    TWErrorStr = "\(nse.userInfo["NSLocalizedFailureReason"]!)\n"
+            
+            twitterMgr.sendTweetWithTextOnly(text: text, completion: { [weak self] (errorMessage) in
+                
+                var twitterErrorMsg : String?
+                if errorMessage == nil {
+                    twitterErrorMsg = ""
+                } else {
+                    twitterErrorMsg = errorMessage
                 }
-
-                facebookMgr.sendTextOnly(text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
-
+                
+                
+                let facebookMgr = HAFacebookManager()
+                facebookMgr.sendTextOnly(text: text, completion: { (errorMessage) in
                     self?.postVC.view.subviews.last?.removeFromSuperview()//delete outdated HUD
-                    if error == nil {
+                    if errorMessage == nil {
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success")
                         
                     } else {
-                        let nse = error as! NSError
-                        let FBErrorStr = "Facebook error: " + "\(nse.userInfo["com.facebook.sdk:FBSDKErrorLocalizedErrorTitleKey"]!)"
-                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: TWErrorStr + FBErrorStr)
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg! + "\n" + errorMessage!)
                     }
                     
                     let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVCManager.tapOnBlurView(gesture:)))
                     hudEffectView.addGestureRecognizer(tapGesture)
                     
                     self?.postVC.view.addSubview(hudEffectView)//Add updated HUD
+                    print("facebookMgr.sendTextOnly block end")
+
                 })
+                print("twitterMgr.sendTweetWithTextOnly block end")
             })
             
         } else if images.count != 0 && video.count == 0 {// image Only, text?
-            twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+            twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (error) in
                 
             })
             
         } else if images.count == 0 && video.count != 0 {// video Only, text?
-            twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+            twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (error) in
                 
             })
             
         } else if images.count > 0 && video.count > 0 {// image + video, text?
             let currentQ = DispatchQueue(label: "currentQForImageAndVideo", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent, autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
             currentQ.async {
-                twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+                twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (error) in
                     
                 })
             }
             currentQ.async {
-                twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (platforms, error) in
+                twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (error) in
                     
                 })
             }

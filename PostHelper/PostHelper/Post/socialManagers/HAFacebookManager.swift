@@ -9,49 +9,95 @@
 import Foundation
 import FacebookCore
 import FacebookShare
+import FBSDKCoreKit
 
 class HAFacebookManager: HASocialPlatformsBaseManager {
     
+    var FacebookErrorStr : String?
+
     // MARK: FB - Send Text Only
-    func sendTextOnly(text : String!, sendToPlatforms: [SocialPlatform]!, completion: (([SocialPlatform], Error?)->())?) {
+    func sendTextOnly(text : String!, completion: ((String?)->())?) {
         
-        if sendToPlatforms.count == 0 {// Only send to Twitter
-            completion!(sendToPlatforms, nil)
+        if platforms.count == 0 {
+            completion!(nil)
             return
         }
         
-        for platform in sendToPlatforms {// Only send to Facebook
-            if platform == .HAFacebook {
-                break
+        if platforms.contains(.HAFacebook) == false {
+            completion!(nil)
+            return
+
+        }
+    
+       let fbsdRequest = FBSDKGraphRequest(graphPath: "/me/feed", parameters: ["message" : text], httpMethod: "POST")
+       fbsdRequest?.setGraphErrorRecoveryDisabled(true)
+       let _ = fbsdRequest?.start { (FBSDKGraphRequestConnection, data, Error) in
+//            print("request: \(FBSDKGraphRequestConnection)\n data: \(data)\n Error: \(Error)")
+            if Error == nil {
+                completion!(nil)
             } else {
-                completion!(sendToPlatforms, nil)
-                return
+//                print("facebook Error: \(Error)")
+                completion!(Error?.localizedDescription)
             }
+        
         }
         
-        
-        GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion).start { (response, result) in
+/*
+         let request = GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+     request.start { (response, result) in
             //text send completely
 //            print("text send completely + \(response)\n")
-            print("Facebook text send completely\n")
 
+    
+        
             switch result {
             case .failed(let error):
-                // Handle the result's error
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion:completion)
-                break
+//            case .failed(_):
+//                let nse = error as NSError
+//                let FBErrorStr = "Facebook error: " + "\(nse.userInfo["com.facebook.sdk:FBSDKErrorLocalizedErrorTitleKey"]!)"
+//                completion!(FBErrorStr)
+                
+//                var nse : NSError?
+//                nse = error as NSError?
+//                var FBErrorStr : String?
+//                FBErrorStr = "Facebook error: " + "\(nse?.userInfo["com.facebook.sdk:FBSDKErrorLocalizedErrorTitleKey"]!)"
+//                
+//                self.FacebookErrorStr = FBErrorStr!
+//                
+//                FBErrorStr = nil
+//                nse = nil
+//                self.FacebookErrorStr = self.extractFacebookErrorMessage(error: error)
+                
+//                print(error.localizedDescription)
+                
+//                self.FacebookErrorStr = error.localizedDescription
+                
+                print("Facebook Error")
+
+//                self?.FacebookErrorStr = "FB error"
+
+                completion!("fail to post")
+
+                return
                 
             case .success(_):
-                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: nil, completion:completion)
+                print("Facebook text send completely\n")
+                completion!(nil)
+
             }
+        
+        
             
         }
+ */
+     
     }
 
     
     
-    
-    
+    deinit {
+        print("HAFacebookManager deinit")
+    }
     
     
     

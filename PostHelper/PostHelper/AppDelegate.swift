@@ -23,7 +23,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
 
         SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+//        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.uiControlErrors)
+//        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.cacheErrors)
+//        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.networkRequests)
+//        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.developerErrors)
+//        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.informational)
+        
+
         Fabric.with([Twitter.self])
+        
+        
         return true
 
         

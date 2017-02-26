@@ -12,6 +12,7 @@ import TwitterKit
 class HATwitterManager: HASocialPlatformsBaseManager {
     let uploadURL = "https://upload.twitter.com/1.1/media/upload.json"
     let statusURL = "https://api.twitter.com/1.1/statuses/update.json"
+    
 //    var HAtimer : Timer?
 //    var TWimageSendPercentage = 0.00
 //    var TWvideoSendPercentage = 0.00
@@ -20,19 +21,21 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //    var parts = 0
 
     
-    func sendTweetWithTextOnly(text: String, sendToPlatforms: [SocialPlatform]!, completion: @escaping ([SocialPlatform], Error?)->()){
-        for platform in sendToPlatforms {
-            if platform == .HATwitter {
-                break
-            } else {
-                completion(sendToPlatforms, nil)// sent to facebook Only, skip Twitter, error = nil
-                return
-            }
+    func sendTweetWithTextOnly(text: String, completion: @escaping (String?)->()){
+        if platforms.count == 0 {
+            completion(nil)
+            return
+        }
+        
+        if platforms.contains(.HATwitter) == false {
+            completion(nil)
+            return
+            
         }
         
         var twitterText = text
-        
-        if text.characters.count >= 140 {
+      
+        if text.unicodeScalars.count >= 140 {
             
             let index = twitterText.index((twitterText.startIndex), offsetBy: 139)
             twitterText = twitterText.substring(to: index)
@@ -47,51 +50,94 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         let request = client.urlRequest(withMethod: "POST", url: "https://api.twitter.com/1.1/statuses/update.json", parameters: params, error: &urlError)
         
         if urlError !== nil {
-            //            assert(false, "\(urlError)")
-            //FIXME: 失败也要继续往下一个平台发
-            
-            print("something wrong in Twitter, continue to the next platform: \(platforms)")
-            goToNextPlatform(sendToPlatforms: sendToPlatforms, error: urlError, completion: completion)
+            completion("unknown error")
             return
         }
-        client.sendTwitterRequest(request, completion: { (response, data, error) in
-            
+        
+       let _ = client.sendTwitterRequest(request, completion: { (response, data, error) in
+        
             guard let httpResponse = response as? HTTPURLResponse else{
-                print("\(response)\n\n\(data)\n\n\(error)")
-                self.duplicateTextError = error
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
+//                print("\(response)\n")
+
+                
+                let nse = error as! NSError
+                completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
+//                if error == nil {
+//                    completion(nil)
+//                } else {
+//                    self.TwitterErrorStr = error?.localizedDescription
+//                    var nse : NSError?
+//                    nse = error as NSError?
+//                    
+//                    var TWErrorStr : NSString?
+//                    TWErrorStr = NSString(string: "\(nse?.userInfo["NSLocalizedFailureReason"]!)\n")
+//                    
+//
+////                    self.TwitterErrorStr = TWErrorStr as String!
+//                    print(error?.localizedDescription)
+//                    TWErrorStr = nil
+//                    nse = nil
+//                    self.TwitterErrorStr = self.extractTwitterErrorMessage(error: error!)
+//                    self.TwitterErrorStr = error?.localizedDescription
+//                    self.TwitterErrorStr = "Error"
+//                    completion(self.TwitterErrorStr)
+//                }
+                
+                
+                print("Twitter Guard")
+//                completion(error?.localizedDescription)
+
                 return
             }
-            
-            self.duplicateTextError = nil
             
             if httpResponse.statusCode == 200 {
                 print("Tweet sucessfully")
                 
-                
-                print("after send success in Twitter: \(platforms)")
-                
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: nil, completion: completion)
+                completion(nil)
             } else {
-                print("\(response)\n\n\(data)\n\n\(error)")
-                //FIXME: 失败也要继续往下一个平台发
-                print("something wrong in Twitter, continue to the next platform: \(platforms)")
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
+//                print("\(response)\n\n\(data)\n\n\(error)")
+//                print("something wrong in Twitter, continue to the next platform: \(platforms)")
+//                let TWErrorStr = "\(nse.userInfo["NSLocalizedFailureReason"]!)\n"
+
+                let nse = error as! NSError
+                completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
+                
+//                var nse : NSError?
+//                nse = error as NSError?
+//                
+//                var TWErrorStr : String?
+//                TWErrorStr =  "\(nse?.userInfo["NSLocalizedFailureReason"]!)\n"
+//                
+//                self.TwitterErrorStr = TWErrorStr!
+//                
+//                TWErrorStr = nil
+//                nse = nil
+//                self.TwitterErrorStr = self.extractTwitterErrorMessage(error: error!)
+//                print(error?.localizedDescription)
+//                self.TwitterErrorStr = error?.localizedDescription
+                
+                print("Twitter Error")
+//                self?.TwitterErrorStr = "Error"
+//                completion("fail to post")
+//                completion(error?.localizedDescription)
+
             }
         })
-        
+
         
     }
 
     
+
+    
     /// MARK: TweetWithTextandImages
-    func sendTweetWithTextandImages(images: [HAImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping ([SocialPlatform], Error?)->()) {
+    func sendTweetWithTextandImages(images: [HAImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping (String?)->()) {
         
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
             } else {
-                completion(sendToPlatforms, nil)
+                completion(nil)
                 return
             }
         }
@@ -180,20 +226,20 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 //                assert(false, "\(urlError)")
                 //FIXME: 失败也要继续往下一个平台发
                 print("136 line - urlError != nil")
-                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: urlError, completion: completion)
-                
+//                self.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage:"unknown error", completion: completion)
+                completion("unknown error")
                 return
             }
             client.sendTwitterRequest(request, completion: { (response, data, error) in
-                
+                let nse = error as! NSError
+
                 guard let httpResponse = response as? HTTPURLResponse else{
-                    print("144 line - response == nil")
-                    print("144 line - \(response)\n\n\(data)\n\n\(error)")
-                    //FIXME: 失败也要继续往下一个平台发
-                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
-                    
+//                    print("144 line - response == nil")
+//                    print("144 line - \(response)\n\n\(data)\n\n\(error)")
+                    completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
                     return
                 }
+                
                 if httpResponse.statusCode == 200 {
                     print("154 line - Tweet sucessfully")
                     print("154 line - httpResponse.statusCode == 200")
@@ -201,7 +247,8 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                        self.PhotoUpdateUploadStatus!(100.00, uploadStatus.Success)
 //                        self.TWimageSendPercentage = 0.00
 //                    }
-                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: nil, completion: completion)
+//                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: nil, completion: completion)
+                    completion(nil)
                     
                 } else {
                     //FIXME: 失败也要继续往下一个平台发
@@ -209,7 +256,9 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                     print("159 line - \(response)\n\n\(data)\n\n\(error)")
 //                    self.PhotoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
                     
-                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
+//                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: self.extractTwitterErrorMessage(error: error!), completion: completion)
+                    let nse = error as! NSError
+                    completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
                     
                 }
             })
@@ -221,13 +270,13 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     
 
     /// MARK: TweetWithTextandVideo
-    func sendTweetWithTextandVideo(video: HAVideo, text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping ([SocialPlatform], Error?)->()) {
+    func sendTweetWithTextandVideo(video: HAVideo, text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping (String?)->()) {
 
         for platform in sendToPlatforms {
             if platform == .HATwitter {
                 break
             } else {// has to be HAFacebook
-                completion(sendToPlatforms, nil)
+                completion(nil)
                 return
             }
         }
@@ -240,11 +289,12 @@ class HATwitterManager: HASocialPlatformsBaseManager {
             if bool == true {
                 guard let accounts = accountStore.accounts(with: accountType) else {
                     print("accounts = nil")
-                    completion(sendToPlatforms, error)
+                    completion("no account found")
                     return
                 }
                 
                 if accounts.count > 0 {
+                    
                     // step 0: 将DKAsset对象中的video.url转化成NSData
                     let videoData = NSData(contentsOf: video.HAvideoURL!)
                     if videoData == nil{
@@ -255,7 +305,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                         print("fileSize : \(Double((videoData?.length)!) * 0.000001024) MB")
                         
                     } else {//符合要求开始上传
-                        SocialVideoHelper.uploadTwitterVideo(videoData as! Data, comment: text, account: accounts[0] as! ACAccount, withCompletion: { [weak self] (success, errorMessageStr) in
+                        SocialVideoHelper.uploadTwitterVideo(videoData as! Data, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessageStr) in
                             if success == true {
                                 print("Twitter video upload success")
                                 //                                        self.HAtimer?.invalidate()
@@ -272,8 +322,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                                    
 //                                }
                                 
-                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: nil, completion: completion)
-                                
+                                completion(nil)
                                 
                             } else {
                                 print("372 - \(errorMessageStr)")
@@ -284,9 +333,10 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                                self?.HAtimer?.invalidate()
 //                                self?.HAtimer = nil
 //                                self?.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
-                               let error = NSError.init(domain: "", code: 0, userInfo: ["NSLocalizedDescriptionKey" : errorMessageStr!])
+//                               let error = NSError.init(domain: "", code: 0, userInfo: ["NSLocalizedDescriptionKey" : errorMessageStr!])
                                 
-                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, error: error, completion: completion)
+//                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: self?.extractTwitterErrorMessage(error: error!), completion: completion)
+                                completion(errorMessageStr)
                             }
 
                         })
@@ -304,7 +354,9 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     
     
     
-    
+    deinit {
+        print("HATwitterManager deinit")
+    }
     
     
     
