@@ -19,6 +19,10 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     var selected_assets = NSMutableArray()
     var selected_TZModels = NSMutableArray()
     var wordCountLabelMove = true
+    var currentInputUnicodeScalarsCount = 0
+    var lastTimeInputUnicodeScalarsCount = 0
+    var limitInputUnicodeScalarsCount = 0
+    var colorChangeRange = 0
 //    var twitterMgr : HATwitterManager = HATwitterManager()
     
     //    lazy var picVC : TZImagePickerController = {
@@ -436,18 +440,18 @@ extension HAPostController: TZImagePickerControllerDelegate {
 
 // MARK: UITextViewDelegate
 extension HAPostController: UITextViewDelegate {
+    
+    
     func textViewDidChange(_ textView: UITextView) {
+        
+//        let newInputCount = abs(textView.text.unicodeScalars.count - currentInputUnicodeScalarsCount)
         textView.becomeFirstResponder()
         let currentRange = textView.selectedRange
-//        print("\(textView.text) : \(textView.text.unicodeScalars.count)")
-//        textView.text.lengthOfBytes(using: .utf8)
         
         if textView.text.unicodeScalars.count > 0{
             TwitterWordCount = textView.text.unicodeScalars.count
             sendBtn.isEnabled = true
             placeHolderLabel.isHidden = true
-            
-            
         } else if arrayForDisplay.count == 0 && textView.text.unicodeScalars.count == 0{
             TwitterWordCount = 0
             sendBtn.isEnabled = false
@@ -459,15 +463,20 @@ extension HAPostController: UITextViewDelegate {
             TwitterWordCount = textView.text.unicodeScalars.count
         }
         
-        if textView.text.unicodeScalars.count > 140{
-            textView.attributedText = postVCMgr.HA_attributedText(textView: textView, textBgColor: UIColor.init(red: 0.0, green: 162.0, blue: 236.0, alpha: 0.2), rangeForBgColor: NSMakeRange(0, 140))
-            
-        }else {//<=140
-            textView.attributedText = postVCMgr.HA_attributedText(textView: textView, textBgColor: nil, rangeForBgColor: nil)
-        }
-        
         wordCountLabel.text = "\(140 - TwitterWordCount) Twitter, \(63206 - TwitterWordCount) Facebook"
+
+        if 140 - TwitterWordCount < 0 {
+
+            let count = 140 - TwitterWordCount
+            let endex = "\(count)".characters.count
+            
+            wordCountLabel.attributedText = postVCMgr.HA_attributedText(text: wordCountLabel.text!, textColor: UIColor.red, rangeForTextColor: NSMakeRange(0, endex))
+
+        }
+    
         textView.selectedRange = currentRange
     }
     
+    
 }
+

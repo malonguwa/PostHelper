@@ -37,7 +37,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
       
         if text.unicodeScalars.count >= 140 {
             
-            let index = twitterText.index((twitterText.startIndex), offsetBy: 139)
+            let index = twitterText.index((twitterText.startIndex), offsetBy: 140)
             twitterText = twitterText.substring(to: index)
         }
         

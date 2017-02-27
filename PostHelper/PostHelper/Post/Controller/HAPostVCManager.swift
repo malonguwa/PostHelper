@@ -27,7 +27,7 @@ class HAPostVCManager: NSObject {
 
         if text.characters.count != 0 && images.count == 0  && video.count == 0{// text Only
             
-            var hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Uploading")
+            var hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Uploading", onlyOneError: false)
             postVC.view.addSubview(hudEffectView)
             
             
@@ -38,13 +38,13 @@ class HAPostVCManager: NSObject {
                 facebookMgr.sendTextOnly(text: text, completion: { (errorMessage) in
                     self?.postVC.view.subviews.last?.removeFromSuperview()//delete outdated HUD
                     if twitterErrorMsg == nil && errorMessage == nil {// error free
-                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success")
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success", onlyOneError: false)
                     } else if twitterErrorMsg == nil && errorMessage != nil{//facebook error only
-                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: errorMessage!)
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: errorMessage!, onlyOneError: true)
                     } else if twitterErrorMsg != nil && errorMessage == nil{//twitter error only
-                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg!)
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg!, onlyOneError: true)
                     } else {// both have error
-                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg! + "\n" + errorMessage!)
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg! + "\n" + errorMessage!, onlyOneError: false)
 
                     }
                     
@@ -89,14 +89,15 @@ class HAPostVCManager: NSObject {
     }
     
     
-    func HA_attributedText (textView: UITextView, textBgColor: UIColor?, rangeForBgColor: NSRange?) -> NSMutableAttributedString {
-        let attributeString = NSMutableAttributedString(string: textView.text)
+    func HA_attributedText (text: String, textColor: UIColor?, rangeForTextColor: NSRange?) -> NSMutableAttributedString {
+        let attributeString = NSMutableAttributedString(string: text)
         
-        if textBgColor != nil {
-            attributeString.addAttribute(NSBackgroundColorAttributeName, value: textBgColor!, range: rangeForBgColor!)
+        if textColor != nil {
+            attributeString.addAttribute(NSForegroundColorAttributeName, value: textColor!, range: rangeForTextColor!)
         }
         
-        attributeString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 14), range: NSMakeRange(0, attributeString.length))
+        
+        attributeString.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFont(ofSize: 14), range: rangeForTextColor!)
 
         return attributeString
     }

@@ -10,7 +10,7 @@ import Foundation
 
 class HAPostHUDViewBuilder : NSObject {
     
-    class func createSendTextOnlyHUD(textInView: String) -> UIVisualEffectView{
+    class func createSendTextOnlyHUD(textInView: String, onlyOneError: Bool) -> UIVisualEffectView{
         
         let ringforText = M13ProgressViewRing(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 30, y: UIScreen.main.bounds.size.height * 0.5 - 100, width: 60, height:60))
         
@@ -27,7 +27,14 @@ class HAPostHUDViewBuilder : NSObject {
             ringforText.primaryColor = UIColor.white
             ringforText.secondaryColor = UIColor.white
             
-        } else {// Failure
+        } else if onlyOneError == true {
+            ringforText.primaryColor = UIColor.yellow
+            ringforText.secondaryColor = UIColor.yellow
+            ringforText.indeterminate = false
+            ringforText.showPercentage = false
+            ringforText.perform(M13ProgressViewActionFailure, animated: true)
+
+        } else {// Both Failure
             ringforText.primaryColor = UIColor.red
             ringforText.secondaryColor = UIColor.red
             ringforText.indeterminate = false
