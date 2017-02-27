@@ -34,7 +34,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
     
     @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
     
-    
+    /*
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         print("viewDidDisappear")
@@ -57,7 +57,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         print("viewDidAppear")
 
     }
-    
+    */
     
     
     func setTopConstarint() {

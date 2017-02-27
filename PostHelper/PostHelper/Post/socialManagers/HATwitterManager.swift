@@ -58,35 +58,8 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         
             guard let httpResponse = response as? HTTPURLResponse else{
 //                print("\(response)\n")
-
-                
                 let nse = error as! NSError
                 completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
-//                if error == nil {
-//                    completion(nil)
-//                } else {
-//                    self.TwitterErrorStr = error?.localizedDescription
-//                    var nse : NSError?
-//                    nse = error as NSError?
-//                    
-//                    var TWErrorStr : NSString?
-//                    TWErrorStr = NSString(string: "\(nse?.userInfo["NSLocalizedFailureReason"]!)\n")
-//                    
-//
-////                    self.TwitterErrorStr = TWErrorStr as String!
-//                    print(error?.localizedDescription)
-//                    TWErrorStr = nil
-//                    nse = nil
-//                    self.TwitterErrorStr = self.extractTwitterErrorMessage(error: error!)
-//                    self.TwitterErrorStr = error?.localizedDescription
-//                    self.TwitterErrorStr = "Error"
-//                    completion(self.TwitterErrorStr)
-//                }
-                
-                
-                print("Twitter Guard")
-//                completion(error?.localizedDescription)
-
                 return
             }
             
@@ -95,32 +68,9 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 
                 completion(nil)
             } else {
-//                print("\(response)\n\n\(data)\n\n\(error)")
-//                print("something wrong in Twitter, continue to the next platform: \(platforms)")
-//                let TWErrorStr = "\(nse.userInfo["NSLocalizedFailureReason"]!)\n"
-
+                print("Twitter Error")
                 let nse = error as! NSError
                 completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
-                
-//                var nse : NSError?
-//                nse = error as NSError?
-//                
-//                var TWErrorStr : String?
-//                TWErrorStr =  "\(nse?.userInfo["NSLocalizedFailureReason"]!)\n"
-//                
-//                self.TwitterErrorStr = TWErrorStr!
-//                
-//                TWErrorStr = nil
-//                nse = nil
-//                self.TwitterErrorStr = self.extractTwitterErrorMessage(error: error!)
-//                print(error?.localizedDescription)
-//                self.TwitterErrorStr = error?.localizedDescription
-                
-                print("Twitter Error")
-//                self?.TwitterErrorStr = "Error"
-//                completion("fail to post")
-//                completion(error?.localizedDescription)
-
             }
         })
 
@@ -285,7 +235,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         let accountStore = ACAccountStore()
 
         let accountType = accountStore.accountType(withAccountTypeIdentifier: ACAccountTypeIdentifierTwitter)
-        accountStore.requestAccessToAccounts(with: accountType, options: nil) { [weak self] (bool, error) in
+        accountStore.requestAccessToAccounts(with: accountType, options: nil) { (bool, error) in
             if bool == true {
                 guard let accounts = accountStore.accounts(with: accountType) else {
                     print("accounts = nil")

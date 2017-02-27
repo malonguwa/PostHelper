@@ -32,23 +32,20 @@ class HAPostVCManager: NSObject {
             
             
             twitterMgr.sendTweetWithTextOnly(text: text, completion: { [weak self] (errorMessage) in
-                
-                var twitterErrorMsg : String?
-                if errorMessage == nil {
-                    twitterErrorMsg = ""
-                } else {
-                    twitterErrorMsg = errorMessage
-                }
-                
-                
+                let twitterErrorMsg = errorMessage
+
                 let facebookMgr = HAFacebookManager()
                 facebookMgr.sendTextOnly(text: text, completion: { (errorMessage) in
                     self?.postVC.view.subviews.last?.removeFromSuperview()//delete outdated HUD
-                    if errorMessage == nil {
+                    if twitterErrorMsg == nil && errorMessage == nil {// error free
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success")
-                        
-                    } else {
+                    } else if twitterErrorMsg == nil && errorMessage != nil{//facebook error only
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: errorMessage!)
+                    } else if twitterErrorMsg != nil && errorMessage == nil{//twitter error only
+                        hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg!)
+                    } else {// both have error
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg! + "\n" + errorMessage!)
+
                     }
                     
                     let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVCManager.tapOnBlurView(gesture:)))

@@ -32,65 +32,14 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
        let fbsdRequest = FBSDKGraphRequest(graphPath: "/me/feed", parameters: ["message" : text], httpMethod: "POST")
        fbsdRequest?.setGraphErrorRecoveryDisabled(true)
        let _ = fbsdRequest?.start { (FBSDKGraphRequestConnection, data, Error) in
-//            print("request: \(FBSDKGraphRequestConnection)\n data: \(data)\n Error: \(Error)")
             if Error == nil {
+                print("facebook post sucessfully")
                 completion!(nil)
             } else {
-//                print("facebook Error: \(Error)")
-                completion!(Error?.localizedDescription)
+                completion!("Facebook error : " + (Error?.localizedDescription)!)
             }
         
         }
-        
-/*
-         let request = GraphRequest(graphPath: "/me/feed", parameters:["message" : text], accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
-     request.start { (response, result) in
-            //text send completely
-//            print("text send completely + \(response)\n")
-
-    
-        
-            switch result {
-            case .failed(let error):
-//            case .failed(_):
-//                let nse = error as NSError
-//                let FBErrorStr = "Facebook error: " + "\(nse.userInfo["com.facebook.sdk:FBSDKErrorLocalizedErrorTitleKey"]!)"
-//                completion!(FBErrorStr)
-                
-//                var nse : NSError?
-//                nse = error as NSError?
-//                var FBErrorStr : String?
-//                FBErrorStr = "Facebook error: " + "\(nse?.userInfo["com.facebook.sdk:FBSDKErrorLocalizedErrorTitleKey"]!)"
-//                
-//                self.FacebookErrorStr = FBErrorStr!
-//                
-//                FBErrorStr = nil
-//                nse = nil
-//                self.FacebookErrorStr = self.extractFacebookErrorMessage(error: error)
-                
-//                print(error.localizedDescription)
-                
-//                self.FacebookErrorStr = error.localizedDescription
-                
-                print("Facebook Error")
-
-//                self?.FacebookErrorStr = "FB error"
-
-                completion!("fail to post")
-
-                return
-                
-            case .success(_):
-                print("Facebook text send completely\n")
-                completion!(nil)
-
-            }
-        
-        
-            
-        }
- */
-     
     }
 
     
