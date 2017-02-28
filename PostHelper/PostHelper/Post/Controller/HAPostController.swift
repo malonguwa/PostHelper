@@ -56,6 +56,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
 //        postVCMgr.HA_switchSelectedPlatformImage(button: <#T##UIButton#>)
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostController.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         HAPlatformSelectionController.switchPlatformImage(button: platformSelectionBtn)
+        
     }
     
 
@@ -355,7 +356,27 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     
     @IBAction func sendBtn(_ sender: UIButton) {
         textView.resignFirstResponder()
-        postVCMgr.sendDataFilter(text: textView.text, images: imageInGalleryArray, video: videoInGalleryArray, presentFrom: self)
+        
+        if postVCMgr.getCurrentNetworkStatus() == "WIFI" {
+            print("connected to WIFI :)")
+            postVCMgr.sendDataFilter(text: textView.text, images: imageInGalleryArray, video: videoInGalleryArray, presentFrom: self)
+            
+        } else if postVCMgr.getCurrentNetworkStatus() == "no network"{
+            //FIXME: alertView
+            print("Not connected to WIFI yet")
+        } else {
+            let actionSheetController = UIAlertController(title: "Not connected to WIFI yet, do you want to continue ?", message: "", preferredStyle: UIAlertControllerStyle.alert)
+            let continueAction = UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: { (doneAction) in
+               self.postVCMgr.sendDataFilter(text: self.textView.text, images: self.imageInGalleryArray, video: (self.videoInGalleryArray), presentFrom: self)
+            })
+            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: { (cancelAction) in
+            })
+            actionSheetController.addAction(cancelAction)
+            actionSheetController.addAction(continueAction)
+
+            self.present(actionSheetController, animated: true, completion: nil)
+        }
+
     }
     
     

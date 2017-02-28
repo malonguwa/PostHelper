@@ -110,6 +110,47 @@ class HAPostVCManager: NSObject {
     
     
 
+    func getCurrentNetworkStatus () -> String{
+        let app = UIApplication.shared
+        let a =  app.value(forKeyPath: "statusBar") as! UIView
+        let b = a.value(forKeyPath: "foregroundView") as! UIView
+        var status = ""
+        var netType = 0
+        
+        for child in b.subviews {
+            if child.isKind(of: NSClassFromString("UIStatusBarDataNetworkItemView")!) {
+               let number = child.value(forKeyPath: "dataNetworkType") as! NSNumber
+               netType = number.intValue
+            }
+        }
+        
+        switch netType {
+        case 0:
+            status = "no network"
+            break
+//        case 1:
+//            status = "2G"
+//            break
+//        case 2:
+//            status = "3G"
+//            break
+//        case 3:
+//            status = "4G"
+//            break
+//        case 4:
+//            status = "LTE-4G"
+//            break
+        case 5:
+            status = "WIFI"
+            break
+        default:
+            break
+        }
+        
+        return status
+    }
+    
+    
     
     deinit {
         
