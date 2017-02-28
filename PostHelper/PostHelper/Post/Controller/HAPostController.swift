@@ -226,7 +226,10 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         }
         
         //process image array for display
-        if imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0 {
+        if imageInGalleryArray.count == 0 && videoInGalleryArray.count == 0{
+            if arrayForDisplay.count != 0 {
+                self.arrayForDisplay.removeAll()
+            }
             scrollView.isHidden = true
             galleryArrowBtn.isHidden = true
             placeWordCountLimit()
@@ -244,8 +247,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             sendBtn.isEnabled = false
         }
         
-
-
+//        HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
     }
 
     internal func reloadScrollViewImages() {
@@ -264,9 +266,10 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         
         contentView.isUserInteractionEnabled = true
 
-        HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count)
+        print("arrayForDisplay.count \(arrayForDisplay.count)")
+        HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
 
-        print("reloadScrollViewImages: \(wordCountLabelMove)")
+//        print("reloadScrollViewImages: \(wordCountLabelMove)")
     }
     
     //MARK: UIButton Linked Actions
@@ -339,6 +342,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         popVC.platformBtn = platformSelectionBtn
         popVC.sendDisableBtn = sendBtn
         popVC.displayArrayCount = arrayForDisplay.count
+        popVC.textForSend = textView.text
         present(popVC, animated: true, completion: nil)
     }
     
@@ -379,6 +383,11 @@ extension HAPostController: TZImagePickerControllerDelegate {
             sendBtn.isEnabled = true
         }
 
+        if imageInGalleryArray.count == 0 {
+            wordCountLabelMove = !wordCountLabelMove
+        }
+
+        
         if isSelectOriginalPhoto == false {
             imageInGalleryArray.removeAll()
             arrayForDisplay.removeAll()
@@ -395,7 +404,8 @@ extension HAPostController: TZImagePickerControllerDelegate {
                 arrayForDisplay.append(videoInGalleryArray[0].HAvideoImage!)
             }
 
-            wordCountLabelMove = !wordCountLabelMove
+            
+            
             reloadScrollViewImages()
 
         }
@@ -414,6 +424,10 @@ extension HAPostController: TZImagePickerControllerDelegate {
                     self?.sendBtn.isEnabled = true
                 }
                 
+                if self?.videoInGalleryArray.count == 0 {
+                    self?.wordCountLabelMove = !(self?.wordCountLabelMove)!
+                }
+                
                 let videoModel = HAVideo.init(avPlayerItem: AVPlayerItem!, coverImage: coverImage)
                 videoModel.printInfo()
                 self?.videoInGalleryArray?.removeAll()
@@ -427,7 +441,6 @@ extension HAPostController: TZImagePickerControllerDelegate {
                     }
                 }
             
-                self?.wordCountLabelMove = !(self?.wordCountLabelMove)!
                 self?.reloadScrollViewImages()
             }
         }

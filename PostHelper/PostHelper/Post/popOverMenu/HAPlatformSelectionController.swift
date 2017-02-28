@@ -13,6 +13,7 @@ class HAPlatformSelectionController: UIViewController {
     @IBOutlet weak var TwitterSwitchBtn: UISwitch!
     weak var platformBtn: UIButton!
     weak var sendDisableBtn: UIButton!
+    var textForSend: String!
     var displayArrayCount = 0
     
     @IBAction func TWSwitchBtnClick(_ sender: UISwitch) {
@@ -126,10 +127,17 @@ class HAPlatformSelectionController: UIViewController {
 
     }
     
-    class func disableSendBtn(sendBtn: UIButton, displayCount: Int) {
+    class func disableSendBtn(sendBtn: UIButton, displayCount: Int, text: String) {
+
+        print(displayCount)
+        print(text)
 
         if platforms.count > 0 && displayCount > 0{
             sendBtn.isEnabled = true
+            
+        } else if platforms.count > 0 && text.characters.count != 0 {
+            sendBtn.isEnabled = true
+
         } else {
             sendBtn.isEnabled = false
         }
@@ -137,7 +145,7 @@ class HAPlatformSelectionController: UIViewController {
     
     deinit {
         HAPlatformSelectionController.switchPlatformImage(button: platformBtn)
-        HAPlatformSelectionController.disableSendBtn(sendBtn: sendDisableBtn, displayCount: displayArrayCount)
+        HAPlatformSelectionController.disableSendBtn(sendBtn: sendDisableBtn, displayCount: displayArrayCount, text: textForSend)
         print("HAPlatformSelectionController deinit")
     }
     
