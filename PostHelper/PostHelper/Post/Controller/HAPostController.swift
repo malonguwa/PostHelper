@@ -46,6 +46,22 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     let image = UIImage.animatedImageNamed("dead0", duration: 0.2)
     var array = [UIImage]()
     
+    
+//    func HA_WillEnterForeground() {
+//        textView.delegate = self
+//        NotificationCenter.default.addObserver(self, selector:#selector(HAPostController.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+//        
+//        print("HA_WillEnterForeground")
+//        
+//    }
+//    
+//    func HA_DidEnterBackground() {
+//        textView.delegate = nil
+//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+//        print("HA_DidEnterBackground")
+//        
+//    }
+    
     override func viewDidLoad() {
         array = Array.init((image?.images)!)
         textView.becomeFirstResponder()
@@ -55,11 +71,37 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         textView.delegate = self
 //        postVCMgr.HA_switchSelectedPlatformImage(button: <#T##UIButton#>)
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostController.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(HAPostController.HA_DidEnterBackground),
+//                                               name: NSNotification.Name.UIApplicationDidEnterBackground,
+//                                               object: nil)
+//
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(HAPostController.HA_WillEnterForeground),
+//                                               name: NSNotification.Name.UIApplicationWillEnterForeground,
+//                                               object: nil)
+
+        
         HAPlatformSelectionController.switchPlatformImage(button: platformSelectionBtn)
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear")
+    }
 
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        print("viewDidDisappear")
+
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("viewDidAppear")
+
+    }
+    
+    
     // MARK: Notification - UIKeyboardWillChangeFrame
     func keyboardWillChange(notice : Notification) {
         let value = notice.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue
@@ -68,8 +110,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         let offsetY = height - frame.origin.y
         let duration = notice.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! Double
         toolBarBottomConstraint.constant = offsetY
-        UIView.animate(withDuration: duration, animations:{ () -> Void in
-            self.view.layoutIfNeeded()
+        UIView.animate(withDuration: duration, animations:{ [weak self] () -> Void in
+            self?.view.layoutIfNeeded()
         })
     }
     
@@ -384,6 +426,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     
     
     deinit {
+        NotificationCenter.default.removeObserver(self)
         print("HAPostController deinit")
     }
 

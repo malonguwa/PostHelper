@@ -20,18 +20,36 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //    var offset = 0
 //    var parts = 0
 
+    func twitterFiter() -> Bool{
+        if platforms.count == 0 {
+//            completion(nil)
+            return false
+        } else if platforms.contains(.HATwitter) == false {
+//            completion(nil)
+            return false
+            
+        } else {
+            return true
+        }
+    }
+    
     
     func sendTweetWithTextOnly(text: String, completion: @escaping (String?)->()){
-        if platforms.count == 0 {
-            completion(nil)
-            return
-        }
         
-        if platforms.contains(.HATwitter) == false {
+        if twitterFiter() == false {
             completion(nil)
             return
-            
         }
+//        if platforms.count == 0 {
+//            completion(nil)
+//            return
+//        }
+//        
+//        if platforms.contains(.HATwitter) == false {
+//            completion(nil)
+//            return
+//            
+//        }
         
         var twitterText = text
       
@@ -81,17 +99,22 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 
     
     /// MARK: TweetWithTextandImages
-    func sendTweetWithTextandImages(images: [HAImage], text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping (String?)->()) {
+    func sendTweetWithTextandImages(images: [HAImage], text: String?, completion: @escaping (String?)->()) {
         
-        for platform in sendToPlatforms {
-            if platform == .HATwitter {
-                break
-            } else {
-                completion(nil)
-                return
-            }
+//        for platform in sendToPlatforms {
+//            if platform == .HATwitter {
+//                break
+//            } else {
+//                completion(nil)
+//                return
+//            }
+//        }
+
+        if twitterFiter() == false {
+            completion(nil)
+            return
         }
-        
+
         let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
         var mediaIDs = [String]()
         let queue = DispatchQueue(label: "serialQForTWImageUpload")// 创建了一个串行队列
@@ -181,11 +204,11 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 return
             }
             client.sendTwitterRequest(request, completion: { (response, data, error) in
-                let nse = error as! NSError
 
                 guard let httpResponse = response as? HTTPURLResponse else{
 //                    print("144 line - response == nil")
 //                    print("144 line - \(response)\n\n\(data)\n\n\(error)")
+                    let nse = error as! NSError
                     completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
                     return
                 }
@@ -220,15 +243,19 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     
 
     /// MARK: TweetWithTextandVideo
-    func sendTweetWithTextandVideo(video: HAVideo, text: String?, sendToPlatforms: [SocialPlatform]!, completion: @escaping (String?)->()) {
+    func sendTweetWithTextandVideo(video: HAVideo, text: String?, completion: @escaping (String?)->()) {
 
-        for platform in sendToPlatforms {
-            if platform == .HATwitter {
-                break
-            } else {// has to be HAFacebook
-                completion(nil)
-                return
-            }
+//        for platform in sendToPlatforms {
+//            if platform == .HATwitter {
+//                break
+//            } else {// has to be HAFacebook
+//                completion(nil)
+//                return
+//            }
+//        }
+        if twitterFiter() == false {
+            completion(nil)
+            return
         }
         
         

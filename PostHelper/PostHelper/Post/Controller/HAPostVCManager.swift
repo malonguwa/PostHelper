@@ -59,24 +59,27 @@ class HAPostVCManager: NSObject {
             })
             
         } else if images.count != 0 && video.count == 0 {// image Only, text?
-            twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (error) in
-                
+            twitterMgr.sendTweetWithTextandImages(images: images, text: text, completion: { (error) in
+                let facebookMgr = HAFacebookManager()
+                facebookMgr.sendGroupPhotos(images: images, text: text, completion: { [weak self] (error) in
+//                    self?.postVC = nil
+                })
             })
             
         } else if images.count == 0 && video.count != 0 {// video Only, text?
-            twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (error) in
+            twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, completion: { (error) in
                 
             })
             
         } else if images.count > 0 && video.count > 0 {// image + video, text?
             let currentQ = DispatchQueue(label: "currentQForImageAndVideo", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent, autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
             currentQ.async {
-                twitterMgr.sendTweetWithTextandImages(images: images, text: text, sendToPlatforms: platforms, completion: { (error) in
+                twitterMgr.sendTweetWithTextandImages(images: images, text: text, completion: { (error) in
                     
                 })
             }
             currentQ.async {
-                twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, sendToPlatforms: platforms, completion: { (error) in
+                twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, completion: { (error) in
                     
                 })
             }
