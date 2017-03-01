@@ -280,7 +280,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                     
                     if Double((videoData?.length)!) * 0.000001024 > 500.00 {//不能发往Twitter
                         print("fileSize : \(Double((videoData?.length)!) * 0.000001024) MB")
-                        
+                        completion("Video is too large for twitter")
                     } else {//符合要求开始上传
                         SocialVideoHelper.uploadTwitterVideo(videoData as! Data, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessageStr) in
                             if success == true {
@@ -289,7 +289,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                                 //                                        self.HAtimer = nil
 //                                self?.TWvideoSendPercentage = 0.00
                                 
-                                print("after send success in Twitter: \(platforms)")
+//                                print("after send success in Twitter: \(platforms)")
                                 
 //                                self?.HAtimer?.invalidate()
 //                                self?.HAtimer = nil
@@ -302,7 +302,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                                 completion(nil)
                                 
                             } else {
-                                print("372 - \(errorMessageStr)")
+//                                print("372 - \(errorMessageStr)")
                                 //                                        self.HAtimer?.invalidate()
                                 //                                        self.HAtimer = nil
                                 //FIXME: 失败也要继续往下一个平台发

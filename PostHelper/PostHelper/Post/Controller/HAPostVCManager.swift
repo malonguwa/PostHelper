@@ -59,36 +59,85 @@ class HAPostVCManager: NSObject {
             })
             
         } else if images.count != 0 && video.count == 0 {// image Only, text?
+            
+            postHUDFiter(imagesCount: images.count, videoCount: video.count, presentController: postVC)
+            
             twitterMgr.sendTweetWithTextandImages(images: images, text: text, completion: { (error) in
                 let facebookMgr = HAFacebookManager()
-                facebookMgr.sendGroupPhotos(images: images, text: text, completion: { [weak self] (error) in
-//                    self?.postVC = nil
+                facebookMgr.sendGroupPhotos(images: images, text: text, completion: { (error) in
                 })
             })
             
         } else if images.count == 0 && video.count != 0 {// video Only, text?
+            
+            postHUDFiter(imagesCount: images.count, videoCount: video.count, presentController: postVC)
+
             twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, completion: { (error) in
-                
+                let facebookMgr = HAFacebookManager()
+                facebookMgr.FB_SendVideoOnly(avAssetsForSend: video[0], text: text, completion: { (error) in
+                    
+                })
             })
             
         } else if images.count > 0 && video.count > 0 {// image + video, text?
+            
+            postHUDFiter(imagesCount: images.count, videoCount: video.count, presentController: postVC)
+
             let currentQ = DispatchQueue(label: "currentQForImageAndVideo", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent, autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
+            let facebookMgr = HAFacebookManager()
             currentQ.async {
                 twitterMgr.sendTweetWithTextandImages(images: images, text: text, completion: { (error) in
-                    
+                    facebookMgr.sendGroupPhotos(images: images, text: text, completion: { (error) in
+                    })
+
                 })
             }
             currentQ.async {
                 twitterMgr.sendTweetWithTextandVideo(video: video[0], text: text, completion: { (error) in
-                    
+                    facebookMgr.FB_SendVideoOnly(avAssetsForSend: video[0], text: text, completion: { (error) in
+                        
+                    })
+
                 })
             }
+        }
+    }
+    
+    func postHUDFiter(imagesCount: Int, videoCount: Int, presentController : HAPostController) {
+        
+        
+        let sb = UIStoryboard(name: "HAUploadStatusController", bundle: nil)
+        guard let uploadStatusViewController = sb.instantiateInitialViewController() else {
+            return
+        }
+        let uploadVC = uploadStatusViewController as! HAUploadStatusController
+        
+
+        if platforms.count == 2 {
             
+        } else if platforms.contains(.HATwitter) && platforms.count == 1 {
+            uploadVC.FBBaseVewIsHidden = true
+//            uploadVC.FBBaseView.isHidden = true
+            
+        } else if platforms.contains(.HAFacebook) && platforms.count == 1 {
+            uploadVC.TWBaseVewIsHidden = true
+//            uploadVC.TWBaseView.isHidden = true
+            
+        } else { //platforms.count == 0
+            return
         }
         
+//        presentController.view.addSubview(<#T##view: UIView##UIView#>)
+//        presentController.present(popVC, animated: true, completion: nil)
         
+        let currentRootVc = UIApplication.shared.keyWindow?.rootViewController
+        uploadVC.currentRootVc = currentRootVc
+        UIApplication.shared.keyWindow?.rootViewController = uploadVC
+
+//        print("\( UIApplication.shared.keyWindow?.rootViewController)")
         
-        
+
+
     }
     
     

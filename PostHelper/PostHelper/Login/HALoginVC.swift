@@ -70,7 +70,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 //        NotificationCenter.default.addObserver(self, selector: #selector(HALoginVC.HAFacebookCheckLogin), name: NSNotification.Name.FBSDKAccessTokenDidChange, object: nil)
 
         
-        print("HALoginVC\(self)")
+//        print("HALoginVC\(self)")
         
         //check login state
         print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")

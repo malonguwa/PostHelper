@@ -18,10 +18,8 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
     
     func facebookFilter() -> Bool{
         if platforms.count == 0 {
-            //            completion(nil)
             return false
         } else if platforms.contains(.HAFacebook) == false {
-            //            completion(nil)
             return false
             
         } else {
@@ -37,16 +35,6 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             completion!(nil)
             return
         }
-//        if platforms.count == 0 {
-//            completion!(nil)
-//            return
-//        }
-//        
-//        if platforms.contains(.HAFacebook) == false {
-//            completion!(nil)
-//            return
-//
-//        }
     
        let fbsdRequest = FBSDKGraphRequest(graphPath: "/me/feed", parameters: ["message" : text], httpMethod: "POST")
        fbsdRequest?.setGraphErrorRecoveryDisabled(true)
@@ -68,23 +56,6 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             completion!(nil)
             return
         }
-//        if sendToPlatforms.count == 0 {
-//            completion!(sendToPlatforms)
-//            return
-//        }
-//        
-//        for platform in sendToPlatforms {
-//            print("in for")
-//            if platform == .HAFacebook {
-//                break
-//            } else {
-//                print("Facebook completion start")
-//                completion!(sendToPlatforms)
-//                return
-//            }
-//        }
-        //        print("should not see here")
-        
         
         let connection = GraphRequestConnection()
         var photoIDs = [String]()
@@ -207,6 +178,91 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
         }
     }//END func
 
+    
+    
+    
+    
+    // MARK: FB - Send Non-Resumable Video Only
+    func FB_SendVideoOnly(avAssetsForSend: HAVideo, text: String?, completion: ((String?)->())?) {
+        
+        if facebookFilter() == false {
+            completion!(nil)
+            return
+        }
+        
+        
+        let videoData = NSData(contentsOf: avAssetsForSend.HAvideoURL!)
+        if videoData == nil {
+            completion!("video Data error")
+            return
+        }
+        
+        if Double((videoData?.length)!) * 0.000001024 > 1000.00 {//不能发往Facebook
+            print("fileSize : \(Double((videoData?.length)!) * 0.000001024) MB")
+            completion!("Video is too large for facebook")
+            return
+        }
+        
+//        let connection = GraphRequestConnection()
+        
+        let videoParams = [
+            "video.mov" : videoData!,
+            "description" : text!,
+            ] as [String : Any]
+        
+        let videoSendRequest = GraphRequest(graphPath: "me/videos", parameters: videoParams, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
+
+        videoSendRequest.start {(HTTPURLResponse, GraphRequestResult) in
+            //            print(GraphRequestResult)
+            
+            switch GraphRequestResult {
+            case .failed(let error):
+                print(error)
+                completion!(error.localizedDescription)
+                break
+            case .success(_):
+                print("facebook video upload success")
+                completion!(nil)
+            }
+        }
+        
+        /*
+        connection.add(videoSendRequest, batchParameters: nil, completion: {(HTTPURLResponse, GraphRequestResult) in
+//            print(GraphRequestResult)
+            
+            switch GraphRequestResult {
+            case .failed(let error):
+                print(error)
+                completion!(error.localizedDescription)
+//                self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
+                break
+            case .success(_):
+                print("facebook video upload success")
+                completion!(nil)
+//                    self.VideoUpdateUploadStatus!(100.00, uploadStatus.Success)
+            }
+        })
+        
+        connection.networkProgressHandler = { (bytesSent: Int64, totalBytesSent: Int64, totalExpectedBytes: Int64) -> () in
+            let totalBytesSent_double = Double.init(totalBytesSent)
+            let totalExpectedBytes_double = Double.init(totalExpectedBytes)
+            print("Video: totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%\n")
+        }
+
+        connection.networkFailureHandler = { (error: Error) -> () in
+//            self.VideoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
+            print("\(error)")
+        }
+
+        
+        connection.start()
+        */
+}
+
+    
+    
+    
+    
     
     deinit {
         print("HAFacebookManager deinit")

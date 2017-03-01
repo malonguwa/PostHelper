@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="m3p-kp-dMe">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -191,10 +191,10 @@
             </objects>
             <point key="canvasLocation" x="-298.39999999999998" y="-182.15892053973016"/>
         </scene>
-        <!--View Controller-->
+        <!--Upload Status Controller-->
         <scene sceneID="del-ss-Uy3">
             <objects>
-                <viewController id="m3p-kp-dMe" sceneMemberID="viewController">
+                <viewController id="m3p-kp-dMe" customClass="HAUploadStatusController" customModule="PostHelper" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Sp3-0j-Mgv"/>
                         <viewControllerLayoutGuide type="bottom" id="g8k-Gv-R7j"/>
@@ -206,7 +206,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iGt-aF-jmd" userLabel="TwiiterUploadView">
                                 <rect key="frame" x="0.0" y="159" width="375" height="150"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MoW-gU-BdT">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MoW-gU-BdT" userLabel="TWRingView">
                                         <rect key="frame" x="5" y="45" width="60" height="60"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Entypo_f30a(0)_64" translatesAutoresizingMaskIntoConstraints="NO" id="cXx-Wp-CZA">
@@ -223,7 +223,7 @@
                                             <constraint firstAttribute="height" constant="60" id="zqp-IF-kus"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W6R-lp-ynC">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W6R-lp-ynC" userLabel="TWCountView">
                                         <rect key="frame" x="75" y="45" width="200" height="60"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="image" translatesAutoresizingMaskIntoConstraints="NO" id="P92-5J-7x9">
@@ -268,7 +268,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pqE-JR-aKF" userLabel="FbUploadView">
                                 <rect key="frame" x="0.0" y="309" width="375" height="150"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7qs-tq-xXK">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7qs-tq-xXK" userLabel="FBRingView">
                                         <rect key="frame" x="5" y="45" width="60" height="60"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Entypo_f30d(0)_64" translatesAutoresizingMaskIntoConstraints="NO" id="xOV-5j-twE">
@@ -285,7 +285,7 @@
                                             <constraint firstAttribute="trailing" secondItem="xOV-5j-twE" secondAttribute="trailing" constant="10" id="sRO-Zo-5Vv"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AWy-qW-Jhp">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AWy-qW-Jhp" userLabel="FBCountView">
                                         <rect key="frame" x="75" y="45" width="200" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A7h-sH-o9v">
@@ -328,7 +328,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="pqE-JR-aKF" secondAttribute="trailing" id="3DY-t9-V5R"/>
                             <constraint firstItem="iGt-aF-jmd" firstAttribute="centerY" secondItem="mlK-ff-Xxh" secondAttribute="centerY" constant="-100" id="5Jx-xk-uSX"/>
@@ -338,6 +338,15 @@
                             <constraint firstItem="pqE-JR-aKF" firstAttribute="leading" secondItem="mlK-ff-Xxh" secondAttribute="leading" id="m5r-1F-8cJ"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="FBBaseView" destination="pqE-JR-aKF" id="6JS-n1-QhR"/>
+                        <outlet property="FBImageLabel" destination="A7h-sH-o9v" id="U9W-Cf-o7q"/>
+                        <outlet property="FBRingView" destination="7qs-tq-xXK" id="C3X-T6-m3P"/>
+                        <outlet property="TWBaseView" destination="iGt-aF-jmd" id="ibn-GF-Rje"/>
+                        <outlet property="TWImageLabel" destination="Dfv-cK-12f" id="3lf-Ge-Z8I"/>
+                        <outlet property="TWRingView" destination="MoW-gU-BdT" id="AnU-Xi-ikS"/>
+                        <outlet property="TWVideoLabel" destination="Nag-Oz-cmw" id="1Pu-95-XbK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="thn-zo-Icn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

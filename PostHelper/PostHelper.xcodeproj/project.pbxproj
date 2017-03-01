@@ -19,7 +19,7 @@
 		3D0F57FC1E55951100CE9F03 /* TwitterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57EC1E55951000CE9F03 /* TwitterManager.swift */; };
 		3D0F57FD1E55951100CE9F03 /* HAWechatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57ED1E55951000CE9F03 /* HAWechatManager.swift */; };
 		3D0F57FE1E55951100CE9F03 /* HAUploadStatusController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D0F57EF1E55951000CE9F03 /* HAUploadStatusController.storyboard */; };
-		3D0F57FF1E55951100CE9F03 /* HAUploadStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57F01E55951000CE9F03 /* HAUploadStatusController.swift */; };
+		3D0F57FF1E55951100CE9F03 /* UploadStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57F01E55951000CE9F03 /* UploadStatusController.swift */; };
 		3D0F58001E55951100CE9F03 /* HAPostVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D0F57F21E55951100CE9F03 /* HAPostVC.storyboard */; };
 		3D0F58021E55966800CE9F03 /* HAImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F58011E55966800CE9F03 /* HAImage.swift */; };
 		3D0F58041E55A70300CE9F03 /* HAPostVCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F58031E55A70300CE9F03 /* HAPostVCManager.swift */; };
@@ -37,6 +37,7 @@
 		3D65CDE81DDC446C00073AB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD61DDC423D00073AB4 /* Assets.xcassets */; };
 		3DB307221DDB2B0E00CFBFC6 /* PostHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB307211DDB2B0E00CFBFC6 /* PostHelperTests.swift */; };
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
+		3DBB0DFC1E66BE9000056E7B /* HAUploadStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */; };
 		3DD551F61E4D8D2200BDBBDF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD551F51E4D8D2200BDBBDF /* Utility.swift */; };
 		3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A61E446FC60089C64F /* M13ProgressView.m */; };
 		3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A81E446FC60089C64F /* M13ProgressViewRing.m */; };
@@ -87,7 +88,7 @@
 		3D0F57EC1E55951000CE9F03 /* TwitterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterManager.swift; sourceTree = "<group>"; };
 		3D0F57ED1E55951000CE9F03 /* HAWechatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAWechatManager.swift; sourceTree = "<group>"; };
 		3D0F57EF1E55951000CE9F03 /* HAUploadStatusController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAUploadStatusController.storyboard; sourceTree = "<group>"; };
-		3D0F57F01E55951000CE9F03 /* HAUploadStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAUploadStatusController.swift; sourceTree = "<group>"; };
+		3D0F57F01E55951000CE9F03 /* UploadStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadStatusController.swift; sourceTree = "<group>"; };
 		3D0F57F21E55951100CE9F03 /* HAPostVC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAPostVC.storyboard; sourceTree = "<group>"; };
 		3D0F58011E55966800CE9F03 /* HAImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAImage.swift; sourceTree = "<group>"; };
 		3D0F58031E55A70300CE9F03 /* HAPostVCManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostVCManager.swift; sourceTree = "<group>"; };
@@ -111,6 +112,7 @@
 		3DB307281DDB2B0E00CFBFC6 /* PostHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelperUITests.swift; sourceTree = "<group>"; };
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAUploadStatusController.swift; sourceTree = "<group>"; };
 		3DD551F51E4D8D2200BDBBDF /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		3DE0E4A51E446FC60089C64F /* M13ProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressView.h; sourceTree = "<group>"; };
 		3DE0E4A61E446FC60089C64F /* M13ProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressView.m; sourceTree = "<group>"; };
@@ -252,7 +254,8 @@
 			isa = PBXGroup;
 			children = (
 				3D0F57EF1E55951000CE9F03 /* HAUploadStatusController.storyboard */,
-				3D0F57F01E55951000CE9F03 /* HAUploadStatusController.swift */,
+				3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */,
+				3D0F57F01E55951000CE9F03 /* UploadStatusController.swift */,
 			);
 			path = uploadStatusMenu;
 			sourceTree = "<group>";
@@ -633,6 +636,7 @@
 				3DF688911E55FF6A00CE034F /* NSBundle+TZImagePicker.m in Sources */,
 				3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */,
 				3DF6889D1E55FF6A00CE034F /* TZVideoPlayerController.m in Sources */,
+				3DBB0DFC1E66BE9000056E7B /* HAUploadStatusController.swift in Sources */,
 				3D0F57FB1E55951100CE9F03 /* HASocialPlatformsBaseManager.swift in Sources */,
 				3DF6889B1E55FF6A00CE034F /* TZPhotoPreviewController.m in Sources */,
 				3D3F79151E604E4200E62B8B /* HAFacebookManager.swift in Sources */,
@@ -649,7 +653,7 @@
 				3D0F57F91E55951100CE9F03 /* HAPresentationController.swift in Sources */,
 				3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */,
 				3DF6889E1E55FF6A00CE034F /* UIView+Layout.m in Sources */,
-				3D0F57FF1E55951100CE9F03 /* HAUploadStatusController.swift in Sources */,
+				3D0F57FF1E55951100CE9F03 /* UploadStatusController.swift in Sources */,
 				3D0F57F81E55951100CE9F03 /* HAPlatformSelectionController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
