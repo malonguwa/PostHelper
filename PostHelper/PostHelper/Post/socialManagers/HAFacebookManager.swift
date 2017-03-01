@@ -52,6 +52,9 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
     // MARK: Send Photos and Text
     func sendGroupPhotos(images: [HAImage], text: String?, completion: ((String?)->())?) {
         
+        //FIXME: return delete
+        return
+
         if facebookFilter() == false {
             completion!(nil)
             return

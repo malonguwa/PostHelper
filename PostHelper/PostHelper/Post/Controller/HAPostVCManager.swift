@@ -135,9 +135,6 @@ class HAPostVCManager: NSObject {
         UIApplication.shared.keyWindow?.rootViewController = uploadVC
 
 //        print("\( UIApplication.shared.keyWindow?.rootViewController)")
-        
-
-
     }
     
     

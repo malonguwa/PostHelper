@@ -209,11 +209,11 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MoW-gU-BdT" userLabel="TWRingView">
                                         <rect key="frame" x="5" y="45" width="60" height="60"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Entypo_f30a(0)_64" translatesAutoresizingMaskIntoConstraints="NO" id="cXx-Wp-CZA">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="t_64" translatesAutoresizingMaskIntoConstraints="NO" id="cXx-Wp-CZA">
                                                 <rect key="frame" x="10" y="10" width="40" height="40"/>
                                             </imageView>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="cXx-Wp-CZA" firstAttribute="top" secondItem="MoW-gU-BdT" secondAttribute="top" constant="10" id="3n0-kL-lcj"/>
                                             <constraint firstAttribute="width" constant="60" id="4YR-Cp-EU8"/>
@@ -226,11 +226,11 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W6R-lp-ynC" userLabel="TWCountView">
                                         <rect key="frame" x="75" y="45" width="200" height="60"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="image" translatesAutoresizingMaskIntoConstraints="NO" id="P92-5J-7x9">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="image_white_48" translatesAutoresizingMaskIntoConstraints="NO" id="P92-5J-7x9">
                                                 <rect key="frame" x="0.0" y="15" width="30" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="video" translatesAutoresizingMaskIntoConstraints="NO" id="X71-Ot-xFV">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="video_white_48" translatesAutoresizingMaskIntoConstraints="NO" id="X71-Ot-xFV">
                                                 <rect key="frame" x="75" y="15" width="30" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
@@ -238,7 +238,7 @@
                                                 <rect key="frame" x="38" y="19" width="30" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nag-Oz-cmw">
@@ -249,14 +249,14 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="200" id="NvI-9t-qaM"/>
                                             <constraint firstAttribute="height" constant="60" id="SZX-Vw-vDk"/>
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="W6R-lp-ynC" firstAttribute="leading" secondItem="MoW-gU-BdT" secondAttribute="trailing" constant="10" id="Etf-J2-EmM"/>
                                     <constraint firstAttribute="height" constant="150" id="LP9-pi-mQc"/>
@@ -271,7 +271,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7qs-tq-xXK" userLabel="FBRingView">
                                         <rect key="frame" x="5" y="45" width="60" height="60"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Entypo_f30d(0)_64" translatesAutoresizingMaskIntoConstraints="NO" id="xOV-5j-twE">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="f_64" translatesAutoresizingMaskIntoConstraints="NO" id="xOV-5j-twE">
                                                 <rect key="frame" x="10" y="10" width="40" height="40"/>
                                             </imageView>
                                         </subviews>
@@ -341,9 +341,11 @@
                     <connections>
                         <outlet property="FBBaseView" destination="pqE-JR-aKF" id="6JS-n1-QhR"/>
                         <outlet property="FBImageLabel" destination="A7h-sH-o9v" id="U9W-Cf-o7q"/>
+                        <outlet property="FBLogoImageView" destination="xOV-5j-twE" id="1Qa-Ha-7wc"/>
                         <outlet property="FBRingView" destination="7qs-tq-xXK" id="C3X-T6-m3P"/>
                         <outlet property="TWBaseView" destination="iGt-aF-jmd" id="ibn-GF-Rje"/>
                         <outlet property="TWImageLabel" destination="Dfv-cK-12f" id="3lf-Ge-Z8I"/>
+                        <outlet property="TWLogoImageView" destination="cXx-Wp-CZA" id="bHG-jJ-Mgp"/>
                         <outlet property="TWRingView" destination="MoW-gU-BdT" id="AnU-Xi-ikS"/>
                         <outlet property="TWVideoLabel" destination="Nag-Oz-cmw" id="1Pu-95-XbK"/>
                     </connections>
@@ -354,10 +356,12 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Entypo_f30a(0)_64" width="64" height="64"/>
-        <image name="Entypo_f30d(0)_64" width="64" height="64"/>
+        <image name="f_64" width="64" height="64"/>
         <image name="image" width="64" height="64"/>
+        <image name="image_white_48" width="48" height="48"/>
         <image name="star6.png" width="352" height="344"/>
+        <image name="t_64" width="64" height="64"/>
         <image name="video" width="64" height="64"/>
+        <image name="video_white_48" width="48" height="48"/>
     </resources>
 </document>

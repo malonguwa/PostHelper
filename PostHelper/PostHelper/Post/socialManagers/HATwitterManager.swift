@@ -101,6 +101,12 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     /// MARK: TweetWithTextandImages
     func sendTweetWithTextandImages(images: [HAImage], text: String?, completion: @escaping (String?)->()) {
         
+        
+        //FIXME: return delete
+        return
+        
+        
+        
 //        for platform in sendToPlatforms {
 //            if platform == .HATwitter {
 //                break

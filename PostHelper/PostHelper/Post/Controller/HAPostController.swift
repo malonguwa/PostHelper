@@ -200,7 +200,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
 //        HAimageView.layer.borderWidth = 2.0
 //        HAimageView.layer.borderColor = UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0).cgColor
         let deleteBtn = UIButton.init(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        deleteBtn.setImage(UIImage(named: "deletimage"), for: UIControlState.normal)
+        deleteBtn.setImage(UIImage(named: "deletimage2"), for: UIControlState.normal)
         deleteBtn.tag = offset
         contentView.addSubview(HAimageView)
         
