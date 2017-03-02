@@ -111,10 +111,13 @@ class HAPostVCManager: NSObject {
             return
         }
         let uploadVC = uploadStatusViewController as! HAUploadStatusController
-        
+        uploadVC.imagesCount = imagesCount
+        uploadVC.videoCount = videoCount
 
         if platforms.count == 2 {
-            
+            uploadVC.FBBaseVewIsHidden = false
+            uploadVC.TWBaseVewIsHidden = false
+
         } else if platforms.contains(.HATwitter) && platforms.count == 1 {
             uploadVC.FBBaseVewIsHidden = true
 //            uploadVC.FBBaseView.isHidden = true

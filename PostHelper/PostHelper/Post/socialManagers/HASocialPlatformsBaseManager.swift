@@ -54,6 +54,37 @@ class HASocialPlatformsBaseManager: NSObject {
     }
     */
     
+    
+    func sendPostStatusNotification(isSuccess: Bool, currentPlatform: SocialPlatform, isVideo: Bool) {
+        let postStatus: Dictionary<String, Any> = [
+            "isSuccess" : isSuccess,
+            "currentPlatform" : currentPlatform,
+            "isVideo" : isVideo
+        ]
+        
+        let notification = Notification.init(name: Notification.Name(rawValue: "HApostStatusUpdateNotification"), object: nil, userInfo: postStatus)
+        
+        NotificationCenter.default.post(notification)
+    }
+    
+    
+    func sendFinalPostStatusNotification(isEnd: Bool, currentPlatform: SocialPlatform, isVideo: Bool) {
+        //FIXME: 未完成
+        //增加参数负责让进度面板知道到底是哪个平台的Image or Video结束了, eg. "whoFinalEND" : "TWImageFinalEND"
+        //TWImageFinalEND, TWVideoFinalEND, FBImageFinalEND, FBVideoFinalEND
+        
+        let postStatus: Dictionary<String, Any> = [
+            "isEnd" : isEnd,
+            "currentPlatform" : currentPlatform,
+            "isVideo" : isVideo
+        ]
+        
+        let notification = Notification.init(name: Notification.Name(rawValue: "HAfinalImagePostStatusNotification"), object: nil, userInfo: postStatus)
+        
+        NotificationCenter.default.post(notification)
+    }
+    
+    
     deinit {
         print("HASocialPlatformsBaseManager deinit")
     }

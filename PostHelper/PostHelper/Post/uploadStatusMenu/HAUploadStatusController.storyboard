@@ -343,6 +343,7 @@
                         <outlet property="FBImageLabel" destination="A7h-sH-o9v" id="U9W-Cf-o7q"/>
                         <outlet property="FBLogoImageView" destination="xOV-5j-twE" id="1Qa-Ha-7wc"/>
                         <outlet property="FBRingView" destination="7qs-tq-xXK" id="C3X-T6-m3P"/>
+                        <outlet property="FBVideoLabel" destination="CMf-O5-N0o" id="fU5-3b-c1Z"/>
                         <outlet property="TWBaseView" destination="iGt-aF-jmd" id="ibn-GF-Rje"/>
                         <outlet property="TWImageLabel" destination="Dfv-cK-12f" id="3lf-Ge-Z8I"/>
                         <outlet property="TWLogoImageView" destination="cXx-Wp-CZA" id="bHG-jJ-Mgp"/>

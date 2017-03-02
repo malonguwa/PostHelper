@@ -53,7 +53,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
     func sendGroupPhotos(images: [HAImage], text: String?, completion: ((String?)->())?) {
         
         //FIXME: return delete
-        return
+//        return
 
         if facebookFilter() == false {
             completion!(nil)
@@ -65,7 +65,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
         var dic = Dictionary<String,String>()
         for image in images.enumerated() {
             
-            let imageData = UIImageJPEGRepresentation(image.element.HAimage!, 0.8)
+            let imageData = UIImageJPEGRepresentation(image.element.HAimage!, 0.6)
             
             if imageData == nil {
                 print("facebook: -> image data error")
@@ -81,18 +81,20 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             let request = GraphRequest(graphPath: "me/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
             
             
-            connection.add(request, batchParameters: ["name" : "\(image.offset)"], completion: { (HTTPURLResponse, GraphRequestResult) in
+            connection.add(request, batchParameters: ["name" : "\(image.offset)"], completion: { [weak self](HTTPURLResponse, GraphRequestResult) in
                 
-
-                print("request \(image.offset) + \(GraphRequestResult)")
+//                print("request \(image.offset) + \(GraphRequestResult)")
                 switch GraphRequestResult {
                 case .failed(let error)://哪张相片上传失败了
                     // Handle the result's error
                     print(error)
+                    self?.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
                     break
                     
                 case .success(let graphResponse):
                     print(" $$$$$$$$$$$+++++++++++ image.offset: \(image.offset) facebook .success ++++++++++")
+                    self?.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
+
                     if graphResponse.dictionaryValue != nil {
                         let responseDictionary = graphResponse.dictionaryValue!
                         
@@ -123,6 +125,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                                     
                                     //FIXME: 失败也要继续往下一个平台发
 //                                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                                    self?.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
                                     completion!(error.localizedDescription)
                                     
                                     break
@@ -136,6 +139,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                                     
                                     //FIXME: 成功也要继续往下一个平台发
 //                                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
+                                    self?.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
                                     completion!(nil)
                                 }
                                 
@@ -221,10 +225,15 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             switch GraphRequestResult {
             case .failed(let error):
                 print(error)
+                self.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
+                self.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
+
                 completion!(error.localizedDescription)
                 break
             case .success(_):
                 print("facebook video upload success")
+                self.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
+                self.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
                 completion!(nil)
             }
         }
