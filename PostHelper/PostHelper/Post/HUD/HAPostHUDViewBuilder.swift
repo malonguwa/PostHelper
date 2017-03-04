@@ -68,12 +68,7 @@ class HAPostHUDViewBuilder : NSObject {
                 dismisslabel.textAlignment = .center
                 dismisslabel.numberOfLines = 0
                 effectView.contentView.addSubview(dismisslabel)
-
             }
-            
-            
-            
-            
         }
         
         return effectView

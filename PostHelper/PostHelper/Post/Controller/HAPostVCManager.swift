@@ -15,6 +15,9 @@ class HAPostVCManager: NSObject {
     
     //MARK: TapGesture
    @objc fileprivate func tapOnBlurView(gesture : UITapGestureRecognizer) {
+        postVC.textView.text = ""
+        postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
+        postVC.sendBtn.isEnabled = false
         postVC.view.subviews.last?.removeFromSuperview()
         postVC = nil
     }

@@ -263,6 +263,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         // process image and video array for send
         if tag == imageInGalleryArray.count {
             videoInGalleryArray.removeAll()
+            
         } else {
             imageInGalleryArray.remove(at: tag)
             selected_assets.removeObject(at: tag)
@@ -276,7 +277,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             scrollView.isHidden = true
             galleryArrowBtn.isHidden = true
             placeWordCountLimit()
-            wordCountLabelMove = !wordCountLabelMove
+            wordCountLabelMove = true
         } else {
             
             self.arrayForDisplay.remove(at: tag)
@@ -324,7 +325,9 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
                 print("show")
                 
                 self.galleryArrowBtn.transform = CGAffineTransform(rotationAngle: 0.0)
-                self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: -(self.contentView.superview?.transform.tx)!, y: (self.contentView.superview?.transform.ty)!))!
+//                self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: -(self.contentView.superview?.transform.tx)!, y: (self.contentView.superview?.transform.ty)!))!
+                self.contentView.superview?.frame.origin.x = 0
+                self.scrollView.superview?.layoutIfNeeded()
             }, completion: nil)
             sender.isSelected = false
         } else {//hide
@@ -333,7 +336,9 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
                 print("hide")
                 self.galleryArrowBtn.transform = self.scrollView.transform.rotated(by: CGFloat(M_PI-0.000001))
                 
-                self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: (self.contentView.superview?.transform.tx)! + UIScreen.main.bounds.width, y: (self.contentView.superview?.transform.ty)!))!
+//                self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: (self.contentView.superview?.transform.tx)! + UIScreen.main.bounds.width, y: (self.contentView.superview?.transform.ty)!))!
+                self.contentView.superview?.frame.origin.x = UIScreen.main.bounds.size.width
+                self.scrollView.superview?.layoutIfNeeded()
             }, completion: nil)
             sender.isSelected = true
         }

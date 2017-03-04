@@ -226,16 +226,25 @@ class HAUploadStatusController : UIViewController {
     @objc fileprivate func tapOnBlurView(gesture : UITapGestureRecognizer) {
 //        let RootVc = UIApplication.shared.keyWindow?.rootViewController
         UIApplication.shared.keyWindow?.rootViewController = currentRootVc
+        if postVC.galleryArrowBtn.isSelected == true {
+            
+            postVC.contentView.superview?.frame.origin.x = 0
+            postVC.galleryArrowBtn.transform = CGAffineTransform(rotationAngle: 0.0)
+//            postVC.contentView.superview?.transform = (postVC.contentView.superview?.transform.translatedBy(x: -(postVC.contentView.superview?.transform.tx)!, y: (postVC.contentView.superview?.transform.ty)!))!
+            postVC.galleryArrowBtn.isSelected = false
+        }
+        
         postVC.scrollView.isHidden = true
         postVC.galleryArrowBtn.isHidden = true
-//        postVC.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
-        postVC.placeWordCountLimit()
+        postVC.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
+//        postVC.placeWordCountLimit()
         postVC.wordCountLabelMove = true
         postVC.arrayForDisplay.removeAll()
         postVC.imageInGalleryArray.removeAll()
         postVC.videoInGalleryArray.removeAll()
         postVC.selected_assets.removeAllObjects()
         postVC.textView.text = ""
+        postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
         postVC.sendBtn.isEnabled = false
         
     }
