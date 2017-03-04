@@ -21,6 +21,14 @@ public enum SocialPlatform { // send squence
     case HATwitter
     case HAFacebook
 }
+//TWImageFinalEND, TWVideoFinalEND, FBImageFinalEND, FBVideoFinalEND
+
+public enum WhoUploadEnd {
+    case TWImageFinalEND
+    case TWVideoFinalEND
+    case FBImageFinalEND
+    case FBVideoFinalEND
+}
 
 class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 

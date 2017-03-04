@@ -55,8 +55,25 @@ class HAPostHUDViewBuilder : NSObject {
             label.textAlignment = .center
             label.numberOfLines = 0
             label.adjustsFontSizeToFitWidth = false
-            
             effectView.contentView.addSubview(label)
+
+            
+            if textInView != "Uploading" {
+                let dismisslabel = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width * 0.5 - 80, y: UIScreen.main.bounds.size.height - 100, width: 160, height: 60))
+                dismisslabel.adjustsFontSizeToFitWidth = false
+                dismisslabel.text = "Tap to dismiss"
+                dismisslabel.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
+                dismisslabel.textAlignment = .center
+                dismisslabel.textColor = UIColor.white
+                dismisslabel.textAlignment = .center
+                dismisslabel.numberOfLines = 0
+                effectView.contentView.addSubview(dismisslabel)
+
+            }
+            
+            
+            
+            
         }
         
         return effectView

@@ -52,9 +52,6 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
     // MARK: Send Photos and Text
     func sendGroupPhotos(images: [HAImage], text: String?, completion: ((String?)->())?) {
         
-        //FIXME: return delete
-//        return
-
         if facebookFilter() == false {
             completion!(nil)
             return
@@ -81,26 +78,27 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             let request = GraphRequest(graphPath: "me/photos", parameters: params, accessToken: AccessToken.current, httpMethod: GraphRequestHTTPMethod.POST, apiVersion: GraphAPIVersion.defaultVersion)
             
             
-            connection.add(request, batchParameters: ["name" : "\(image.offset)"], completion: { [weak self](HTTPURLResponse, GraphRequestResult) in
+            connection.add(request, batchParameters: ["name" : "\(image.offset)"], completion: { (HTTPURLResponse, GraphRequestResult) in
                 
 //                print("request \(image.offset) + \(GraphRequestResult)")
                 switch GraphRequestResult {
                 case .failed(let error)://哪张相片上传失败了
                     // Handle the result's error
                     print(error)
-                    self?.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
+                    HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
                     break
                     
                 case .success(let graphResponse):
                     print(" $$$$$$$$$$$+++++++++++ image.offset: \(image.offset) facebook .success ++++++++++")
-                    self?.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
+                    DispatchQueue.main.async {
+                        HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
+                    }
 
                     if graphResponse.dictionaryValue != nil {
                         let responseDictionary = graphResponse.dictionaryValue!
                         
                         let photoID = (responseDictionary["id"] as! String)
                         photoIDs.append(photoID)
-//                        print(photoIDs)
                         
                         if image.offset == images.count - 1{
                             
@@ -119,31 +117,20 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                                 switch GraphRequestResult {
                                 case .failed(let error):
                                     print(error)
-//                                    if self.PhotoUpdateUploadStatus != nil {
-//                                        self.PhotoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
-//                                    }
-                                    
-                                    //FIXME: 失败也要继续往下一个平台发
-//                                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-                                    self?.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
+                                    //FIXME: 这里加了新通知方法调用
+                                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBImageFinalEND)
                                     completion!(error.localizedDescription)
                                     
                                     break
                                 case .success(let response):
                                     
                                     print("Final response - : \(response)")
-                                    
-//                                    if self.PhotoUpdateUploadStatus != nil {
-//                                        self.PhotoUpdateUploadStatus!(100.00, uploadStatus.Success)
-//                                    }
-                                    
-                                    //FIXME: 成功也要继续往下一个平台发
-//                                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, completion: completion)
-                                    self?.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
+
+                                    //FIXME: 这里加了新通知方法调用
+                                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBImageFinalEND)
                                     completion!(nil)
                                 }
                                 
-//                                self.photoIDs.removeAll()
 
                             })
                         }
@@ -178,10 +165,6 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             let totalBytesSent_double = Double.init(totalBytesSent)
             let totalExpectedBytes_double = Double.init(totalExpectedBytes)
             print("Image: totalBytesSent: \(totalBytesSent) ,totalExpectedBytes: \(totalExpectedBytes) ,\(String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100))%\n")
-//            self.FBimageSendPercentage = String(format:"%.2f",totalBytesSent_double/totalExpectedBytes_double * 100)
-//            if self.PhotoUpdateUploadStatus != nil {
-//                self.PhotoUpdateUploadStatus!(CGFloat(Double(self.FBimageSendPercentage!)!), uploadStatus.Uploading)
-//            }
         }
     }//END func
 
@@ -225,15 +208,17 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             switch GraphRequestResult {
             case .failed(let error):
                 print(error)
-                self.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
-                self.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
+                //FIXME: 这里加了新通知方法调用
+                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBVideoFinalEND)
+                HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
 
                 completion!(error.localizedDescription)
                 break
             case .success(_):
                 print("facebook video upload success")
-                self.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
-                self.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
+                //FIXME: 这里加了新通知方法调用
+                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBVideoFinalEND)
+                HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
                 completion!(nil)
             }
         }
@@ -269,7 +254,7 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
         
         connection.start()
         */
-}
+    }
 
     
     

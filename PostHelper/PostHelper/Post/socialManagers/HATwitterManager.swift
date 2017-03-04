@@ -101,21 +101,6 @@ class HATwitterManager: HASocialPlatformsBaseManager {
     /// MARK: TweetWithTextandImages
     func sendTweetWithTextandImages(images: [HAImage], text: String?, completion: @escaping (String?)->()) {
         
-        
-        //FIXME: return delete
-//        return
-        
-        
-        
-//        for platform in sendToPlatforms {
-//            if platform == .HATwitter {
-//                break
-//            } else {
-//                completion(nil)
-//                return
-//            }
-//        }
-
         if twitterFiter() == false {
             completion(nil)
             return
@@ -148,25 +133,12 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                             if error != nil {
                                 //FIXME: here to know which twitter image upload faliure
                                 print("\(image.offset): error uploading media to Twitter \(error)")
-                                /*
-                                0: error uploading media to Twitter Optional(Error Domain=NSURLErrorDomain Code=-1001 "The request timed out." UserInfo={NSUnderlyingError=0x170446780 {Error Domain=kCFErrorDomainCFNetwork Code=-1001 "(null)" UserInfo={_kCFStreamErrorCodeKey=-2102, _kCFStreamErrorDomainKey=4}}, NSErrorFailingURLStringKey=https://upload.twitter.com/1.1/media/upload.json, NSErrorFailingURLKey=https://upload.twitter.com/1.1/media/upload.json, _kCFStreamErrorDomainKey=4, _kCFStreamErrorCodeKey=-2102, NSLocalizedDescription=The request timed out.})
-                                 
-                                 
-                                 
-                                 UserInfo={_kCFStreamErrorCodeKey=-2102, _kCFStreamErrorDomainKey=4}}, NSErrorFailingURLStringKey=https://upload.twitter.com/1.1/media/upload.json, NSErrorFailingURLKey=https://upload.twitter.com/1.1/media/upload.json, _kCFStreamErrorDomainKey=4, _kCFStreamErrorCodeKey=-2102, NSLocalizedDescription=The request timed out.}
-                                 UserInfo={NSLocalizedFailureReason=Twitter API error : Status is a duplicate. (code 187), TWTRNetworkingStatusCode=403, NSErrorFailingURLKey=https://api.twitter.com/1.1/statuses/update.json, NSLocalizedDescription=Request failed: forbidden (403)}
-                                */
-                                
                             } else {
                                 mediaIDs.append(mediaID!)
                                 print(mediaIDs)
-//                                if self.PhotoUpdateUploadStatus != nil {
-//                                    self.TWimageSendPercentage = self.TWimageSendPercentage + 15.00
-//                                    self.PhotoUpdateUploadStatus!(CGFloat(self.TWimageSendPercentage), uploadStatus.Uploading)
-//                                }
                             }
                             
-                            self.sendPostStatusNotification(isSuccess: error == nil ? true : false ,currentPlatform: SocialPlatform.HATwitter, isVideo: false)
+                            HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: error == nil ? true : false ,currentPlatform: SocialPlatform.HATwitter, isVideo: false)
                             semaphore.signal()//当满足条件时，向队列发送信号
                         })
                         semaphore.wait()//阻塞并等待信号
@@ -211,13 +183,15 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 completion("unknown error")
                 return
             }
-            client.sendTwitterRequest(request, completion: {[weak self] (response, data, error) in
+            client.sendTwitterRequest(request, completion: {(response, data, error) in
 
                 guard let httpResponse = response as? HTTPURLResponse else{
 //                    print("144 line - response == nil")
 //                    print("144 line - \(response)\n\n\(data)\n\n\(error)")
                     let nse = error as! NSError
-                    self?.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, isVideo: false)
+
+                    //FIXME: 这里加了新通知方法调用
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND)
                     completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
                     return
                 }
@@ -225,24 +199,17 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 if httpResponse.statusCode == 200 {
                     print("154 line - Tweet sucessfully")
                     print("154 line - httpResponse.statusCode == 200")
-//                    if self.PhotoUpdateUploadStatus != nil {
-//                        self.PhotoUpdateUploadStatus!(100.00, uploadStatus.Success)
-//                        self.TWimageSendPercentage = 0.00
-//                    }
-//                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: nil, completion: completion)
-                    
-                    self?.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, isVideo: false)
+                    //FIXME: 这里加了新通知方法调用
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND)
                     completion(nil)
                     
                 } else {
                     //FIXME: 失败也要继续往下一个平台发
                     print("159 line - else")
                     print("159 line - \(response)\n\n\(data)\n\n\(error)")
-//                    self.PhotoUpdateUploadStatus!(CGFloat(0.00), uploadStatus.Failure)
-                    
-//                    self.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: self.extractTwitterErrorMessage(error: error!), completion: completion)
                     let nse = error as! NSError
-                    self?.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, isVideo: false)
+                    //FIXME: 这里加了新通知方法调用
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND)
                     completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
                     
                 }
@@ -327,8 +294,9 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: self?.extractTwitterErrorMessage(error: error!), completion: completion)
                                 completion(errorMessageStr)
                             }
-                            self.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, isVideo: true)
-                            self.sendPostStatusNotification(isSuccess: error == nil ? true : false ,currentPlatform: SocialPlatform.HATwitter, isVideo: true)
+                            //FIXME: 这里加了新通知方法调用
+                            HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: error == nil ? true : false ,currentPlatform: SocialPlatform.HATwitter, isVideo: true)
+                            HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWVideoFinalEND)
 
                         })
                     }

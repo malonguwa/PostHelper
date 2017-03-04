@@ -30,7 +30,6 @@ class HAPostVCManager: NSObject {
             var hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Uploading", onlyOneError: false)
             postVC.view.addSubview(hudEffectView)
             
-            
             twitterMgr.sendTweetWithTextOnly(text: text, completion: { [weak self] (errorMessage) in
                 let twitterErrorMsg = errorMessage
 
@@ -113,7 +112,7 @@ class HAPostVCManager: NSObject {
         let uploadVC = uploadStatusViewController as! HAUploadStatusController
         uploadVC.imagesCount = imagesCount
         uploadVC.videoCount = videoCount
-
+        uploadVC.postVC = presentController
         if platforms.count == 2 {
             uploadVC.FBBaseVewIsHidden = false
             uploadVC.TWBaseVewIsHidden = false
