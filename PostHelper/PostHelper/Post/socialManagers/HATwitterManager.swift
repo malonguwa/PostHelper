@@ -277,11 +277,11 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                                    self?.VideoUpdateUploadStatus!(CGFloat(100.00), uploadStatus.Success)
 //                                    
 //                                }
-                                
+                                HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HATwitter, isVideo: true)
                                 completion(nil)
                                 
                             } else {
-//                                print("372 - \(errorMessageStr)")
+                                print("Twitter Video Upload ErrorMsg: - \(errorMessageStr)")
                                 //                                        self.HAtimer?.invalidate()
                                 //                                        self.HAtimer = nil
                                 //FIXME: 失败也要继续往下一个平台发
@@ -292,10 +292,10 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                               let error = NSError.init(domain: "", code: 0, userInfo: ["NSLocalizedDescriptionKey" : errorMessageStr!])
                                 
 //                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: self?.extractTwitterErrorMessage(error: error!), completion: completion)
+                                HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HATwitter, isVideo: true)
                                 completion(errorMessageStr)
                             }
                             //FIXME: 这里加了新通知方法调用
-                            HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: error == nil ? true : false ,currentPlatform: SocialPlatform.HATwitter, isVideo: true)
                             HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWVideoFinalEND)
 
                         })

@@ -3,6 +3,8 @@
 //
 //  Originally Created by ryu-ushin on 6/5/15.
 //  Updated async upload methods by LongMA and YuSong on 29/1/17.
+//  Now you should able to upload large video to Twitter (no more than 512MB)
+//  According to https://dev.twitter.com/rest/media/uploading-media
 //  Copyright (c) 2015 ryu-ushin. All rights reserved.
 //
 
@@ -139,7 +141,7 @@
 
 
 
-
+// change media_category to amplify_video for async video upload
 +(void)uploadTwitterVideo:(NSData*)videoData comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
     
@@ -170,7 +172,7 @@
     }];
 }
 
-
+// Change the Group to Operation
 +(void)tweetVideoStage2:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
     
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
@@ -239,50 +241,6 @@
             }];
         }
     }];
-    
-    
-    
-    
-    /*
-    dispatch_async(chunksRequestQueue, ^{
-        dispatch_group_t requestGroup = dispatch_group_create();
-        for (int i = 0; i < (requests.count - 1); i++) {
-            dispatch_group_enter(requestGroup);
-            SLRequest *postRequest = requests[i];
-            [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                NSLog(@"Twitter Stage2 - %d HTTP Response: %li, %@", (i+1),(long)[urlResponse statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
-                if (error) {
-                    NSLog(@"Twitter Error stage 2 - %d, error - %@", (i+1), error);
-                    theError = error;
-                    return;
-                } else {
-                    if (i == requests.count - 1) {
-                         [SocialVideoHelper tweetVideoStage3:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
-                    }
-                }
-                dispatch_group_leave(requestGroup);
-            }];
-            dispatch_group_wait(requestGroup, DISPATCH_TIME_FOREVER);
-        }
-        
-        if (theError) {
-            [SocialVideoHelper uploadError:theError withCompletion:completion];
-        } else {
-            SLRequest *postRequest = requests.lastObject;
-            [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                NSLog(@"Twitter Stage2 - final, HTTP Response: %li, %@",(long)[urlResponse statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
-                if (error) {
-                    NSLog(@"Twitter Error stage 2 - final, error - %@", error);
-                } else {
-                    
-                    NSLog(@"stage two success, mediaID -> %@", mediaID);
-
-                    [SocialVideoHelper tweetVideoStage3:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
-                }
-            }];
-        }
-     });
-     */
 }
 
 +(void)tweetVideoStage3:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
@@ -310,7 +268,7 @@
     }];
 }
 
-
+// add NEW tweetVideoStage4: STATUS command for async video upload
 +(void)tweetVideoStage4:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
     
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://upload.twitter.com/1.1/media/upload.json"];
@@ -364,22 +322,16 @@
     
 }
 
-//{"media_id" : 825379284617355264,
-// "media_id_string" : "825379284617355264",
-// "processing_info" : {"state":"in_progress","check_after_secs":5,"progress_percent":5}
-//}
-
-
 +(void)tweetVideoStage5:(NSData*)videoData mediaID:(NSString *)mediaID comment:(NSString*)comment account:(ACAccount*)account withCompletion:(VideoUploadCompletion)completion{
     NSURL *twitterPostURL = [[NSURL alloc] initWithString:@"https://api.twitter.com/1.1/statuses/update.json"];
     
     if (comment == nil) {
+    // try to not prefill the post status text for user
 //        comment = [NSString stringWithFormat:@"#SocialVideoHelper# https://github.com/liu044100/SocialVideoHelper"];
         comment = [NSString stringWithFormat:@"  "];
 
     }
     
-    // Set the parameters for the third twitter video request.
     NSDictionary *postParams = @{@"status": comment,
                                @"media_ids" : @[mediaID]};
     

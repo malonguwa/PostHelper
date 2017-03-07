@@ -90,9 +90,8 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
                     
                 case .success(let graphResponse):
                     print(" $$$$$$$$$$$+++++++++++ image.offset: \(image.offset) facebook .success ++++++++++")
-                    DispatchQueue.main.async {
-                        HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
-                    }
+                    HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: false)
+                    
 
                     if graphResponse.dictionaryValue != nil {
                         let responseDictionary = graphResponse.dictionaryValue!

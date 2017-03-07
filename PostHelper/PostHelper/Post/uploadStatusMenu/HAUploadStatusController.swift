@@ -41,7 +41,21 @@ class HAUploadStatusController : UIViewController {
     var FBImageFinalEnd: Bool?
     var FBVideoFinalEnd: Bool?
     
+    var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
 
+    
+    func registerBackgroundTask() {
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+        assert(backgroundTask != UIBackgroundTaskInvalid)
+    }
+    
+    func endBackgroundTask() {
+        print("Background task ended.")
+        UIApplication.shared.endBackgroundTask(backgroundTask)
+        backgroundTask = UIBackgroundTaskInvalid
+    }
     
     override func viewDidLoad() {
         
@@ -54,14 +68,19 @@ class HAUploadStatusController : UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(HAUploadStatusController.updateFinalLogo(notification:)), name: NSNotification.Name(rawValue: "HAfinalPostStatusNotification"), object: nil)
 
+        
 
         setUpRingView()
         setUpLabel()
+        
+        registerBackgroundTask()
     }
     
     func updateLabelInfor(notification: Notification) {
         let platform = notification.userInfo?["currentPlatform"] as! SocialPlatform
         
+        print("TwitterVideo: \(notification.userInfo?["isVideo"]), isSuccess: \(notification.userInfo?["isSuccess"])")
+
         if platform == SocialPlatform.HATwitter && notification.userInfo?["isSuccess"] as! Bool == true {
             if notification.userInfo?["isVideo"] as! Bool == false {//Image
                 TWsuccessImageCount = TWsuccessImageCount + 1
@@ -89,6 +108,9 @@ class HAUploadStatusController : UIViewController {
     //接到通知，判断是哪个FinalEND了， 然后把对应的TWImageFinalEnd, TWVideoFinalEnd, FBImageFinalEnd, FBVideoFinalEnd赋值成true
     //当TWImageFinalEnd, TWVideoFinalEnd都为true时，就把对应的Logo变成无缝圆圈
     func updateFinalLogo(notification: Notification) {
+        
+        endBackgroundTask()
+
         let whoEnd = notification.userInfo?["whoFinalEND"] as! WhoUploadEnd
 
         if whoEnd == WhoUploadEnd.TWImageFinalEND {
