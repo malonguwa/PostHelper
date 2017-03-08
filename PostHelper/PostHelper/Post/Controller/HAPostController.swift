@@ -42,7 +42,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var toolBarBottomConstraint: NSLayoutConstraint!
-    
+    @IBOutlet weak var scrollViewTopConstraint: NSLayoutConstraint!
     let image = UIImage.animatedImageNamed("dead0", duration: 0.2)
     var array = [UIImage]()
     
@@ -54,7 +54,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
 //        print("HA_WillEnterForeground")
 //        
 //    }
-//    
+//
 //    func HA_DidEnterBackground() {
 //        textView.delegate = nil
 //        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
@@ -62,15 +62,32 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
 //        
 //    }
     
+    
+    func HA_fitScreen() {
+        let screenHeight = UIScreen.main.bounds.height
+
+        if screenHeight >= 667.0 {//iPhone 6,6+,6s,6s+,7,7+
+            galleryArrowBtn.isHidden = true
+            scrollViewTopConstraint.constant = CGFloat(textView.frame.size.height) + 18.0 + 28.0
+            view.layoutIfNeeded()
+        } else { //iPhone 5, 5s, 5c, SE
+            if scrollView.isHidden == false {
+                galleryArrowBtn.isHidden = false
+            }
+        }
+        
+    }
+    
     override func viewDidLoad() {
         array = Array.init((image?.images)!)
         textView.becomeFirstResponder()
         videoInGalleryArray = [HAVideo]()
         imageInGalleryArray = [HAImage]()
-        setUpWordCountLabel()
         textView.delegate = self
-//        postVCMgr.HA_switchSelectedPlatformImage(button: <#T##UIButton#>)
+        setUpWordCountLabel()
+        HA_fitScreen()
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostController.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        
 //        NotificationCenter.default.addObserver(self,
 //                                               selector: #selector(HAPostController.HA_DidEnterBackground),
 //                                               name: NSNotification.Name.UIApplicationDidEnterBackground,
@@ -313,6 +330,18 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         print("arrayForDisplay.count \(arrayForDisplay.count)")
         HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
 
+        
+        if arrayForDisplay.count > 3 {
+            let offsetX = CGFloat(Double(arrayForDisplay.count - 1) * 100.0) + 10.0 * CGFloat(arrayForDisplay.count - 1)
+            
+            
+            UIView.animate(withDuration: 0.1) { [weak self] in
+                self?.scrollView.contentOffset = CGPoint(x: offsetX, y: 0.0)
+                self?.view.layoutIfNeeded()
+            }
+        }
+        
+        
 //        print("reloadScrollViewImages: \(wordCountLabelMove)")
     }
     
@@ -391,6 +420,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         popVC.sendDisableBtn = sendBtn
         popVC.displayArrayCount = arrayForDisplay.count
         popVC.textForSend = textView.text
+        popVC.LoginVC = UIApplication.shared.keyWindow?.rootViewController as! HALoginVC!
         present(popVC, animated: true, completion: nil)
     }
     
@@ -409,8 +439,14 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             postVCMgr.sendDataFilter(text: textView.text, images: imageInGalleryArray, video: videoInGalleryArray, presentFrom: self)
             
         } else if postVCMgr.getCurrentNetworkStatus() == "no network"{
-            //FIXME: alertView
             print("Not connected to WIFI yet")
+            let actionSheetController = UIAlertController(title: "No Internet Connection", message: "", preferredStyle: UIAlertControllerStyle.alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: { (cancelAction) in
+            })
+            actionSheetController.addAction(cancelAction)
+            
+            self.present(actionSheetController, animated: true, completion: nil)
+            
         } else {
             let actionSheetController = UIAlertController(title: "Not connected to WIFI yet, do you want to continue ?", message: "", preferredStyle: UIAlertControllerStyle.alert)
             let continueAction = UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: { (doneAction) in
@@ -445,7 +481,8 @@ extension HAPostController: TZImagePickerControllerDelegate {
 
         if photos.count > 0 && videoInGalleryArray.count == 0{
             scrollView.isHidden = false
-            galleryArrowBtn.isHidden = false
+//            galleryArrowBtn.isHidden = false
+            HA_fitScreen()
             if  wordCountLabelMove == true{
                 placeWordCountLimit()
             }
@@ -486,7 +523,9 @@ extension HAPostController: TZImagePickerControllerDelegate {
             DispatchQueue.main.async {
                 if self?.imageInGalleryArray.count == 0 {
                     self?.scrollView.isHidden = false
-                    self?.galleryArrowBtn.isHidden = false
+//                    self?.galleryArrowBtn.isHidden = false
+                    self?.HA_fitScreen()
+
                     if  self?.wordCountLabelMove == true{
                         self?.placeWordCountLimit()
                     }

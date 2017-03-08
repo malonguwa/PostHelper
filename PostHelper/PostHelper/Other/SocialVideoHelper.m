@@ -192,7 +192,7 @@
         [requests addObject:postRequest];
     }
 
-    __block NSError *theError = nil;
+//    __block NSError *theError = nil;
 //    dispatch_queue_t chunksRequestQueue = dispatch_queue_create("chunksRequestQueue", DISPATCH_QUEUE_SERIAL);
 
     NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
@@ -205,7 +205,7 @@
                 NSLog(@"Twitter Stage2 - %d HTTP Response: %li, %@", (i+1),(long)[urlResponse statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
                 if (error) {
                     NSLog(@"Twitter Error stage 2 - %d, error - %@", (i+1), error);
-                    theError = error;
+//                    theError = error;
                     [SocialVideoHelper uploadError:error withCompletion:completion];
                     return;
                 } else {
@@ -222,9 +222,9 @@
 //            dispatch_group_wait(requestGroup, DISPATCH_TIME_FOREVER);
         }
         
-        if (theError) {
-            [SocialVideoHelper uploadError:theError withCompletion:completion];
-        } else {
+//        if (theError) {
+//            [SocialVideoHelper uploadError:theError withCompletion:completion];
+//        } else {
             SLRequest *postRequest = requests.lastObject;
             [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
                 NSLog(@"Twitter Stage2 - final, HTTP Response: %li, %@",(long)[urlResponse statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
@@ -239,7 +239,7 @@
                     [SocialVideoHelper tweetVideoStage3:videoData mediaID:mediaID comment:comment account:account withCompletion:completion];
                 }
             }];
-        }
+//        }
     }];
 }
 

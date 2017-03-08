@@ -34,8 +34,11 @@ class HAUploadStatusController : UIViewController {
     var imagesCount: Int = 0
     var videoCount: Int = 0
     var TWsuccessImageCount = 0
-//    var TWsuccessVideoCount = 0
     var FBsuccessImageCount = 0
+    
+    var TWvideoSuccessCount = 0
+    var FBvideoSuccessCount = 0
+
     var TWImageFinalEnd: Bool?
     var TWVideoFinalEnd: Bool?
     var FBImageFinalEnd: Bool?
@@ -76,6 +79,12 @@ class HAUploadStatusController : UIViewController {
         registerBackgroundTask()
     }
     
+
+    
+    
+    
+    
+    
     func updateLabelInfor(notification: Notification) {
         let platform = notification.userInfo?["currentPlatform"] as! SocialPlatform
         
@@ -84,9 +93,10 @@ class HAUploadStatusController : UIViewController {
         if platform == SocialPlatform.HATwitter && notification.userInfo?["isSuccess"] as! Bool == true {
             if notification.userInfo?["isVideo"] as! Bool == false {//Image
                 TWsuccessImageCount = TWsuccessImageCount + 1
-                TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
+//                TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
             } else {// video
-                TWVideoLabel.text = "1/\(videoCount)"
+                TWvideoSuccessCount = 1
+//                TWVideoLabel.text = "1/\(videoCount)"
             }
         }
 
@@ -94,9 +104,10 @@ class HAUploadStatusController : UIViewController {
             if notification.userInfo?["isVideo"] as! Bool == false {//Image
                 FBsuccessImageCount = FBsuccessImageCount + 1
                 print("FBsuccessImageCount: \(FBsuccessImageCount)")
-                FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
+//                FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
             } else {// video
-                FBVideoLabel.text = "1/\(videoCount)"
+                FBvideoSuccessCount = 1
+//                FBVideoLabel.text = "1/\(videoCount)"
             }
         }
         
@@ -110,6 +121,7 @@ class HAUploadStatusController : UIViewController {
     func updateFinalLogo(notification: Notification) {
         
         endBackgroundTask()
+
 
         let whoEnd = notification.userInfo?["whoFinalEND"] as! WhoUploadEnd
 
@@ -128,24 +140,16 @@ class HAUploadStatusController : UIViewController {
 
         if videoCount != 0 {
             if TWVideoFinalEnd == true {
-                
-                TWRingView.subviews[0].removeFromSuperview()
-                let ringforTW = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 60, height:60))
-                ringforTW.indeterminate = false
-                ringforTW.secondaryColor = UIColor(colorLiteralRed: 0.0/255.0, green: 162.0/255.0, blue: 236.0/255.0, alpha: 1.0)
-                ringforTW.showPercentage = false
-                TWRingView.insertSubview(ringforTW, at: 0)
-                
+                TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
+                TWVideoLabel.text = "\(TWvideoSuccessCount)/1"
+                updateFinalRingStatus(whichRingView: "TWRingView")
             }
             
             if FBVideoFinalEnd == true {
-                
-                FBRingView.subviews[0].removeFromSuperview()
-                let ringforFB = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 60, height:60))
-                ringforFB.indeterminate = false
-                ringforFB.secondaryColor = UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0)
-                ringforFB.showPercentage = false
-                FBRingView.insertSubview(ringforFB, at: 0)
+                FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
+                FBVideoLabel.text = "\(FBvideoSuccessCount)/1"
+
+                updateFinalRingStatus(whichRingView: "FBRingView")
             }
             
             if platforms.count == 2 {
@@ -165,23 +169,18 @@ class HAUploadStatusController : UIViewController {
             
         } else { //videoCount == 0
             if TWImageFinalEnd == true {
-                TWRingView.subviews[0].removeFromSuperview()
-                let ringforTW = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 60, height:60))
-                ringforTW.indeterminate = false
-                ringforTW.secondaryColor = UIColor(colorLiteralRed: 0.0/255.0, green: 162.0/255.0, blue: 236.0/255.0, alpha: 1.0)
-                ringforTW.showPercentage = false
-                TWRingView.insertSubview(ringforTW, at: 0)
+                
+                TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
+
+                updateFinalRingStatus(whichRingView: "TWRingView")
                 
             }
             
             if FBImageFinalEnd == true {
                 
-                FBRingView.subviews[0].removeFromSuperview()
-                let ringforFB = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 60, height:60))
-                ringforFB.indeterminate = false
-                ringforFB.secondaryColor = UIColor(colorLiteralRed: 58.0/255.0, green: 89.0/255.0, blue: 153.0/255.0, alpha: 1.0)
-                ringforFB.showPercentage = false
-                FBRingView.insertSubview(ringforFB, at: 0)
+                FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
+                
+                updateFinalRingStatus(whichRingView: "FBRingView")
             }
             
             if platforms.count == 2 {
@@ -206,7 +205,83 @@ class HAUploadStatusController : UIViewController {
     }
     
     
-    
+    func updateFinalRingStatus(whichRingView: String){
+        let ring = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 60, height:60))
+        ring.indeterminate = false
+        ring.showPercentage = false
+//        print("FBVideoLabel: \(FBVideoLabel.text)")
+//        print("FBVideoLabel startIndex: \(FBVideoLabel.text?.startIndex)")
+//
+//        let toIndex = FBVideoLabel.text?.index((FBVideoLabel.text?.startIndex)!, offsetBy: 1)
+//        let TWvideoSuccessCount = TWVideoLabel.text?.substring(to: toIndex!)
+//        let FBvideoSuccessCount = FBVideoLabel.text?.substring(to: toIndex!)
+        
+        if whichRingView == "TWRingView" {
+            TWRingView.subviews[0].removeFromSuperview()
+            
+            if videoCount != 0 {
+                if TWsuccessImageCount == (imagesCount > 4 ? 4 : imagesCount) && TWvideoSuccessCount == 1{
+                    ring.secondaryColor = UIColor.green
+                } else {
+                    ring.secondaryColor = UIColor.red
+                }
+            } else {
+                if TWsuccessImageCount == (imagesCount > 4 ? 4 : imagesCount) || TWvideoSuccessCount == 1 {
+                    ring.secondaryColor = UIColor.green
+                } else {
+                    ring.secondaryColor = UIColor.red
+                }
+            }
+            
+            TWRingView.insertSubview(ring, at: 0)
+
+        } else if whichRingView == "FBRingView" {
+            FBRingView.subviews[0].removeFromSuperview()
+            
+            if videoCount != 0 {
+                
+                if FBImageFinalEnd == true && FBVideoFinalEnd == true {//混发
+                    if FBsuccessImageCount == imagesCount && FBvideoSuccessCount == 1 {
+                        ring.secondaryColor = UIColor.green
+                    } else {
+                        ring.secondaryColor = UIColor.red
+                    }
+
+                } else if imagesCount == 0 && FBVideoFinalEnd == true {//只发Video
+                    if FBvideoSuccessCount == 1 {
+                        ring.secondaryColor = UIColor.green
+                    } else {
+                        ring.secondaryColor = UIColor.red
+                    }
+                }
+                
+                
+//                if FBsuccessImageCount == imagesCount && FBvideoSuccessCount == 1{
+//                    ring.secondaryColor = UIColor.green
+//                } else if FBsuccessImageCount != imagesCount && FBvideoSuccessCount == 1{
+//                    ring.secondaryColor = UIColor.red
+//                    print("FBvideoSuccessCount 1 : \(FBvideoSuccessCount)")
+//                } else if FBsuccessImageCount == imagesCount && FBvideoSuccessCount != 1 {
+//                    ring.secondaryColor = UIColor.red
+//                } else if FBsuccessImageCount != imagesCount && FBvideoSuccessCount != 1 {
+//                    ring.secondaryColor = UIColor.red
+//                }
+            } else {//只发图片
+                if FBsuccessImageCount == imagesCount {
+                    ring.secondaryColor = UIColor.green
+                } else {
+                    ring.secondaryColor = UIColor.red
+                    print("FBvideoSuccessCount 2 : \(FBvideoSuccessCount)")
+
+                }
+            }
+
+            FBRingView.insertSubview(ring, at: 0)
+
+        }
+        
+   
+    }
     
     
     func setUpRingView() {
@@ -217,16 +292,8 @@ class HAUploadStatusController : UIViewController {
         
         let ringforTW = M13ProgressViewRing(frame: CGRect(x: 0, y: 0, width: 60, height:60))
         ringforTW.indeterminate = true
-        
-//        ringforTW.backgroundRingWidth = 5
-//        ringforTW.primaryColor = UIColor.white
-//        ringforTW.backgroundColor = UIColor.white
-//        ringforTW.tintColor = UIColor.white
         ringforTW.secondaryColor = UIColor.white
         TWRingView.insertSubview(ringforTW, at: 0)
-        
-//        TWRingView.subviews[0].removeFromSuperview()
-//        TWRingView.insertSubview(<#T##view: UIView##UIView#>, at: 0)
     }
     
     
@@ -248,27 +315,32 @@ class HAUploadStatusController : UIViewController {
     @objc fileprivate func tapOnBlurView(gesture : UITapGestureRecognizer) {
 //        let RootVc = UIApplication.shared.keyWindow?.rootViewController
         UIApplication.shared.keyWindow?.rootViewController = currentRootVc
-        if postVC.galleryArrowBtn.isSelected == true {
+        
+        let TWring = TWRingView.subviews[0] as! M13ProgressViewRing
+        let FBring = FBRingView.subviews[0] as! M13ProgressViewRing
+        let TWringColor = TWring.secondaryColor
+        let FBringColoer = FBring.secondaryColor
+        if TWringColor != UIColor.red && FBringColoer != UIColor.red {
+            if postVC.galleryArrowBtn.isSelected == true {
+                
+                postVC.contentView.superview?.frame.origin.x = 0
+                postVC.galleryArrowBtn.transform = CGAffineTransform(rotationAngle: 0.0)
+                postVC.galleryArrowBtn.isSelected = false
+            }
             
-            postVC.contentView.superview?.frame.origin.x = 0
-            postVC.galleryArrowBtn.transform = CGAffineTransform(rotationAngle: 0.0)
-//            postVC.contentView.superview?.transform = (postVC.contentView.superview?.transform.translatedBy(x: -(postVC.contentView.superview?.transform.tx)!, y: (postVC.contentView.superview?.transform.ty)!))!
-            postVC.galleryArrowBtn.isSelected = false
+            postVC.scrollView.isHidden = true
+            postVC.galleryArrowBtn.isHidden = true
+            postVC.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
+            //        postVC.placeWordCountLimit()
+            postVC.wordCountLabelMove = true
+            postVC.arrayForDisplay.removeAll()
+            postVC.imageInGalleryArray.removeAll()
+            postVC.videoInGalleryArray.removeAll()
+            postVC.selected_assets.removeAllObjects()
+            postVC.textView.text = ""
+            postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
+            postVC.sendBtn.isEnabled = false
         }
-        
-        postVC.scrollView.isHidden = true
-        postVC.galleryArrowBtn.isHidden = true
-        postVC.wordCountLabel.frame.origin = CGPoint(x: 0, y: 248)
-//        postVC.placeWordCountLimit()
-        postVC.wordCountLabelMove = true
-        postVC.arrayForDisplay.removeAll()
-        postVC.imageInGalleryArray.removeAll()
-        postVC.videoInGalleryArray.removeAll()
-        postVC.selected_assets.removeAllObjects()
-        postVC.textView.text = ""
-        postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
-        postVC.sendBtn.isEnabled = false
-        
     }
 
     

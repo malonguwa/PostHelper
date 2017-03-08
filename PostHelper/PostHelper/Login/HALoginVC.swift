@@ -9,7 +9,7 @@
 import UIKit
 import FacebookLogin
 import FacebookCore
-import SafariServices
+//import SafariServices
 import FBSDKCoreKit
 import TwitterKit
 
@@ -30,7 +30,7 @@ public enum WhoUploadEnd {
     case FBVideoFinalEND
 }
 
-class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
+class HALoginVC: UIViewController {
 
     // MARK: Property
     /// Btn : Add facebook account
@@ -77,7 +77,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         setTopConstarint()
 //        NotificationCenter.default.addObserver(self, selector: #selector(HALoginVC.HAFacebookCheckLogin), name: NSNotification.Name.FBSDKAccessTokenDidChange, object: nil)
 
-        
+        print(UIScreen.main.bounds)
 //        print("HALoginVC\(self)")
         
         //check login state
@@ -135,9 +135,9 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
         
     }
 
-   private func switchAddAccBtnImage (isEnabled : Bool?, btn : UIButton?){
+    func switchAddAccBtnImage (isEnabled : Bool?, btn : UIButton?){
         if isEnabled == false {
-            btn?.setImage(UIImage(named: "FontAwesome_connected_128"), for: UIControlState.normal)
+            btn?.setImage(UIImage(named: "connect_withRing_green_128"), for: UIControlState.disabled)
         } else {
             btn?.setImage(UIImage(named: "FontAwesome_add_128"), for: UIControlState.normal)
         }
@@ -160,6 +160,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
     // MARK: Btn Event
     /// addFBAccountBtn event
     @IBAction func addFBAccountClick(_ sender: Any) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
         let loginManager = LoginManager()
         loginManager.loginBehavior = .native
@@ -185,11 +186,15 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                 
                 print("Logged in with write permission!, \n\n grantedPermissions: \(grantedPermissions), \n\n declinedPermissions: \(declinedPermissions),\n\n accessToken: \(accessToken)")
         }
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+
     }
 }
     
     /// addTWAccountBtn event
     @IBAction func addTWAccountClick(_ sender: Any) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+
         Twitter.sharedInstance().logIn { (session, error) in
             if session != nil {
                 
@@ -225,6 +230,8 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
             } else {
                 print("error : \(error?.localizedDescription)")
             }
+            
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
     }
     
@@ -260,6 +267,8 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
             return
         }
 
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+
         GraphRequest(graphPath: "/me/permissions", parameters:[:], accessToken: token, httpMethod: GraphRequestHTTPMethod.DELETE, apiVersion: GraphAPIVersion.defaultVersion).start { (response, requestResult) in
 //            print("\(response)\n\(requestResult)")
             if platforms.count != 0 {
@@ -288,6 +297,7 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
                 break
             }
 
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
         
         let loginManager = LoginManager()

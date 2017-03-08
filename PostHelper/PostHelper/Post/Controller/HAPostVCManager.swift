@@ -15,9 +15,9 @@ class HAPostVCManager: NSObject {
     
     //MARK: TapGesture
    @objc fileprivate func tapOnBlurView(gesture : UITapGestureRecognizer) {
-        postVC.textView.text = ""
-        postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
-        postVC.sendBtn.isEnabled = false
+//        postVC.textView.text = ""
+//        postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
+//        postVC.sendBtn.isEnabled = false
         postVC.view.subviews.last?.removeFromSuperview()
         postVC = nil
     }
@@ -41,6 +41,12 @@ class HAPostVCManager: NSObject {
                     self?.postVC.view.subviews.last?.removeFromSuperview()//delete outdated HUD
                     if twitterErrorMsg == nil && errorMessage == nil {// error free
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success", onlyOneError: false)
+                        
+                        self?.postVC.textView.text = ""
+                        self?.postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
+                        self?.postVC.sendBtn.isEnabled = false
+
+                        
                     } else if twitterErrorMsg == nil && errorMessage != nil{//facebook error only
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: errorMessage!, onlyOneError: true)
                     } else if twitterErrorMsg != nil && errorMessage == nil{//twitter error only

@@ -22,9 +22,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FjA-oj-yJv">
-                                <rect key="frame" x="97.5" y="0.0" width="180" height="100"/>
+                                <rect key="frame" x="98" y="0.0" width="180" height="100"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="63T-zX-F8x">
+                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="63T-zX-F8x">
                                         <rect key="frame" x="26" y="49" width="67" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="17"/>
@@ -32,7 +32,7 @@
                                             <color key="titleColor" red="0.22745098039215686" green="0.34901960784313724" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZLV-N4-cdr">
+                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZLV-N4-cdr">
                                         <rect key="frame" x="36" y="9" width="48" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="17"/>
@@ -49,13 +49,29 @@
                                         </connections>
                                     </switch>
                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mrb-lK-kqw">
-                                        <rect key="frame" x="110" y="49" width="51" height="31"/>
+                                        <rect key="frame" x="110" y="52" width="51" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="onTintColor" red="0.2274509804" green="0.34901960780000002" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="FBSwitchBtnClick:" destination="Gez-hc-cdk" eventType="valueChanged" id="VHL-dG-GoH"/>
                                         </connections>
                                     </switch>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Vg-LQ-lgZ" userLabel="FBAddBtn">
+                                        <rect key="frame" x="114" y="48" width="38" height="38"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="FB_48"/>
+                                        <connections>
+                                            <action selector="FBAddBtnClick:" destination="Gez-hc-cdk" eventType="touchUpInside" id="BWV-ld-wP7"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m1W-53-6Xy" userLabel="TWAddBtn">
+                                        <rect key="frame" x="114" y="4" width="38" height="38"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="TW_48"/>
+                                        <connections>
+                                            <action selector="TWAddBtnClick:" destination="Gez-hc-cdk" eventType="touchUpInside" id="RxO-VO-faH"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.98039215686274506" green="0.92156862745098034" blue="0.84313725490196079" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -72,7 +88,9 @@
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
+                        <outlet property="FacebookAddBtn" destination="0Vg-LQ-lgZ" id="tWd-8H-Pok"/>
                         <outlet property="FacebookSwitchBtn" destination="mrb-lK-kqw" id="jLi-03-Dwo"/>
+                        <outlet property="TwitterAddBtn" destination="m1W-53-6Xy" id="5da-RR-rqO"/>
                         <outlet property="TwitterSwitchBtn" destination="xLA-T1-N5R" id="xYt-Vl-25Y"/>
                     </connections>
                 </viewController>
@@ -81,4 +99,8 @@
             <point key="canvasLocation" x="79.200000000000003" y="-9.4452773613193415"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="FB_48" width="48" height="48"/>
+        <image name="TW_48" width="48" height="48"/>
+    </resources>
 </document>

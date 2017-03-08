@@ -76,8 +76,14 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         
             guard let httpResponse = response as? HTTPURLResponse else{
 //                print("\(response)\n")
-                let nse = error as! NSError
-                completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
+//                let nse = error as! NSError
+//                if error != nil {
+//                    completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
+//                } else {
+//                    completion("upload error\n")
+//                }
+                completion("post error\n")
+
                 return
             }
             
@@ -155,6 +161,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         queue.async {
             
             print("start to post")
+            print("1111 \(mediaIDs)")
             let mediaIDArray = mediaIDs
             var combinedStr = ""
             for mediaIDString in mediaIDArray.enumerated() {
@@ -188,11 +195,17 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 guard let httpResponse = response as? HTTPURLResponse else{
 //                    print("144 line - response == nil")
 //                    print("144 line - \(response)\n\n\(data)\n\n\(error)")
-                    let nse = error as! NSError
+//                    let nse = error as! NSError
 
                     //FIXME: 这里加了新通知方法调用
                     HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND)
-                    completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
+//                    if error != nil {
+//                        completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
+//                    } else {
+//                        completion("upload error\n")
+//                    }
+                    completion("upload error\n")
+
                     return
                 }
                 
