@@ -209,7 +209,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MoW-gU-BdT" userLabel="TWRingView">
                                         <rect key="frame" x="35" y="45" width="60" height="60"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="t_64" translatesAutoresizingMaskIntoConstraints="NO" id="cXx-Wp-CZA">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Twitter_64" translatesAutoresizingMaskIntoConstraints="NO" id="cXx-Wp-CZA">
                                                 <rect key="frame" x="10" y="10" width="40" height="40"/>
                                             </imageView>
                                         </subviews>
@@ -271,7 +271,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7qs-tq-xXK" userLabel="FBRingView">
                                         <rect key="frame" x="35" y="45" width="60" height="60"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="f_64" translatesAutoresizingMaskIntoConstraints="NO" id="xOV-5j-twE">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Facebook_64" translatesAutoresizingMaskIntoConstraints="NO" id="xOV-5j-twE">
                                                 <rect key="frame" x="10" y="10" width="40" height="40"/>
                                             </imageView>
                                         </subviews>
@@ -366,10 +366,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="f_64" width="64" height="64"/>
+        <image name="Facebook_64" width="64" height="64"/>
+        <image name="Twitter_64" width="64" height="64"/>
         <image name="image_white_48" width="48" height="48"/>
         <image name="star6.png" width="352" height="344"/>
-        <image name="t_64" width="64" height="64"/>
         <image name="video_white_48" width="48" height="48"/>
     </resources>
 </document>

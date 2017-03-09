@@ -45,8 +45,11 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     @IBOutlet weak var scrollViewTopConstraint: NSLayoutConstraint!
     let image = UIImage.animatedImageNamed("dead0", duration: 0.2)
     var array = [UIImage]()
-    
-    
+    lazy var coverView : UIView = {
+        let view = UIView(frame: UIScreen.main.bounds)
+        view.backgroundColor = UIColor.yellow
+       return view
+    }()
 //    func HA_WillEnterForeground() {
 //        textView.delegate = self
 //        NotificationCenter.default.addObserver(self, selector:#selector(HAPostController.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
@@ -69,6 +72,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         if screenHeight >= 667.0 {//iPhone 6,6+,6s,6s+,7,7+
             galleryArrowBtn.isHidden = true
             scrollViewTopConstraint.constant = CGFloat(textView.frame.size.height) + 18.0 + 28.0
+//            scrollView.backgroundColor = UIColor.clear
+//            contentView.backgroundColor = UIColor.clear
             view.layoutIfNeeded()
         } else { //iPhone 5, 5s, 5c, SE
             if scrollView.isHidden == false {
@@ -103,20 +108,20 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        print("viewWillAppear")
-    }
-
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        print("viewDidDisappear")
-
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        print("viewDidAppear")
-
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        print("viewWillAppear")
+//    }
+//
+//    
+//    override func viewDidDisappear(_ animated: Bool) {
+//        print("viewDidDisappear")
+//
+//    }
+//    
+//    override func viewDidAppear(_ animated: Bool) {
+//        print("viewDidAppear")
+//
+//    }
     
     
     // MARK: Notification - UIKeyboardWillChangeFrame
@@ -219,6 +224,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         let deleteBtn = UIButton.init(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         deleteBtn.setImage(UIImage(named: "deletimage2"), for: UIControlState.normal)
         deleteBtn.tag = offset
+        deleteBtn.isExclusiveTouch = true
         contentView.addSubview(HAimageView)
         
         HAimageView.addSubview(deleteBtn)
@@ -249,7 +255,12 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     // MARK: UIButton Action - delete button cick on gallery image
     func deleteImageInScrollView(_ sender: UIButton) {
         
-        contentView.isUserInteractionEnabled = false
+        
+        if sender.tag > arrayForDisplay.count - 1 {
+            return
+        }
+        
+        self.arrayForDisplay.remove(at: sender.tag)
         
         let imgView = sender.superview! as! UIImageView
         sender.removeFromSuperview()
@@ -261,6 +272,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         UIView.animate(withDuration: 0.1, animations: {
             imgView.layer.setAffineTransform(CGAffineTransform(scaleX: 0.5, y: 0.5))
         }) { (bool) in
+//            self.deleteImageInScrollViewAfterAnimation(tag: sender.tag)
+
             imgView.image = nil
             
             imgView.startAnimating()
@@ -269,14 +282,16 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             DispatchQueue.main.asyncAfter(deadline: when, execute: {
                 imgView.stopAnimating()
                 imgView.animationImages = nil
+                print("sender.tag---- \(sender.tag)")
                 self.deleteImageInScrollViewAfterAnimation(tag: sender.tag)
+                
             })
         }
     }
     
     
     internal func deleteImageInScrollViewAfterAnimation (tag: Int){
-
+        
         // process image and video array for send
         if tag == imageInGalleryArray.count {
             videoInGalleryArray.removeAll()
@@ -296,8 +311,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             placeWordCountLimit()
             wordCountLabelMove = true
         } else {
+//            self.arrayForDisplay.remove(at: tag)
             
-            self.arrayForDisplay.remove(at: tag)
             self.reloadScrollViewImages()
         }
         
@@ -325,7 +340,6 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             addImageAndDeleteBtnOnGallery(image: image.element, offset: image.offset)
         }
         
-        contentView.isUserInteractionEnabled = true
 
         print("arrayForDisplay.count \(arrayForDisplay.count)")
         HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
@@ -338,6 +352,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             UIView.animate(withDuration: 0.1) { [weak self] in
                 self?.scrollView.contentOffset = CGPoint(x: offsetX, y: 0.0)
                 self?.view.layoutIfNeeded()
+//                self?.contentView.isUserInteractionEnabled = true
             }
         }
         

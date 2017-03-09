@@ -66,6 +66,8 @@ class HAUploadStatusController : UIViewController {
     
     override func viewDidLoad() {
         
+        UIApplication.shared.isIdleTimerDisabled = true
+        
         TWBaseView.isHidden = TWBaseVewIsHidden
         FBBaseView.isHidden = FBBaseVewIsHidden
         
@@ -257,15 +259,12 @@ class HAUploadStatusController : UIViewController {
         if imagesCount != 0 && videoCount != 0 {
             
             if platforms.count == 2 {
+
                 if TWFinalEndCount == 2 && FBFinalEndCount != 2 {
-                    
-                    
                 }
-                
             }
             
             else {
-            
                 if platforms.contains(SocialPlatform.HATwitter) {
                     if TWFinalEndCount != 2 {
                         return
@@ -282,13 +281,14 @@ class HAUploadStatusController : UIViewController {
         
         }
         
-        
+
         if whichRingView == "TWRingView" {
             print("whichRingView == \"TWRingView\"")
 
             TWRingView.subviews[0].removeFromSuperview()
             
             if videoCount != 0 {
+
                 if TWsuccessImageCount == (imagesCount > 4 ? 4 : imagesCount) && TWvideoSuccessCount == 1{
                     ring.secondaryColor = UIColor.green
                 } else {
@@ -419,6 +419,7 @@ class HAUploadStatusController : UIViewController {
     
     
     deinit {
+        UIApplication.shared.isIdleTimerDisabled = false
         NotificationCenter.default.removeObserver(self)
         print("HAUploadStatusController deinit")
     }
