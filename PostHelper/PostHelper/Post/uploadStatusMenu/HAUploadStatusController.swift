@@ -44,6 +44,10 @@ class HAUploadStatusController : UIViewController {
     var FBImageFinalEnd: Bool?
     var FBVideoFinalEnd: Bool?
     
+    var TWFinalEndCount = 0
+    var FBFinalEndCount = 0
+    
+    
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
 
     
@@ -127,16 +131,23 @@ class HAUploadStatusController : UIViewController {
 
         if whoEnd == WhoUploadEnd.TWImageFinalEND {
             TWImageFinalEnd = true
+            TWFinalEndCount = TWFinalEndCount + 1
         } else if whoEnd == WhoUploadEnd.TWVideoFinalEND {
             TWVideoFinalEnd = true
+            TWFinalEndCount = TWFinalEndCount + 1
+
         } else if whoEnd == WhoUploadEnd.FBImageFinalEND {
             FBImageFinalEnd = true
+            FBFinalEndCount = FBFinalEndCount + 1
+
         } else if whoEnd == WhoUploadEnd.FBVideoFinalEND {
             FBVideoFinalEnd = true
+            FBFinalEndCount = FBFinalEndCount + 1
         }
         
         print(whoEnd)
         print(videoCount)
+        
 
         if videoCount != 0 {
             if TWVideoFinalEnd == true {
@@ -152,17 +163,44 @@ class HAUploadStatusController : UIViewController {
                 updateFinalRingStatus(whichRingView: "FBRingView")
             }
             
-            if platforms.count == 2 {
-                if FBVideoFinalEnd == true {
-                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAUploadStatusController.tapOnBlurView(gesture:)))
-                    view.subviews[0].addGestureRecognizer(tapGesture)
-                    dismissLabel.isHidden = false
+            if platforms.count == 2 {//有video
+
+                if imagesCount != 0 {//有Image
+                    if FBImageFinalEnd == true && FBVideoFinalEnd == true {
+                        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAUploadStatusController.tapOnBlurView(gesture:)))
+                        view.subviews[0].addGestureRecognizer(tapGesture)
+                        dismissLabel.isHidden = false
+                    }
+                    
+                } else {
+                    if FBVideoFinalEnd == true {
+                        
+                        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAUploadStatusController.tapOnBlurView(gesture:)))
+                        view.subviews[0].addGestureRecognizer(tapGesture)
+                        dismissLabel.isHidden = false
+                    }
                 }
+                
+                
+                
+                
+                
+                
             } else {
                 if TWVideoFinalEnd == true || FBVideoFinalEnd == true {
-                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAUploadStatusController.tapOnBlurView(gesture:)))
-                    view.subviews[0].addGestureRecognizer(tapGesture)
-                    dismissLabel.isHidden = false
+                    
+                    
+                    if imagesCount != 0 && videoCount != 0{
+                        if TWFinalEndCount == 2 || FBFinalEndCount == 2 {
+                            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAUploadStatusController.tapOnBlurView(gesture:)))
+                            view.subviews[0].addGestureRecognizer(tapGesture)
+                            dismissLabel.isHidden = false
+                        }
+                    } else {
+                        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAUploadStatusController.tapOnBlurView(gesture:)))
+                        view.subviews[0].addGestureRecognizer(tapGesture)
+                        dismissLabel.isHidden = false
+                    }
                 }
             }
 
@@ -216,7 +254,38 @@ class HAUploadStatusController : UIViewController {
 //        let TWvideoSuccessCount = TWVideoLabel.text?.substring(to: toIndex!)
 //        let FBvideoSuccessCount = FBVideoLabel.text?.substring(to: toIndex!)
         
+        if imagesCount != 0 && videoCount != 0 {
+            
+            if platforms.count == 2 {
+                if TWFinalEndCount == 2 && FBFinalEndCount != 2 {
+                    
+                    
+                }
+                
+            }
+            
+            else {
+            
+                if platforms.contains(SocialPlatform.HATwitter) {
+                    if TWFinalEndCount != 2 {
+                        return
+                    }
+                }
+                
+                if platforms.contains(SocialPlatform.HAFacebook){
+                    if FBFinalEndCount != 2 {
+                        return
+                    }
+                }
+
+            }
+        
+        }
+        
+        
         if whichRingView == "TWRingView" {
+            print("whichRingView == \"TWRingView\"")
+
             TWRingView.subviews[0].removeFromSuperview()
             
             if videoCount != 0 {
@@ -236,37 +305,40 @@ class HAUploadStatusController : UIViewController {
             TWRingView.insertSubview(ring, at: 0)
 
         } else if whichRingView == "FBRingView" {
-            FBRingView.subviews[0].removeFromSuperview()
+            print("whichRingView == \"FBRingView\"")
+            
+            if imagesCount != 0 && videoCount != 0 {
+                if FBFinalEndCount == 2 {
+                    FBRingView.subviews[0].removeFromSuperview()
+                } else {
+                    return
+                }
+            } else {
+                FBRingView.subviews[0].removeFromSuperview()
+            }
             
             if videoCount != 0 {
                 
                 if FBImageFinalEnd == true && FBVideoFinalEnd == true {//混发
+                    print("混发")
                     if FBsuccessImageCount == imagesCount && FBvideoSuccessCount == 1 {
                         ring.secondaryColor = UIColor.green
                     } else {
                         ring.secondaryColor = UIColor.red
                     }
 
-                } else if imagesCount == 0 && FBVideoFinalEnd == true {//只发Video
+                }
+                
+                if imagesCount == 0 && FBVideoFinalEnd == true {//只发Video
+                    print("只发Video")
+
                     if FBvideoSuccessCount == 1 {
                         ring.secondaryColor = UIColor.green
                     } else {
                         ring.secondaryColor = UIColor.red
                     }
                 }
-                
-                
-//                if FBsuccessImageCount == imagesCount && FBvideoSuccessCount == 1{
-//                    ring.secondaryColor = UIColor.green
-//                } else if FBsuccessImageCount != imagesCount && FBvideoSuccessCount == 1{
-//                    ring.secondaryColor = UIColor.red
-//                    print("FBvideoSuccessCount 1 : \(FBvideoSuccessCount)")
-//                } else if FBsuccessImageCount == imagesCount && FBvideoSuccessCount != 1 {
-//                    ring.secondaryColor = UIColor.red
-//                } else if FBsuccessImageCount != imagesCount && FBvideoSuccessCount != 1 {
-//                    ring.secondaryColor = UIColor.red
-//                }
-            } else {//只发图片
+            } else if videoCount == 0 && imagesCount != 0{//只发图片
                 if FBsuccessImageCount == imagesCount {
                     ring.secondaryColor = UIColor.green
                 } else {
@@ -275,6 +347,7 @@ class HAUploadStatusController : UIViewController {
 
                 }
             }
+
 
             FBRingView.insertSubview(ring, at: 0)
 
