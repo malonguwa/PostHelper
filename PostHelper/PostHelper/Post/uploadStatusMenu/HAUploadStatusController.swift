@@ -258,26 +258,39 @@ class HAUploadStatusController : UIViewController {
         
         if imagesCount != 0 && videoCount != 0 {
             
-            if platforms.count == 2 {
-
-                if TWFinalEndCount == 2 && FBFinalEndCount != 2 {
-                }
-            }
             
-            else {
+            if platforms.count != 2 {
                 if platforms.contains(SocialPlatform.HATwitter) {
                     if TWFinalEndCount != 2 {
                         return
                     }
                 }
-                
+
                 if platforms.contains(SocialPlatform.HAFacebook){
                     if FBFinalEndCount != 2 {
                         return
                     }
                 }
-
             }
+            
+            
+//            if platforms.count == 2 {
+//
+//                if TWFinalEndCount == 2 && FBFinalEndCount != 2 {
+//                }
+//            } else {
+//                if platforms.contains(SocialPlatform.HATwitter) {
+//                    if TWFinalEndCount != 2 {
+//                        return
+//                    }
+//                }
+//                
+//                if platforms.contains(SocialPlatform.HAFacebook){
+//                    if FBFinalEndCount != 2 {
+//                        return
+//                    }
+//                }
+//            }
         
         }
         

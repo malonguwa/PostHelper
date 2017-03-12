@@ -72,8 +72,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         if screenHeight >= 667.0 {//iPhone 6,6+,6s,6s+,7,7+
             galleryArrowBtn.isHidden = true
             scrollViewTopConstraint.constant = CGFloat(textView.frame.size.height) + 18.0 + 28.0
-//            scrollView.backgroundColor = UIColor.clear
-//            contentView.backgroundColor = UIColor.clear
+            scrollView.backgroundColor = UIColor.clear
+            contentView.backgroundColor = UIColor.clear
             view.layoutIfNeeded()
         } else { //iPhone 5, 5s, 5c, SE
             if scrollView.isHidden == false {
@@ -264,11 +264,11 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         
         let imgView = sender.superview! as! UIImageView
         sender.removeFromSuperview()
-        imgView.backgroundColor = UIColor.white
+        imgView.backgroundColor = UIColor.clear
         imgView.animationImages = array
         imgView.animationRepeatCount = 1
         imgView.animationDuration = 0.2
-        
+
         UIView.animate(withDuration: 0.1, animations: {
             imgView.layer.setAffineTransform(CGAffineTransform(scaleX: 0.5, y: 0.5))
         }) { (bool) in

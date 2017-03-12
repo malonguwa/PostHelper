@@ -49,7 +49,7 @@
                                             <constraint firstAttribute="height" constant="80" id="Ude-FE-CKC"/>
                                             <constraint firstAttribute="width" constant="80" id="t3K-EF-oDO"/>
                                         </constraints>
-                                        <state key="normal" image="X_64"/>
+                                        <state key="normal" image="close_64"/>
                                         <connections>
                                             <action selector="TWLogOutClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="boQ-64-dWL"/>
                                         </connections>
@@ -96,7 +96,7 @@
                                             <constraint firstAttribute="width" constant="80" id="5p8-xT-7ea"/>
                                             <constraint firstAttribute="height" constant="80" id="fU2-sy-ohu"/>
                                         </constraints>
-                                        <state key="normal" image="X_64"/>
+                                        <state key="normal" image="close_64"/>
                                         <connections>
                                             <action selector="FBLogOutClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1hl-eH-kgT"/>
                                         </connections>
@@ -139,7 +139,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 1.0.1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sUD-94-DGh">
-                                <rect key="frame" x="313.5" y="652.5" width="61.5" height="14.5"/>
+                                <rect key="frame" x="313" y="652" width="62" height="15"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="12"/>
                                 <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -193,6 +193,6 @@
         <image name="Entypo_f30a(0)_128" width="128" height="128"/>
         <image name="Entypo_f30d(0)_128" width="128" height="128"/>
         <image name="FontAwesome_add_128" width="128" height="128"/>
-        <image name="X_64" width="64" height="64"/>
+        <image name="close_64" width="64" height="64"/>
     </resources>
 </document>

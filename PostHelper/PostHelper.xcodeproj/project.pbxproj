@@ -8,18 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		369C90B253ABC6DA4733A587 /* Pods_PostHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF7280D41AB2AAB696B055B5 /* Pods_PostHelper.framework */; };
-		3D0F57F41E55951100CE9F03 /* HAPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57E11E55951000CE9F03 /* HAPostVC.swift */; };
-		3D0F57F51E55951100CE9F03 /* HAImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57E21E55951000CE9F03 /* HAImagePickerManager.swift */; };
 		3D0F57F61E55951100CE9F03 /* HAVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57E41E55951000CE9F03 /* HAVideo.swift */; };
 		3D0F57F71E55951100CE9F03 /* HAPlatformSelectionController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D0F57E61E55951000CE9F03 /* HAPlatformSelectionController.storyboard */; };
 		3D0F57F81E55951100CE9F03 /* HAPlatformSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57E71E55951000CE9F03 /* HAPlatformSelectionController.swift */; };
 		3D0F57F91E55951100CE9F03 /* HAPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57E81E55951000CE9F03 /* HAPresentationController.swift */; };
-		3D0F57FA1E55951100CE9F03 /* FacebookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57EA1E55951000CE9F03 /* FacebookManager.swift */; };
 		3D0F57FB1E55951100CE9F03 /* HASocialPlatformsBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57EB1E55951000CE9F03 /* HASocialPlatformsBaseManager.swift */; };
-		3D0F57FC1E55951100CE9F03 /* TwitterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57EC1E55951000CE9F03 /* TwitterManager.swift */; };
 		3D0F57FD1E55951100CE9F03 /* HAWechatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57ED1E55951000CE9F03 /* HAWechatManager.swift */; };
 		3D0F57FE1E55951100CE9F03 /* HAUploadStatusController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D0F57EF1E55951000CE9F03 /* HAUploadStatusController.storyboard */; };
-		3D0F57FF1E55951100CE9F03 /* UploadStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F57F01E55951000CE9F03 /* UploadStatusController.swift */; };
 		3D0F58001E55951100CE9F03 /* HAPostVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D0F57F21E55951100CE9F03 /* HAPostVC.storyboard */; };
 		3D0F58021E55966800CE9F03 /* HAImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F58011E55966800CE9F03 /* HAImage.swift */; };
 		3D0F58041E55A70300CE9F03 /* HAPostVCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F58031E55A70300CE9F03 /* HAPostVCManager.swift */; };
@@ -77,18 +72,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3D0F57E11E55951000CE9F03 /* HAPostVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HAPostVC.swift; path = Controller/HAPostVC.swift; sourceTree = "<group>"; };
-		3D0F57E21E55951000CE9F03 /* HAImagePickerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAImagePickerManager.swift; sourceTree = "<group>"; };
 		3D0F57E41E55951000CE9F03 /* HAVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAVideo.swift; sourceTree = "<group>"; };
 		3D0F57E61E55951000CE9F03 /* HAPlatformSelectionController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAPlatformSelectionController.storyboard; sourceTree = "<group>"; };
 		3D0F57E71E55951000CE9F03 /* HAPlatformSelectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPlatformSelectionController.swift; sourceTree = "<group>"; };
 		3D0F57E81E55951000CE9F03 /* HAPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPresentationController.swift; sourceTree = "<group>"; };
-		3D0F57EA1E55951000CE9F03 /* FacebookManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacebookManager.swift; sourceTree = "<group>"; };
 		3D0F57EB1E55951000CE9F03 /* HASocialPlatformsBaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HASocialPlatformsBaseManager.swift; sourceTree = "<group>"; };
-		3D0F57EC1E55951000CE9F03 /* TwitterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterManager.swift; sourceTree = "<group>"; };
 		3D0F57ED1E55951000CE9F03 /* HAWechatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAWechatManager.swift; sourceTree = "<group>"; };
 		3D0F57EF1E55951000CE9F03 /* HAUploadStatusController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAUploadStatusController.storyboard; sourceTree = "<group>"; };
-		3D0F57F01E55951000CE9F03 /* UploadStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadStatusController.swift; sourceTree = "<group>"; };
 		3D0F57F21E55951100CE9F03 /* HAPostVC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAPostVC.storyboard; sourceTree = "<group>"; };
 		3D0F58011E55966800CE9F03 /* HAImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAImage.swift; sourceTree = "<group>"; };
 		3D0F58031E55A70300CE9F03 /* HAPostVCManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostVCManager.swift; sourceTree = "<group>"; };
@@ -197,8 +187,6 @@
 			children = (
 				3D0F57F11E55951100CE9F03 /* View */,
 				3D0F57E01E55951000CE9F03 /* Controller */,
-				3D0F57E11E55951000CE9F03 /* HAPostVC.swift */,
-				3D0F57E21E55951000CE9F03 /* HAImagePickerManager.swift */,
 				3D0F57E31E55951000CE9F03 /* Model */,
 				3D1608511E5D79FA00D1124C /* HUD */,
 				3D0F57E51E55951000CE9F03 /* popOverMenu */,
@@ -244,8 +232,6 @@
 				3D16084F1E5D533400D1124C /* HATwitterManager.swift */,
 				3D3F79141E604E4200E62B8B /* HAFacebookManager.swift */,
 				3D0F57ED1E55951000CE9F03 /* HAWechatManager.swift */,
-				3D0F57EA1E55951000CE9F03 /* FacebookManager.swift */,
-				3D0F57EC1E55951000CE9F03 /* TwitterManager.swift */,
 			);
 			path = socialManagers;
 			sourceTree = "<group>";
@@ -255,7 +241,6 @@
 			children = (
 				3D0F57EF1E55951000CE9F03 /* HAUploadStatusController.storyboard */,
 				3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */,
-				3D0F57F01E55951000CE9F03 /* UploadStatusController.swift */,
 			);
 			path = uploadStatusMenu;
 			sourceTree = "<group>";
@@ -626,9 +611,7 @@
 				3D1608551E5D8E4E00D1124C /* HAPostHUDViewBuilder.swift in Sources */,
 				3DF688931E55FF6A00CE034F /* TZAssetModel.m in Sources */,
 				3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */,
-				3D0F57F41E55951100CE9F03 /* HAPostVC.swift in Sources */,
 				3DF688961E55FF6A00CE034F /* TZImageManager.m in Sources */,
-				3D0F57FC1E55951100CE9F03 /* TwitterManager.swift in Sources */,
 				3DF688981E55FF6A00CE034F /* TZImagePickerController.m in Sources */,
 				3D1608501E5D533400D1124C /* HATwitterManager.swift in Sources */,
 				3DF688991E55FF6A00CE034F /* TZPhotoPickerController.m in Sources */,
@@ -642,9 +625,7 @@
 				3D3F79151E604E4200E62B8B /* HAFacebookManager.swift in Sources */,
 				3D0F58021E55966800CE9F03 /* HAImage.swift in Sources */,
 				3D0F57FD1E55951100CE9F03 /* HAWechatManager.swift in Sources */,
-				3D0F57FA1E55951100CE9F03 /* FacebookManager.swift in Sources */,
 				3D55F9031E5EF99C00E35B89 /* HAAnimationDelegate.swift in Sources */,
-				3D0F57F51E55951100CE9F03 /* HAImagePickerManager.swift in Sources */,
 				3DF688951E55FF6A00CE034F /* TZImageCropManager.m in Sources */,
 				3D0F57F61E55951100CE9F03 /* HAVideo.swift in Sources */,
 				3DF6889A1E55FF6A00CE034F /* TZPhotoPreviewCell.m in Sources */,
@@ -653,7 +634,6 @@
 				3D0F57F91E55951100CE9F03 /* HAPresentationController.swift in Sources */,
 				3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */,
 				3DF6889E1E55FF6A00CE034F /* UIView+Layout.m in Sources */,
-				3D0F57FF1E55951100CE9F03 /* UploadStatusController.swift in Sources */,
 				3D0F57F81E55951100CE9F03 /* HAPlatformSelectionController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
