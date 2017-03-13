@@ -225,16 +225,25 @@ class HAPlatformSelectionController: UIViewController {
     
     class func disableSendBtn(sendBtn: UIButton, displayCount: Int, text: String) {
 
-        print(displayCount)
-        print(text)
-
-        if platforms.count > 0 && displayCount > 0{
-            sendBtn.isEnabled = true
-            
-        } else if platforms.count > 0 && text.characters.count != 0 {
-            sendBtn.isEnabled = true
-
-        } else {
+//        print(displayCount)
+//        print(text)
+//
+//        if platforms.count > 0 && displayCount > 0{
+//            sendBtn.isEnabled = true
+//            
+//        } else if platforms.count > 0 && text.characters.count != 0 {
+//            sendBtn.isEnabled = true
+//
+//        } else {
+//            sendBtn.isEnabled = false
+//        }
+        
+        
+        if platforms.count > 0 {
+            if displayCount > 0 || text.characters.count > 0 {
+                sendBtn.isEnabled = true
+            }
+        } else {//==0
             sendBtn.isEnabled = false
         }
     }

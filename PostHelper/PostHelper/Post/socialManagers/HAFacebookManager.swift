@@ -133,12 +133,12 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             
             let _ = publishPhotosRequest?.start(completionHandler: { (FBSDKGraphRequestConnection, data, error) in
                 
-                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBImageFinalEND)
-                
                 if error == nil {
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBImageFinalEND, isFinalRequestSucess: true)
                     completion!(nil)
                     
                 } else {
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBImageFinalEND, isFinalRequestSucess: false)
                     completion!(error?.localizedDescription)
                 }
             })
@@ -178,15 +178,18 @@ class HAFacebookManager: HASocialPlatformsBaseManager {
             if error == nil {
                 print("facebook video upload success")
                 HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
+                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBVideoFinalEND, isFinalRequestSucess: true)
+
 //                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBVideoFinalEND)
                 completion!(nil)
                 
             } else {
                 print(error!)
                 HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HAFacebook, isVideo: true)
+                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBVideoFinalEND, isFinalRequestSucess: false)
+
                 completion!(error?.localizedDescription)
             }
-            HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HAFacebook, whoEnd: WhoUploadEnd.FBVideoFinalEND)
         })
         
     }

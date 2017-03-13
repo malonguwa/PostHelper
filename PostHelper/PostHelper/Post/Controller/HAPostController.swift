@@ -323,7 +323,6 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             sendBtn.isEnabled = false
         }
         
-//        HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
     }
 
     internal func reloadScrollViewImages() {
@@ -579,18 +578,17 @@ extension HAPostController: UITextViewDelegate {
     
     
     func textViewDidChange(_ textView: UITextView) {
-        
 //        let newInputCount = abs(textView.text.unicodeScalars.count - currentInputUnicodeScalarsCount)
         textView.becomeFirstResponder()
         let currentRange = textView.selectedRange
         
         if textView.text.unicodeScalars.count > 0{
             TwitterWordCount = textView.text.unicodeScalars.count
-            sendBtn.isEnabled = true
+//            sendBtn.isEnabled = true
             placeHolderLabel.isHidden = true
         } else if arrayForDisplay.count == 0 && textView.text.unicodeScalars.count == 0{
             TwitterWordCount = 0
-            sendBtn.isEnabled = false
+//            sendBtn.isEnabled = false
             placeHolderLabel.isHidden = false
         } else if textView.text.unicodeScalars.count == 0 {
             TwitterWordCount = 0
@@ -611,8 +609,9 @@ extension HAPostController: UITextViewDelegate {
         }
     
         textView.selectedRange = currentRange
+        HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
     }
-    
+
     
 }
 

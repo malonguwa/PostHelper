@@ -198,7 +198,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                    let nse = error as! NSError
 
                     //FIXME: 这里加了新通知方法调用
-                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND)
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND, isFinalRequestSucess: false)
 //                    if error != nil {
 //                        completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
 //                    } else {
@@ -213,7 +213,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                     print("154 line - Tweet sucessfully")
                     print("154 line - httpResponse.statusCode == 200")
                     //FIXME: 这里加了新通知方法调用
-                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND)
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND, isFinalRequestSucess: true)
                     completion(nil)
                     
                 } else {
@@ -222,7 +222,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                     print("159 line - \(response)\n\n\(data)\n\n\(error)")
                     let nse = error as! NSError
                     //FIXME: 这里加了新通知方法调用
-                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND)
+                    HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND, isFinalRequestSucess: false)
                     completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
                     
                 }
@@ -291,6 +291,8 @@ class HATwitterManager: HASocialPlatformsBaseManager {
 //                                    
 //                                }
                                 HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: true ,currentPlatform: SocialPlatform.HATwitter, isVideo: true)
+                                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWVideoFinalEND, isFinalRequestSucess: true)
+
                                 completion(nil)
                                 
                             } else {
@@ -306,11 +308,11 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                                 
 //                                self?.goToNextPlatform(sendToPlatforms: sendToPlatforms, errorMessage: self?.extractTwitterErrorMessage(error: error!), completion: completion)
                                 HASocialPlatformsBaseManager.sendPostStatusNotification(isSuccess: false ,currentPlatform: SocialPlatform.HATwitter, isVideo: true)
+                                HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWVideoFinalEND, isFinalRequestSucess: false)
+
                                 completion(errorMessageStr)
                             }
                             //FIXME: 这里加了新通知方法调用
-                            HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWVideoFinalEND)
-
                         })
                     }
                 } else {

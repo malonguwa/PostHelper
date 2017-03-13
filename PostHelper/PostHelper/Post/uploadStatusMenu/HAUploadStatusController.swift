@@ -128,6 +128,7 @@ class HAUploadStatusController : UIViewController {
         
         endBackgroundTask()
 
+        let isFinalSucess = notification.userInfo?["isFinalRequestSucess"] as! Bool
 
         let whoEnd = notification.userInfo?["whoFinalEND"] as! WhoUploadEnd
 
@@ -152,15 +153,27 @@ class HAUploadStatusController : UIViewController {
         
 
         if videoCount != 0 {
+            
+            //FIXME: 这里需要增加一个通知信息判断，是否FinalEnd成功了，如果成功了再给label赋值，如果失败了不论多少张相片或者视频上传成功，最终结果都应该显示是0/几
             if TWVideoFinalEnd == true {
-                TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
-                TWVideoLabel.text = "\(TWvideoSuccessCount)/1"
+                if isFinalSucess == true {
+                    TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
+                    TWVideoLabel.text = "\(TWvideoSuccessCount)/1"
+                } else {
+                    TWImageLabel.text = "0/\(imagesCount > 4 ? 4 : imagesCount)"
+                    TWVideoLabel.text = "\(TWvideoSuccessCount)/1"
+                }
                 updateFinalRingStatus(whichRingView: "TWRingView")
             }
             
             if FBVideoFinalEnd == true {
-                FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
-                FBVideoLabel.text = "\(FBvideoSuccessCount)/1"
+                if isFinalSucess == true {
+                    FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
+                    FBVideoLabel.text = "\(FBvideoSuccessCount)/1"
+                } else {
+                    FBImageLabel.text = "0/\(imagesCount)"
+                    FBVideoLabel.text = "\(FBvideoSuccessCount)/1"
+                }
 
                 updateFinalRingStatus(whichRingView: "FBRingView")
             }
@@ -209,16 +222,22 @@ class HAUploadStatusController : UIViewController {
             
         } else { //videoCount == 0
             if TWImageFinalEnd == true {
-                
-                TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
+                if isFinalSucess == true {
+                    TWImageLabel.text = "\(TWsuccessImageCount)/\(imagesCount > 4 ? 4 : imagesCount)"
+                } else {
+                    TWImageLabel.text = "0/\(imagesCount > 4 ? 4 : imagesCount)"
+                }
 
                 updateFinalRingStatus(whichRingView: "TWRingView")
                 
             }
             
             if FBImageFinalEnd == true {
-                
-                FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
+                if isFinalSucess == true {
+                    FBImageLabel.text = "\(FBsuccessImageCount)/\(imagesCount)"
+                } else {
+                    FBImageLabel.text = "0/\(imagesCount)"
+                }
                 
                 updateFinalRingStatus(whichRingView: "FBRingView")
             }
@@ -294,14 +313,13 @@ class HAUploadStatusController : UIViewController {
         
         }
         
-
+        //FIXME: 这里需要增加一个&&判断条件 照片最终post请求成功（根据PhotoIds发送的最终发帖请求）
         if whichRingView == "TWRingView" {
             print("whichRingView == \"TWRingView\"")
 
             TWRingView.subviews[0].removeFromSuperview()
             
             if videoCount != 0 {
-
                 if TWsuccessImageCount == (imagesCount > 4 ? 4 : imagesCount) && TWvideoSuccessCount == 1{
                     ring.secondaryColor = UIColor.green
                 } else {
