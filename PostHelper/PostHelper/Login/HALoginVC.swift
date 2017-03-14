@@ -9,7 +9,7 @@
 import UIKit
 import FacebookLogin
 import FacebookCore
-//import SafariServices
+import SafariServices
 import FBSDKCoreKit
 import TwitterKit
 
@@ -30,7 +30,7 @@ public enum WhoUploadEnd {
     case FBVideoFinalEND
 }
 
-class HALoginVC: UIViewController {
+class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 
     // MARK: Property
     /// Btn : Add facebook account
@@ -67,6 +67,16 @@ class HALoginVC: UIViewController {
     }
     */
     
+    @IBAction func HAprivacyPolicyClick(_ sender: UIButton) {
+        
+        let safariVC = SFSafariViewController.init(url: URL(string: "https://www.iubenda.com/privacy-policy/8070421")!)
+
+        safariVC.delegate = self
+        present(safariVC, animated: true, completion: {
+        })
+        
+        
+    }
     
     func setTopConstarint() {
         topLayoutConstraint.constant = (view.frame.size.height * 0.5 - 125)
