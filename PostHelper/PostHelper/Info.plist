@@ -68,9 +68,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>&quot;PostHelper&quot; Would Like to Access the Camera</string>
+	<string>"PostHelper" Would Like to Access the Camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>&quot;PostHelper&quot; Would Like to Access Your Photos and Media Library</string>
+	<string>"PostHelper" Would Like to Access Your Photos and Media Library</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

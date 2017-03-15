@@ -66,6 +66,16 @@ class HALoginVC: UIViewController, SFSafariViewControllerDelegate {
 
     }
     */
+    @IBAction func HAcontactUsClick(_ sender: UIButton) {
+        
+        let actionSheetController = UIAlertController(title: "Contact Us", message: "please send email to \"malonguwa@gmail.com\" if you have any question about PostHelper", preferredStyle: UIAlertControllerStyle.alert)
+        let cancelAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.cancel, handler: { (cancelAction) in
+        })
+        actionSheetController.addAction(cancelAction)
+        
+        self.present(actionSheetController, animated: true, completion: nil)
+
+    }
     
     @IBAction func HAprivacyPolicyClick(_ sender: UIButton) {
         
