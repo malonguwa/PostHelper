@@ -11,18 +11,79 @@ import FacebookLogin
 import FacebookCore
 import FBSDKCoreKit
 import TwitterKit
+import SafariServices
 
-class HAPlatformSelectionController: UIViewController {
+class HAPlatformSelectionController: UIViewController, SFSafariViewControllerDelegate {
     @IBOutlet weak var FacebookSwitchBtn: UISwitch!
     @IBOutlet weak var TwitterSwitchBtn: UISwitch!
     @IBOutlet weak var FacebookAddBtn: UIButton!
     @IBOutlet weak var TwitterAddBtn: UIButton!
+    
+    @IBOutlet weak var TwitterAppBtn: UIButton!
+    
+    @IBOutlet weak var FacebookAppBtn: UIButton!
+    
     
     weak var LoginVC: HALoginVC!
     weak var platformBtn: UIButton!
     weak var sendDisableBtn: UIButton!
     var textForSend: String!
     var displayArrayCount = 0
+    
+    
+    func HA_openURL(url: NSURL) {
+        UIApplication.shared.open(url as URL, options: [:], completionHandler: { (success) in
+
+        })
+
+    }
+    
+    @IBAction func jumpToTwitterApp(_ sender: UIButton) {
+        let url = NSURL.init(string: "twitter://")
+        let isInstalled = UIApplication.shared.canOpenURL(url as! URL)
+        
+        if isInstalled == true {
+            
+            perform(#selector(HAPlatformSelectionController.HA_openURL(url:)), with: url, afterDelay: 0.3)
+            
+        } else {
+            print("打开Fb网站")
+            let safariVC = SFSafariViewController.init(url: URL(string: "https://www.twitter.com")!)
+            
+            safariVC.delegate = self
+            present(safariVC, animated: true, completion: {
+            })
+            
+            
+        }
+
+    }
+    
+    
+    @IBAction func jumpToFacebookApp(_ sender: UIButton) {
+//        UIApplication.shared.keyWindow?.drawHierarchy(in: (UIApplication.shared.keyWindow?.bounds)!, afterScreenUpdates: true)
+        let url = NSURL.init(string: "fb://")
+        let isInstalled = UIApplication.shared.canOpenURL(url as! URL)
+        
+        if isInstalled == true {
+
+            perform(#selector(HAPlatformSelectionController.HA_openURL(url:)), with: url, afterDelay: 0.3)
+
+//            UIApplication.shared.open(url as! URL, options: [:], completionHandler: { (success) in
+//                
+//            })
+        } else {
+            let safariVC = SFSafariViewController.init(url: URL(string: "https://www.facebook.com")!)
+            
+            safariVC.delegate = self
+            present(safariVC, animated: true, completion: {
+            })
+
+            
+        }
+    }
+    
+    
     
     @IBAction func TWSwitchBtnClick(_ sender: UISwitch) {
         if sender.isOn == false{
@@ -157,6 +218,9 @@ class HAPlatformSelectionController: UIViewController {
 //        print("HAPlatformSelectionController viewDidLoad")
 //        view.backgroundColor = UIColor.purple
 //        HALoginVC.setPlatformsInOrder()
+        
+//        let img = TwitterAppBtn.backgroundImage(for: UIControlState.normal)?.resizableImage(withCapInsets: UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0))
+//        TwitterAppBtn.setBackgroundImage(img, for: UIControlState.normal)
         
         print(LoginVC)
         if platforms.count != 0 {

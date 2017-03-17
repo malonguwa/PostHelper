@@ -60,6 +60,8 @@
 	<string>PostHelper</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>twitter</string>
+		<string>fb</string>
 		<string>fbapi</string>
 		<string>fb-messenger-api</string>
 		<string>fbauth2</string>
@@ -68,9 +70,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>"PostHelper" Would Like to Access the Camera</string>
+	<string>&quot;PostHelper&quot; Would Like to Access the Camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>"PostHelper" Would Like to Access Your Photos and Media Library</string>
+	<string>&quot;PostHelper&quot; Would Like to Access Your Photos and Media Library</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

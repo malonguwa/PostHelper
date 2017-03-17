@@ -22,26 +22,21 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FjA-oj-yJv">
-                                <rect key="frame" x="98" y="0.0" width="180" height="100"/>
+                                <rect key="frame" x="98" y="20" width="180" height="100"/>
                                 <subviews>
-                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="63T-zX-F8x">
-                                        <rect key="frame" x="26" y="49" width="67" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="63T-zX-F8x">
+                                        <rect key="frame" x="17" y="50" width="80" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="17"/>
-                                        <state key="normal" title="Facebook">
+                                        <state key="normal" title="Facebook" backgroundImage="BtnBGFrame-1">
                                             <color key="titleColor" red="0.22745098039215686" green="0.34901960784313724" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
-                                    </button>
-                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZLV-N4-cdr">
-                                        <rect key="frame" x="36" y="9" width="48" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="17"/>
-                                        <state key="normal" title="Twitter">
-                                            <color key="titleColor" red="0.0" green="0.63529411764705879" blue="0.92549019607843142" alpha="1" colorSpace="calibratedRGB"/>
-                                        </state>
+                                        <connections>
+                                            <action selector="jumpToFacebookApp:" destination="Gez-hc-cdk" eventType="touchUpInside" id="2nA-Gr-8lJ"/>
+                                        </connections>
                                     </button>
                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xLA-T1-N5R">
-                                        <rect key="frame" x="110" y="8" width="51" height="31"/>
+                                        <rect key="frame" x="117" y="8" width="51" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="onTintColor" red="0.0" green="0.63529411759999999" blue="0.92549019610000005" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
@@ -49,7 +44,7 @@
                                         </connections>
                                     </switch>
                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mrb-lK-kqw">
-                                        <rect key="frame" x="110" y="52" width="51" height="31"/>
+                                        <rect key="frame" x="117" y="52" width="51" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="onTintColor" red="0.2274509804" green="0.34901960780000002" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
@@ -57,7 +52,7 @@
                                         </connections>
                                     </switch>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Vg-LQ-lgZ" userLabel="FBAddBtn">
-                                        <rect key="frame" x="114" y="48" width="38" height="38"/>
+                                        <rect key="frame" x="123" y="48" width="38" height="38"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="FB_48"/>
                                         <connections>
@@ -65,11 +60,22 @@
                                         </connections>
                                     </button>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m1W-53-6Xy" userLabel="TWAddBtn">
-                                        <rect key="frame" x="114" y="4" width="38" height="38"/>
+                                        <rect key="frame" x="123" y="4" width="38" height="38"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="TW_48"/>
                                         <connections>
                                             <action selector="TWAddBtnClick:" destination="Gez-hc-cdk" eventType="touchUpInside" id="RxO-VO-faH"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZLV-N4-cdr">
+                                        <rect key="frame" x="18" y="9" width="78" height="28"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="17"/>
+                                        <state key="normal" title="Twitter" backgroundImage="BtnBGFrame-1">
+                                            <color key="titleColor" red="0.0" green="0.63529411764705879" blue="0.92549019607843142" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="jumpToTwitterApp:" destination="Gez-hc-cdk" eventType="touchUpInside" id="7mE-ZL-N1y"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -80,17 +86,18 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="FjA-oj-yJv" firstAttribute="top" secondItem="cGl-eU-Y54" secondAttribute="bottom" id="V5T-O9-S8Q"/>
                             <constraint firstItem="FjA-oj-yJv" firstAttribute="centerX" secondItem="AKj-5C-oaO" secondAttribute="centerX" id="Vu5-87-l5d"/>
                         </constraints>
                     </view>
-                    <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="FacebookAddBtn" destination="0Vg-LQ-lgZ" id="tWd-8H-Pok"/>
+                        <outlet property="FacebookAppBtn" destination="63T-zX-F8x" id="3B1-Fx-3md"/>
                         <outlet property="FacebookSwitchBtn" destination="mrb-lK-kqw" id="jLi-03-Dwo"/>
                         <outlet property="TwitterAddBtn" destination="m1W-53-6Xy" id="5da-RR-rqO"/>
+                        <outlet property="TwitterAppBtn" destination="ZLV-N4-cdr" id="9mC-NY-vLT"/>
                         <outlet property="TwitterSwitchBtn" destination="xLA-T1-N5R" id="xYt-Vl-25Y"/>
                     </connections>
                 </viewController>
@@ -100,6 +107,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="BtnBGFrame-1" width="85" height="58"/>
         <image name="FB_48" width="48" height="48"/>
         <image name="TW_48" width="48" height="48"/>
     </resources>

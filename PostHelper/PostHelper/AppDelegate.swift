@@ -32,6 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Fabric.with([Twitter.self])
         
+        let postSomethingIcon = UIApplicationShortcutIcon(templateImageName: "post2")
+        let postSomethingItem = UIApplicationShortcutItem(type: "postSomething", localizedTitle: "Post Something", localizedSubtitle: nil, icon: postSomethingIcon, userInfo: nil)
+        UIApplication.shared.shortcutItems = [postSomethingItem]
+        
         
         return true
 
@@ -72,16 +76,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-
-        
-        
-        
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        
+        if shortcutItem.type == "postSomething" {
+            print("postSomething")
+            let loginSB = UIStoryboard(name: "HALogin", bundle: nil)
+            let loginVC = loginSB.instantiateInitialViewController()
+            UIApplication.shared.keyWindow?.rootViewController = loginVC
+            
+            let dict = ["segueID":"HA_loginToPost",
+                        "loginVC":loginVC!] as [String : Any]
+            
+            perform(#selector(AppDelegate.perforSegue(dict:)), with: dict, afterDelay: 0.3)
+            completionHandler(true)
+        } else {
+            completionHandler(false)
+        }
+    }
+    
+    internal func perforSegue(dict: Dictionary<String, Any>!) {
+        let loginVC = dict["loginVC"] as! HALoginVC
+        let identifier = dict["segueID"]
+        loginVC.performSegue(withIdentifier: identifier as! String, sender: nil)
+
+    }
 
 }
 
