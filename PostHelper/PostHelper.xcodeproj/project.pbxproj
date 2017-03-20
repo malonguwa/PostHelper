@@ -203,8 +203,8 @@
 			children = (
 				3DF6889F1E56009700CE034F /* HAPostController.swift */,
 				3D0F58031E55A70300CE9F03 /* HAPostVCManager.swift */,
-				3D55F9021E5EF99C00E35B89 /* HAAnimationDelegate.swift */,
 				3D8EFD391E7FA9BF00A28D82 /* HASidePanel.swift */,
+				3D55F9021E5EF99C00E35B89 /* HAAnimationDelegate.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

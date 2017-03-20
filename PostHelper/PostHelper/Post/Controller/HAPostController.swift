@@ -24,6 +24,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     var limitInputUnicodeScalarsCount = 0
     var colorChangeRange = 0
     var sidePanelVC : HASidePanel?
+    weak var sidePanelCoverView : UIView?
 //    var twitterMgr : HATwitterManager = HATwitterManager()
     
     //    lazy var picVC : TZImagePickerController = {
@@ -479,28 +480,44 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     
     @IBAction func clickSidePanel(_ sender: UIButton) {
         textView.resignFirstResponder()
+        // SetUp CoverView
+        let coverView = UIView(frame: CGRect(x: 0, y: 0, width: (UIApplication.shared.keyWindow?.bounds.width)!, height: (UIApplication.shared.keyWindow?.bounds.height)!))
+        coverView.backgroundColor = UIColor.black
+        coverView.alpha = 0.0
+        let tapGes = UITapGestureRecognizer(target: self, action: #selector(HAPostController.tapToDismissSidePanel))
+        coverView.addGestureRecognizer(tapGes)
+        sidePanelCoverView = coverView
+            
+        // SetUpTableView
         let sidePanelSB = UIStoryboard(name: "HASidePanel", bundle: nil)
         let sidePanelVC = sidePanelSB.instantiateInitialViewController() as! HASidePanel
         self.sidePanelVC = sidePanelVC
         let sidePandelTableView = sidePanelVC.tableView
         sidePandelTableView?.frame = CGRect(x: 0, y: 0, width: 0, height: view.bounds.height)
-        sidePandelTableView?.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width * 0.7, height: 50))
-        let coverView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
-        coverView.backgroundColor = UIColor.black
-        coverView.alpha = 0.0
-
+        sidePandelTableView?.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width:(UIApplication.shared.keyWindow?.bounds.width)! * 0.7, height: 50))
+            
+            
         UIView.animate(withDuration: 0.3) {
             coverView.alpha = 0.6
             self.view.addSubview(coverView)
-            sidePandelTableView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width * 0.7, height: self.view.bounds.height)
+            sidePandelTableView?.frame = CGRect(x: 0, y: 0, width: (UIApplication.shared.keyWindow?.bounds.width)! * 0.7, height: (UIApplication.shared.keyWindow?.bounds.height)!)
             self.view.addSubview(sidePandelTableView!)
-
         }
-
-        
     }
     
-    
+    ///MARK: sidePanelCoverView Tap Gesture - tapToDismissSidePanel
+    func tapToDismissSidePanel(gesture: UIGestureRecognizer) {
+        
+        UIView.animate(withDuration: 0.3, animations: { 
+            self.sidePanelCoverView?.alpha = 0.0
+            self.sidePanelVC?.tableView.frame = CGRect(x: 0, y: 0, width: 0, height: (UIApplication.shared.keyWindow?.bounds.height)!)
+        }) { (success) in
+            self.sidePanelVC?.tableView.removeFromSuperview()
+            self.sidePanelCoverView?.removeFromSuperview()
+            self.sidePanelVC = nil
+        }
+    }
+
     
     
     deinit {
