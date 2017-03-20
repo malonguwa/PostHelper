@@ -23,6 +23,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     var lastTimeInputUnicodeScalarsCount = 0
     var limitInputUnicodeScalarsCount = 0
     var colorChangeRange = 0
+    var sidePanelVC : HASidePanel?
 //    var twitterMgr : HATwitterManager = HATwitterManager()
     
     //    lazy var picVC : TZImagePickerController = {
@@ -476,6 +477,28 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
 
     }
     
+    @IBAction func clickSidePanel(_ sender: UIButton) {
+        textView.resignFirstResponder()
+        let sidePanelSB = UIStoryboard(name: "HASidePanel", bundle: nil)
+        let sidePanelVC = sidePanelSB.instantiateInitialViewController() as! HASidePanel
+        self.sidePanelVC = sidePanelVC
+        let sidePandelTableView = sidePanelVC.tableView
+        sidePandelTableView?.frame = CGRect(x: 0, y: 0, width: 0, height: view.bounds.height)
+        sidePandelTableView?.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width * 0.7, height: 50))
+        let coverView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
+        coverView.backgroundColor = UIColor.black
+        coverView.alpha = 0.0
+
+        UIView.animate(withDuration: 0.3) {
+            coverView.alpha = 0.6
+            self.view.addSubview(coverView)
+            sidePandelTableView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width * 0.7, height: self.view.bounds.height)
+            self.view.addSubview(sidePandelTableView!)
+
+        }
+
+        
+    }
     
     
     
