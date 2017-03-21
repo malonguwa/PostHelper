@@ -23,7 +23,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     var lastTimeInputUnicodeScalarsCount = 0
     var limitInputUnicodeScalarsCount = 0
     var colorChangeRange = 0
-    var sidePanelVC : HASidePanel?
+    weak var sidePanelVC : HASidePanel?
     weak var sidePanelCoverView : UIView?
 //    var twitterMgr : HATwitterManager = HATwitterManager()
     
@@ -94,7 +94,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         setUpWordCountLabel()
         HA_fitScreen()
         NotificationCenter.default.addObserver(self, selector:#selector(HAPostController.keyboardWillChange(notice :)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(HAPostController.removeSidePanelAnmation(notice :)), name: NSNotification.Name(rawValue: "sidePanelRemoveAnimationNotification"), object: nil)
+
 //        NotificationCenter.default.addObserver(self,
 //                                               selector: #selector(HAPostController.HA_DidEnterBackground),
 //                                               name: NSNotification.Name.UIApplicationDidEnterBackground,
@@ -492,11 +493,17 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         let sidePanelSB = UIStoryboard(name: "HASidePanel", bundle: nil)
         let sidePanelVC = sidePanelSB.instantiateInitialViewController() as! HASidePanel
         self.sidePanelVC = sidePanelVC
+        self.addChildViewController(sidePanelVC)
         let sidePandelTableView = sidePanelVC.tableView
         sidePandelTableView?.frame = CGRect(x: 0, y: 0, width: 0, height: view.bounds.height)
         sidePandelTableView?.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width:(UIApplication.shared.keyWindow?.bounds.width)! * 0.7, height: 50))
-            
-            
+        let closeBtn = UIButton.init(frame: CGRect(x: 5, y: 0, width: 60, height: 60))
+        closeBtn.setImage(UIImage(named: "close_blue_thin_64"), for: UIControlState.normal)
+        closeBtn.addTarget(self, action: #selector(HAPostController.sidePanelCloseBtnClick), for: UIControlEvents.touchUpInside)
+        
+        sidePandelTableView?.tableHeaderView?.addSubview(closeBtn)
+        
+        // sidePanel appear animation
         UIView.animate(withDuration: 0.3) {
             coverView.alpha = 0.6
             self.view.addSubview(coverView)
@@ -505,20 +512,29 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         }
     }
     
-    ///MARK: sidePanelCoverView Tap Gesture - tapToDismissSidePanel
+    //MARK: sidePanel close Btn click
+    func sidePanelCloseBtnClick (){
+        removeSidePanelAnmation(notice: nil)
+    }
+
+    
+    //MARK: sidePanelCoverView Tap Gesture - tapToDismissSidePanel
     func tapToDismissSidePanel(gesture: UIGestureRecognizer) {
-        
-        UIView.animate(withDuration: 0.3, animations: { 
+        removeSidePanelAnmation(notice: nil)
+    }
+
+    //MARK: sidePanel disappear animation
+    func removeSidePanelAnmation(notice : Notification?) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.sidePanelCoverView?.alpha = 0.0
             self.sidePanelVC?.tableView.frame = CGRect(x: 0, y: 0, width: 0, height: (UIApplication.shared.keyWindow?.bounds.height)!)
         }) { (success) in
             self.sidePanelVC?.tableView.removeFromSuperview()
+            self.sidePanelVC?.removeFromParentViewController()
             self.sidePanelCoverView?.removeFromSuperview()
             self.sidePanelVC = nil
         }
     }
-
-    
     
     deinit {
         NotificationCenter.default.removeObserver(self)

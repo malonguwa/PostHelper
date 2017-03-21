@@ -22,6 +22,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
+        
+        //FIXME: 从沙盒中寻找PostHelperAdvanture.plist文件
+        
+        //找到 - 不是第一次
+            //将plist里面的数据缓存到内存中（全局变量）
+        
+        //没找到 - 第一次
+            //创建Plist - PostHelperAdvanture.plist
+            
+            //创建Key - weFirstMetOn Value - time(日/月/年)
+            //创建Key - FbPostImageCount Value - Int
+            //创建Key - FbPostVideoCount Value - Int
+            //创建Key - TwPostImageCount Value - Int
+            //创建Key - TwPostVideoCount Value - Int
+
+            //写入沙盒0
+        
+        
+        
         SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
 //        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.uiControlErrors)
 //        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.cacheErrors)

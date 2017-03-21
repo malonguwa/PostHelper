@@ -138,46 +138,6 @@
                                 <color key="textColor" red="0.227966696" green="0.34882315990000001" blue="0.60016119479999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qjd-dG-VJN">
-                                <rect key="frame" x="152" y="645" width="70" height="22"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="22" id="X9f-3w-ntJ"/>
-                                    <constraint firstAttribute="width" constant="70" id="mN2-XW-NCu"/>
-                                </constraints>
-                                <state key="normal">
-                                    <attributedString key="attributedTitle">
-                                        <fragment content="Privacy Policy">
-                                            <attributes>
-                                                <color key="NSBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="NSColor" red="0.29415574669837952" green="0.3094199001789093" blue="0.33541226387023926" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <font key="NSFont" size="12" name="HelveticaNeue-CondensedBold"/>
-                                                <real key="NSKern" value="0.0"/>
-                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="leftToRight" defaultTabInterval="36" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO">
-                                                    <tabStops/>
-                                                </paragraphStyle>
-                                                <color key="NSStrokeColor" red="0.29411999999999999" green="0.30980000000000002" blue="0.33724999999999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            </attributes>
-                                        </fragment>
-                                    </attributedString>
-                                </state>
-                                <connections>
-                                    <action selector="HAprivacyPolicyClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vuq-i1-at7"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zzC-HE-oPG">
-                                <rect key="frame" x="304" y="644" width="70" height="22"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="70" id="42J-tv-ZFy"/>
-                                    <constraint firstAttribute="height" constant="22" id="fA7-7I-gyV"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-CondensedBold" family="Helvetica Neue" pointSize="12"/>
-                                <state key="normal" title="Contact Us">
-                                    <color key="titleColor" red="0.29415574669837952" green="0.3094199001789093" blue="0.33541226387023926" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="HAcontactUsClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LM7-8a-GEw"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -185,17 +145,13 @@
                             <constraint firstItem="7xz-s0-jJd" firstAttribute="top" secondItem="9No-bn-mEf" secondAttribute="bottom" constant="40" id="7Jf-61-U7H"/>
                             <constraint firstItem="9No-bn-mEf" firstAttribute="top" secondItem="keO-HD-eLP" secondAttribute="bottom" id="BKB-Y4-x6J"/>
                             <constraint firstAttribute="trailing" secondItem="keO-HD-eLP" secondAttribute="trailing" id="CPs-aa-Jon"/>
-                            <constraint firstItem="qjd-dG-VJN" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GDE-vs-a0e"/>
                             <constraint firstAttribute="trailing" secondItem="9No-bn-mEf" secondAttribute="trailing" id="U1e-L3-Sg4"/>
                             <constraint firstItem="keO-HD-eLP" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="WEd-OZ-G7n"/>
                             <constraint firstItem="9No-bn-mEf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ygm-b1-j6t"/>
                             <constraint firstItem="keO-HD-eLP" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="150" id="Yol-XZ-d6O"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="qjd-dG-VJN" secondAttribute="bottom" id="b8B-SR-s7w"/>
                             <constraint firstItem="keO-HD-eLP" firstAttribute="top" secondItem="yLe-Rd-g3d" secondAttribute="bottom" constant="70" id="e9g-5D-W58"/>
                             <constraint firstItem="9No-bn-mEf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="iTU-We-bOw"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="zzC-HE-oPG" secondAttribute="bottom" constant="1" id="kIh-x0-yuJ"/>
                             <constraint firstItem="yLe-Rd-g3d" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="sCC-gf-fGp"/>
-                            <constraint firstAttribute="trailing" secondItem="zzC-HE-oPG" secondAttribute="trailing" constant="1" id="tSD-3G-NSK"/>
                         </constraints>
                     </view>
                     <toolbarItems/>

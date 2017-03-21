@@ -34,6 +34,7 @@
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
 		3DBB0DFC1E66BE9000056E7B /* HAUploadStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */; };
 		3DD551F61E4D8D2200BDBBDF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD551F51E4D8D2200BDBBDF /* Utility.swift */; };
+		3DDFC9C21E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DDFC9C11E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard */; };
 		3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A61E446FC60089C64F /* M13ProgressView.m */; };
 		3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A81E446FC60089C64F /* M13ProgressViewRing.m */; };
 		3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */; };
@@ -106,6 +107,7 @@
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAUploadStatusController.swift; sourceTree = "<group>"; };
 		3DD551F51E4D8D2200BDBBDF /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		3DDFC9C11E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAPostHelperAdvantureVC.storyboard; sourceTree = "<group>"; };
 		3DE0E4A51E446FC60089C64F /* M13ProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressView.h; sourceTree = "<group>"; };
 		3DE0E4A61E446FC60089C64F /* M13ProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressView.m; sourceTree = "<group>"; };
 		3DE0E4A71E446FC60089C64F /* M13ProgressViewRing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressViewRing.h; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 			children = (
 				3D0F57F21E55951100CE9F03 /* HAPostVC.storyboard */,
 				3D8EFD371E7FA95D00A28D82 /* HASidePanel.storyboard */,
+				3DDFC9C11E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -515,6 +518,7 @@
 				3D0F57FE1E55951100CE9F03 /* HAUploadStatusController.storyboard in Resources */,
 				3D65CDE31DDC446C00073AB4 /* HALogin.storyboard in Resources */,
 				3DF688971E55FF6A00CE034F /* TZImagePickerController.bundle in Resources */,
+				3DDFC9C21E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard in Resources */,
 				3D8EFD381E7FA95D00A28D82 /* HASidePanel.storyboard in Resources */,
 				3D0F57F71E55951100CE9F03 /* HAPlatformSelectionController.storyboard in Resources */,
 				3D65CDE61DDC446C00073AB4 /* LaunchScreen.storyboard in Resources */,

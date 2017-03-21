@@ -39,6 +39,8 @@ class HAPostVCManager: NSObject {
                 let facebookMgr = HAFacebookManager()
                 facebookMgr.sendTextOnly(text: text, completion: { (errorMessage) in
                     self?.postVC.view.subviews.last?.removeFromSuperview()//delete outdated HUD
+                    
+                    //FIXME: 在这几个判断里将Post将发帖数量更新并写入plist文件
                     if twitterErrorMsg == nil && errorMessage == nil {// error free
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success", onlyOneError: false)
                         

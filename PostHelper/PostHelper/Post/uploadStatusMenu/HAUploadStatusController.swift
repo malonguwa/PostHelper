@@ -420,6 +420,11 @@ class HAUploadStatusController : UIViewController {
 //        let RootVc = UIApplication.shared.keyWindow?.rootViewController
         UIApplication.shared.keyWindow?.rootViewController = currentRootVc
         
+        //FIXME: 判断两个平台圈的颜色，是绿的
+            //将Fb和Tw发送 照片/视频 成功的数量累加并写入Plist文件
+            // image + video == 2 posts
+            // image == 1 post
+            // video == 1 post
         let TWring = TWRingView.subviews[0] as! M13ProgressViewRing
         let FBring = FBRingView.subviews[0] as! M13ProgressViewRing
         let TWringColor = TWring.secondaryColor

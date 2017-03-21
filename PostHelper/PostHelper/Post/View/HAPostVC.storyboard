@@ -146,10 +146,10 @@
                                 <color key="textColor" red="0.22796669602394104" green="0.34882315993309021" blue="0.60016119480133057" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qs7-ci-zZn">
-                                <rect key="frame" x="5" y="14" width="71" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qs7-ci-zZn">
+                                <rect key="frame" x="0.0" y="15" width="35" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="SidePanel"/>
+                                <state key="normal" image="sideBtn"/>
                                 <connections>
                                     <action selector="clickSidePanel:" destination="lfj-k7-XS8" eventType="touchUpInside" id="c0K-dW-77y"/>
                                 </connections>
@@ -205,6 +205,7 @@
         <image name="gallaryArrow" width="64" height="64"/>
         <image name="image" width="64" height="64"/>
         <image name="post2" width="64" height="64"/>
+        <image name="sideBtn" width="64" height="64"/>
         <image name="video" width="64" height="64"/>
     </resources>
 </document>
