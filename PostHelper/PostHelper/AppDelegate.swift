@@ -13,11 +13,38 @@ import TwitterKit
 import FBSDKCoreKit
 
 
+
+extension UIViewController {
+    func topMostViewController() -> UIViewController {
+        if self.presentedViewController == nil {
+            return self
+        }
+        if let navigation = self.presentedViewController as? UINavigationController {
+            return navigation.visibleViewController!.topMostViewController()
+        }
+        if let tab = self.presentedViewController as? UITabBarController {
+            if let selectedTab = tab.selectedViewController {
+                return selectedTab.topMostViewController()
+            }
+            return tab.topMostViewController()
+        }
+        return self.presentedViewController!.topMostViewController()
+    }
+}
+
+extension UIApplication {
+    func topMostViewController() -> UIViewController? {
+        return self.keyWindow?.rootViewController?.topMostViewController()
+    }
+}
+
+
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -105,14 +132,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if shortcutItem.type == "postSomething" {
             print("postSomething")
-            let loginSB = UIStoryboard(name: "HALogin", bundle: nil)
-            let loginVC = loginSB.instantiateInitialViewController()
-            UIApplication.shared.keyWindow?.rootViewController = loginVC
-            
-            let dict = ["segueID":"HA_loginToPost",
-                        "loginVC":loginVC!] as [String : Any]
-            
-            perform(#selector(AppDelegate.perforSegue(dict:)), with: dict, afterDelay: 0.3)
+            let topViewController = UIApplication.shared.topMostViewController()
+            print("1.------\(topViewController)")
+            if (topViewController?.isKind(of: HALoginVC.self))! && platforms.count > 0 {
+                print("2.------\(topViewController)")
+                topViewController?.performSegue(withIdentifier: "HA_loginToPost", sender: nil)
+            } else if (topViewController?.childViewControllers.count)! > 0 && (topViewController?.childViewControllers[0].isKind(of: HASidePanel.self))! && platforms.count > 0 {
+                print("3.------\(topViewController)")
+                NotificationCenter.default.post((topViewController?.childViewControllers[0] as! HASidePanel).sidePanelRemoveAnimationNotify)
+            }
             completionHandler(true)
         } else {
             completionHandler(false)
