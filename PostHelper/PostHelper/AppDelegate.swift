@@ -46,26 +46,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    
+    func savePostHelperAdvanturePlistInfo() {
+        //FIXME: 从沙盒中寻找PostHelperAdvanture.plist文件
+        let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let cachePath = paths[0]
+        let PHA_PlistPath = cachePath + "/PostHelperAdvanture.plist"
+        
+        print("cachePath: \(PHA_PlistPath)")
+        
+        let fm = FileManager.default
+        if fm.fileExists(atPath: PHA_PlistPath) == true {
+            //找到 - 不是第一次
+            //将plist里面的数据缓存到内存中（全局变量）
+            print("找到 PostHelperAdvanture.plist")
+        } else {
+            //没找到 - 第一次
+            print("没找到 PostHelperAdvanture.plist")
+            let now = Date()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            
+            //创建Plist - PostHelperAdvanture.plist
+            let plistCreateResult = fm.createFile(atPath: PHA_PlistPath, contents: nil, attributes: nil)
+            //写入数据
+            if plistCreateResult == true {
+                let dict = NSMutableDictionary()
+                //创建Key - weFirstMetOn Value - time(日/月/年)
+                //创建Key - FbPostImageCount Value - Int
+                //创建Key - FbPostVideoCount Value - Int
+                //创建Key - TwPostImageCount Value - Int
+                //创建Key - TwPostVideoCount Value - Int
+                dict.setValue(0, forKey: "firstTime")
+                dict.setValue("\(dateFormatter.string(from: now))", forKey: "weFirstMetOn")
+                dict.setValue(0, forKey: "FbPostImageCount")
+                dict.setValue(0, forKey: "FbPostVideoCount")
+                dict.setValue(0, forKey: "TwPostImageCount")
+                dict.setValue(0, forKey: "TwPostVideoCount")
+                
+                dict.write(toFile: PHA_PlistPath, atomically: true)
+            }
+        }
+        
+    }
+    
+    
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
-        
-        //FIXME: 从沙盒中寻找PostHelperAdvanture.plist文件
-        
-        //找到 - 不是第一次
-            //将plist里面的数据缓存到内存中（全局变量）
-        
-        //没找到 - 第一次
-            //创建Plist - PostHelperAdvanture.plist
-            
-            //创建Key - weFirstMetOn Value - time(日/月/年)
-            //创建Key - FbPostImageCount Value - Int
-            //创建Key - FbPostVideoCount Value - Int
-            //创建Key - TwPostImageCount Value - Int
-            //创建Key - TwPostVideoCount Value - Int
 
-            //写入沙盒0
-        
+        savePostHelperAdvanturePlistInfo()
         
         
         SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
