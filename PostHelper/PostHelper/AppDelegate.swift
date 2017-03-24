@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     
-    func savePostHelperAdvanturePlistInfo() {
+    func writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: Int, FbPostImageCount: Int, FbPostVideoCount: Int, TwPostImageCount: Int, TwPostVideoCount: Int) {
         //FIXME: 从沙盒中寻找PostHelperAdvanture.plist文件
         let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         let cachePath = paths[0]
@@ -60,7 +60,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //找到 - 不是第一次
             //将plist里面的数据缓存到内存中（全局变量）
             print("找到 PostHelperAdvanture.plist")
-        } else {
+            let dict = readPostHelperAdvanturePlistInfo()
+            if dict != nil {
+                //创建Key - weFirstMetOn Value - time(日/月/年)
+                //创建Key - FbPostImageCount Value - Int
+                //创建Key - FbPostVideoCount Value - Int
+                //创建Key - TwPostImageCount Value - Int
+                //创建Key - TwPostVideoCount Value - Int
+                dict!.setValue(dict!["firstTime"], forKey: "firstTime")
+                dict!.setValue(dict!["weFirstMetOn"], forKey: "weFirstMetOn")
+                dict!.setValue((dict!["FbPostImageCount"] as! Int) + FbPostImageCount, forKey: "FbPostImageCount")
+                dict!.setValue((dict!["FbPostVideoCount"] as! Int) + FbPostVideoCount, forKey: "FbPostVideoCount")
+                dict!.setValue((dict!["TwPostImageCount"] as! Int) + TwPostImageCount, forKey: "TwPostImageCount")
+                dict!.setValue((dict!["TwPostVideoCount"] as! Int) + TwPostVideoCount, forKey: "TwPostVideoCount")
+                dict!.setValue((dict!["totalPostOnAllPlatforms"] as! Int) + totalPostOnAllPlatforms, forKey: "totalPostOnAllPlatforms")
+
+                dict!.write(toFile: PHA_PlistPath, atomically: true)
+
+            }
+        }
+    }
+    
+    func firstTimePostHelperAdvanturePlistSetUp (){
+        
+        
+        let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let cachePath = paths[0]
+        let PHA_PlistPath = cachePath + "/PostHelperAdvanture.plist"
+        
+        
+        let fm = FileManager.default
+        if fm.fileExists(atPath: PHA_PlistPath) == false {
             //没找到 - 第一次
             print("没找到 PostHelperAdvanture.plist")
             let now = Date()
@@ -77,28 +107,76 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 //创建Key - FbPostVideoCount Value - Int
                 //创建Key - TwPostImageCount Value - Int
                 //创建Key - TwPostVideoCount Value - Int
-                dict.setValue(0, forKey: "firstTime")
+                dict.setValue(false, forKey: "firstTime")
                 dict.setValue("\(dateFormatter.string(from: now))", forKey: "weFirstMetOn")
                 dict.setValue(0, forKey: "FbPostImageCount")
                 dict.setValue(0, forKey: "FbPostVideoCount")
                 dict.setValue(0, forKey: "TwPostImageCount")
                 dict.setValue(0, forKey: "TwPostVideoCount")
+                dict.setValue(0, forKey: "totalPostOnAllPlatforms")
                 
                 dict.write(toFile: PHA_PlistPath, atomically: true)
             }
         }
-        
+
     }
     
-    
+    func readPostHelperAdvanturePlistInfo() -> NSMutableDictionary? {
+        //FIXME: 从沙盒中寻找PostHelperAdvanture.plist文件
+        let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let cachePath = paths[0]
+        let PHA_PlistPath = cachePath + "/PostHelperAdvanture.plist"
+        
+        let fm = FileManager.default
+        if fm.fileExists(atPath: PHA_PlistPath) == true {
+            //找到了再读取数据
+            let dictFromPlist = NSMutableDictionary(contentsOfFile: PHA_PlistPath)
+            print("从plist中取出的dict: \(dictFromPlist)")
+            return dictFromPlist
+            
+        } else {
+            print("system error")
+            return nil
+        }
+        
+
+    }
+    /**
+        return: return an initialised dict object
+     */
+    func deletePostHelperAdvanturePlistInfo() -> NSMutableDictionary{
+        let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let cachePath = paths[0]
+        let PHA_PlistPath = cachePath + "/PostHelperAdvanture.plist"
+
+        let dict = NSMutableDictionary()
+        let now = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+
+        //创建Key - weFirstMetOn Value - time(日/月/年)
+        //创建Key - FbPostImageCount Value - Int
+        //创建Key - FbPostVideoCount Value - Int
+        //创建Key - TwPostImageCount Value - Int
+        //创建Key - TwPostVideoCount Value - Int
+        dict.setValue(false, forKey: "firstTime")
+        dict.setValue("\(dateFormatter.string(from: now))", forKey: "weFirstMetOn")
+        dict.setValue(0, forKey: "FbPostImageCount")
+        dict.setValue(0, forKey: "FbPostVideoCount")
+        dict.setValue(0, forKey: "TwPostImageCount")
+        dict.setValue(0, forKey: "TwPostVideoCount")
+        dict.setValue(0, forKey: "totalPostOnAllPlatforms")
+
+        dict.write(toFile: PHA_PlistPath, atomically: true)
+        
+        return readPostHelperAdvanturePlistInfo()!
+    }
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
-
-        savePostHelperAdvanturePlistInfo()
-        
+        firstTimePostHelperAdvanturePlistSetUp()
         
         SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
 //        SDKSettings.disableLoggingBehavior(SDKLoggingBehavior.uiControlErrors)

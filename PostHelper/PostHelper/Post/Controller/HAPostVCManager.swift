@@ -48,14 +48,22 @@ class HAPostVCManager: NSObject {
                         self?.postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
                         self?.postVC.sendBtn.isEnabled = false
 
+                        if platforms.count == 2 {
+                            (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 2, FbPostImageCount: 0, FbPostVideoCount: 0, TwPostImageCount: 0, TwPostVideoCount: 0)
+                        } else {
+                            (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 1, FbPostImageCount: 0, FbPostVideoCount: 0, TwPostImageCount: 0, TwPostVideoCount: 0)
+                        }
                         
                     } else if twitterErrorMsg == nil && errorMessage != nil{//facebook error only
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: errorMessage!, onlyOneError: true)
+                        (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 1, FbPostImageCount: 0, FbPostVideoCount: 0, TwPostImageCount: 0, TwPostVideoCount: 0)
+                        
                     } else if twitterErrorMsg != nil && errorMessage == nil{//twitter error only
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg!, onlyOneError: true)
+                        (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 1, FbPostImageCount: 0, FbPostVideoCount: 0, TwPostImageCount: 0, TwPostVideoCount: 0)
+
                     } else {// both have error
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: twitterErrorMsg! + "\n" + errorMessage!, onlyOneError: false)
-
                     }
                     
                     let tapGesture = UITapGestureRecognizer(target: self, action: #selector(HAPostVCManager.tapOnBlurView(gesture:)))

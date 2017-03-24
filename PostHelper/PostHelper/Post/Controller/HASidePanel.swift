@@ -37,7 +37,10 @@ class HASidePanel : UITableViewController, SFSafariViewControllerDelegate {
     
     internal func PHAcellClick(){
         NotificationCenter.default.post(sidePanelRemoveAnimationNotify)
-        
+        let PHA_SB = UIStoryboard(name: "HAPostHelperAdvantureVC", bundle: nil)
+        let PHA_VC = PHA_SB.instantiateInitialViewController() as! HAPostHelperAdvantureVC
+
+        self.present(PHA_VC, animated: true, completion: nil)
 
     }
     

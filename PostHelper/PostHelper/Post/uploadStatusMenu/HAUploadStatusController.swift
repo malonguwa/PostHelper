@@ -33,6 +33,7 @@ class HAUploadStatusController : UIViewController {
     var FBBaseVewIsHidden: Bool = false
     var imagesCount: Int = 0
     var videoCount: Int = 0
+    
     var TWsuccessImageCount = 0
     var FBsuccessImageCount = 0
     
@@ -418,8 +419,9 @@ class HAUploadStatusController : UIViewController {
     //MARK: TapGesture
     @objc fileprivate func tapOnBlurView(gesture : UITapGestureRecognizer) {
 //        let RootVc = UIApplication.shared.keyWindow?.rootViewController
+        plistDataUpdate()
+        print("此时对象还没死，成员变量的数据还都在")
         UIApplication.shared.keyWindow?.rootViewController = currentRootVc
-        
         //FIXME: 判断两个平台圈的颜色，是绿的
             //将Fb和Tw发送 照片/视频 成功的数量累加并写入Plist文件
             // image + video == 2 posts
@@ -449,9 +451,54 @@ class HAUploadStatusController : UIViewController {
             postVC.textView.text = ""
             postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
             postVC.sendBtn.isEnabled = false
+            
         }
+        
+        
     }
 
+    func plistDataUpdate() {
+        let TWring = TWRingView.subviews[0] as! M13ProgressViewRing
+        let FBring = FBRingView.subviews[0] as! M13ProgressViewRing
+        let TWringColor = TWring.secondaryColor
+        let FBringColor = FBring.secondaryColor
+        
+        if TWringColor == UIColor.green {
+            if TWsuccessImageCount > 0 && TWvideoSuccessCount > 0{ //2
+                (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 2, FbPostImageCount: 0, FbPostVideoCount: 0, TwPostImageCount: TWsuccessImageCount, TwPostVideoCount: TWvideoSuccessCount)
+
+            } else {
+                (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 1, FbPostImageCount: 0, FbPostVideoCount: 0, TwPostImageCount: TWsuccessImageCount, TwPostVideoCount: TWvideoSuccessCount)
+            }
+            
+            
+        }
+        
+        if FBringColor == UIColor.green {
+            if FBsuccessImageCount > 0 && FBvideoSuccessCount > 0{
+                (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 2, FbPostImageCount: FBsuccessImageCount, FbPostVideoCount:FBvideoSuccessCount, TwPostImageCount: 0, TwPostVideoCount: 0)
+            } else {
+                (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 1, FbPostImageCount: FBsuccessImageCount, FbPostVideoCount:FBvideoSuccessCount, TwPostImageCount: 0, TwPostVideoCount: 0)
+            }
+        }
+        
+        
+        
+        
+//        if TWringColor == UIColor.green && FBringColor == UIColor.green {
+//            
+//            if TWsuccessImageCount > 0 && TWvideoSuccessCount > 0 && FBsuccessImageCount > 0 && FBvideoSuccessCount > 0 {
+//                (UIApplication.shared.delegate as! AppDelegate).writePostHelperAdvanturePlistInfo(totalPostOnAllPlatforms: 4, FbPostImageCount: FBsuccessImageCount, FbPostVideoCount:FBvideoSuccessCount, TwPostImageCount: TWsuccessImageCount, TwPostVideoCount: TWvideoSuccessCount)
+//            } else if {
+//                
+//            }
+//            
+//            
+//        }
+
+        
+        
+    }
     
     
     deinit {
