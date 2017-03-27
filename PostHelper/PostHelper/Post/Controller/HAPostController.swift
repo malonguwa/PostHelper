@@ -86,6 +86,9 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     }
     
     override func viewDidLoad() {
+        
+        print("是否有parentVC: \(self.parent)")
+
         array = Array.init((image?.images)!)
         textView.becomeFirstResponder()
         videoInGalleryArray = [HAVideo]()

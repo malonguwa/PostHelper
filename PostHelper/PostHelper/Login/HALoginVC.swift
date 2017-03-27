@@ -340,6 +340,12 @@ class HALoginVC: UIViewController {
         }
     }
     
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        print("prepare for segue")
+////        segue.source.addChildViewController(segue.destination)
+////        UIApplication.shared.keyWindow?.rootViewController?.addChildViewController(segue.destination)
+//    }
+    
     deinit {
         print("HALoginVC deinit")
     }

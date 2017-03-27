@@ -13,7 +13,6 @@ class HASidePanel : UITableViewController, SFSafariViewControllerDelegate {
     var sidePanelRemoveAnimationNotify : Notification!
     
     override func viewDidLoad() {
-        
         sidePanelRemoveAnimationNotify = Notification.init(name: Notification.Name(rawValue: "sidePanelRemoveAnimationNotification"), object: nil, userInfo: nil)
 
     }
