@@ -23,6 +23,9 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     var lastTimeInputUnicodeScalarsCount = 0
     var limitInputUnicodeScalarsCount = 0
     var colorChangeRange = 0
+    var previousRect = CGRect.zero
+//    var rowFlag = false
+//    var twitterWordCountReturnCharsCorrector = 0
     weak var sidePanelVC : HASidePanel?
     weak var sidePanelCoverView : UIView?
 //    var twitterMgr : HATwitterManager = HATwitterManager()
@@ -87,7 +90,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     
     override func viewDidLoad() {
         
-        print("是否有parentVC: \(self.parent)")
+//        print("是否有parentVC: \(self.parent)")
 
         array = Array.init((image?.images)!)
         textView.becomeFirstResponder()
@@ -383,7 +386,12 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
             self.placeWordCountLimit()
             UIView.animate(withDuration: 0.5, delay: 0.2, options: UIViewAnimationOptions.curveEaseInOut, animations: {
                 print("hide")
-                self.galleryArrowBtn.transform = self.scrollView.transform.rotated(by: CGFloat(M_PI-0.000001))
+                
+                
+//                self.galleryArrowBtn.transform = self.scrollView.transform.rotated(by: CGFloat(M_PI-0.000001))
+                self.galleryArrowBtn.transform = self.scrollView.transform.rotated(by: CGFloat(Double.pi-0.000001))
+                
+                
                 
 //                self.contentView.superview?.transform = (self.contentView.superview?.transform.translatedBy(x: (self.contentView.superview?.transform.tx)! + UIScreen.main.bounds.width, y: (self.contentView.superview?.transform.ty)!))!
                 self.contentView.superview?.frame.origin.x = UIScreen.main.bounds.size.width
@@ -453,6 +461,8 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     
     @IBAction func sendBtn(_ sender: UIButton) {
         textView.resignFirstResponder()
+//        rowFlag = false
+//        twitterWordCountReturnCharsCorrector = 0
         
         if postVCMgr.getCurrentNetworkStatus() == "WIFI" {
             print("connected to WIFI :)")
@@ -639,6 +649,7 @@ extension HAPostController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
 //        let newInputCount = abs(textView.text.unicodeScalars.count - currentInputUnicodeScalarsCount)
         textView.becomeFirstResponder()
+        
         let currentRange = textView.selectedRange
         
         if textView.text.unicodeScalars.count > 0{
@@ -656,7 +667,51 @@ extension HAPostController: UITextViewDelegate {
             TwitterWordCount = textView.text.unicodeScalars.count
         }
         
+        
+//        let pos = textView.endOfDocument
+//        let currentRect = textView.caretRect(for: pos)
+//        if previousRect != CGRect.zero {
+//            if currentRect.origin.y > previousRect.origin.y {
+//                print("new line")
+//                TwitterWordCount = TwitterWordCount - 1
+//            }
+//        }
+//        previousRect = currentRect
+
+        
+
+//        let height = textView.sizeThatFits(CGSize(width: (UIApplication.shared.keyWindow?.bounds.size.width)!, height: CGFloat.greatestFiniteMagnitude)).height
+//
+//        print(height)
+//        
+//        if Int(height) == 36 && textView.text.unicodeScalars.count <= 140{
+//            TwitterWordCount = textView.text.unicodeScalars.count
+//            print("还在第一行")
+//        } else if (Int(height) == 57 || Int(height) == 56) && textView.text.unicodeScalars.count <= 140{
+//            rowFlag = true
+//            twitterWordCountReturnCharsCorrector = 1
+////            TwitterWordCount = TwitterWordCount - 1
+////            TwitterWordCount = textView.text.unicodeScalars.count - 1
+//            print("还在第二行, \(TwitterWordCount)")
+//        } else if Int(height) == 77 && textView.text.unicodeScalars.count <= 140{
+//            
+//            if rowFlag == true {
+//                twitterWordCountReturnCharsCorrector = 1
+////                TwitterWordCount = textView.text.unicodeScalars.count - 1
+//                print("if 还在第三行, \(TwitterWordCount)")
+//
+//            } else {
+//                twitterWordCountReturnCharsCorrector = 2
+////                TwitterWordCount = textView.text.unicodeScalars.count - 2
+//                print("else 还在第三行, \(TwitterWordCount)")
+//
+//            }
+////            rowFlag = false
+//            print("还在第三行, \(TwitterWordCount)")
+//        }
+        
         wordCountLabel.text = "\(140 - TwitterWordCount) Twitter, \(63206 - TwitterWordCount) Facebook"
+//        print("外面, \(TwitterWordCount)")
 
         if 140 - TwitterWordCount < 0 {
 
@@ -670,7 +725,6 @@ extension HAPostController: UITextViewDelegate {
         textView.selectedRange = currentRange
         HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
     }
-
     
 }
 

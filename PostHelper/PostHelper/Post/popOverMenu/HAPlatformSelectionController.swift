@@ -40,7 +40,7 @@ class HAPlatformSelectionController: UIViewController, SFSafariViewControllerDel
     
     @IBAction func jumpToTwitterApp(_ sender: UIButton) {
         let url = NSURL.init(string: "twitter://")
-        let isInstalled = UIApplication.shared.canOpenURL(url as! URL)
+        let isInstalled = UIApplication.shared.canOpenURL(url! as URL)
         
         if isInstalled == true {
             
@@ -63,7 +63,7 @@ class HAPlatformSelectionController: UIViewController, SFSafariViewControllerDel
     @IBAction func jumpToFacebookApp(_ sender: UIButton) {
 //        UIApplication.shared.keyWindow?.drawHierarchy(in: (UIApplication.shared.keyWindow?.bounds)!, afterScreenUpdates: true)
         let url = NSURL.init(string: "fb://")
-        let isInstalled = UIApplication.shared.canOpenURL(url as! URL)
+        let isInstalled = UIApplication.shared.canOpenURL(url! as URL)
         
         if isInstalled == true {
 
@@ -96,12 +96,12 @@ class HAPlatformSelectionController: UIViewController, SFSafariViewControllerDel
         } else {
             if platforms.count == 0{
                 if hasAuthToTwitter == true {
-                    print("\(hasAuthToTwitter)")
+                    print("\(String(describing: hasAuthToTwitter))")
                     platforms.insert(.HATwitter, at: 0)
                 }
             } else {
                 if hasAuthToTwitter == true && platforms[0] != .HATwitter{
-                    print("\(hasAuthToTwitter)")
+                    print("\(String(describing: hasAuthToTwitter))")
                     platforms.insert(.HATwitter, at: 0)
                 }
             }
@@ -119,7 +119,7 @@ class HAPlatformSelectionController: UIViewController, SFSafariViewControllerDel
         } else {
 
             if hasAuthToFacebook == true {
-                print("\(hasAuthToFacebook)")
+                print("\(String(describing: hasAuthToFacebook))")
                 platforms.append(.HAFacebook)
             }
             
@@ -161,10 +161,10 @@ class HAPlatformSelectionController: UIViewController, SFSafariViewControllerDel
                     self?.LoginVC.readyBtn.isEnabled = true   
                 }
                 
-                print("signed in as \(session?.userName)")
+                print("signed in as \(String(describing: session?.userName))")
                 
             } else {
-                print("error : \(error?.localizedDescription)")
+                print("error : \(String(describing: error?.localizedDescription))")
             }
             
             UIApplication.shared.isNetworkActivityIndicatorVisible = false

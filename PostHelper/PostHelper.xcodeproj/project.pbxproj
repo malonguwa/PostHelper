@@ -23,6 +23,9 @@
 		3D1608551E5D8E4E00D1124C /* HAPostHUDViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1608541E5D8E4E00D1124C /* HAPostHUDViewBuilder.swift */; };
 		3D3F79151E604E4200E62B8B /* HAFacebookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3F79141E604E4200E62B8B /* HAFacebookManager.swift */; };
 		3D55F9031E5EF99C00E35B89 /* HAAnimationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D55F9021E5EF99C00E35B89 /* HAAnimationDelegate.swift */; };
+		3D5D9FED1E91195E007C2E0D /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5D9FEC1E91195E007C2E0D /* ShareViewController.swift */; };
+		3D5D9FF01E91195E007C2E0D /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D5D9FEE1E91195E007C2E0D /* MainInterface.storyboard */; };
+		3D5D9FF41E91195E007C2E0D /* PostHelperShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3D5D9FEA1E91195D007C2E0D /* PostHelperShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3D65CDDD1DDC423D00073AB4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */; };
 		3D65CDE21DDC423D00073AB4 /* HALoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D65CDDC1DDC423D00073AB4 /* HALoginVC.swift */; };
 		3D65CDE31DDC446C00073AB4 /* HALogin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDDB1DDC423D00073AB4 /* HALogin.storyboard */; };
@@ -58,6 +61,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3D5D9FF21E91195E007C2E0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DB307011DDB2B0E00CFBFC6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3D5D9FE91E91195D007C2E0D;
+			remoteInfo = PostHelperShare;
+		};
 		3DB3071E1DDB2B0E00CFBFC6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3DB307011DDB2B0E00CFBFC6 /* Project object */;
@@ -73,6 +83,20 @@
 			remoteInfo = PostHelper;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3D5D9FF81E91195E007C2E0D /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3D5D9FF41E91195E007C2E0D /* PostHelperShare.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3D0F57E41E55951000CE9F03 /* HAVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAVideo.swift; sourceTree = "<group>"; };
@@ -90,6 +114,10 @@
 		3D1608541E5D8E4E00D1124C /* HAPostHUDViewBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostHUDViewBuilder.swift; sourceTree = "<group>"; };
 		3D3F79141E604E4200E62B8B /* HAFacebookManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAFacebookManager.swift; sourceTree = "<group>"; };
 		3D55F9021E5EF99C00E35B89 /* HAAnimationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAnimationDelegate.swift; sourceTree = "<group>"; };
+		3D5D9FEA1E91195D007C2E0D /* PostHelperShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PostHelperShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D5D9FEC1E91195E007C2E0D /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		3D5D9FEF1E91195E007C2E0D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		3D5D9FF11E91195E007C2E0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D65CDD51DDC423D00073AB4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D65CDD61DDC423D00073AB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D65CDD81DDC423D00073AB4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -155,6 +183,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3D5D9FE71E91195D007C2E0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3DB307061DDB2B0E00CFBFC6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -275,6 +310,16 @@
 			path = HUD;
 			sourceTree = "<group>";
 		};
+		3D5D9FEB1E91195E007C2E0D /* PostHelperShare */ = {
+			isa = PBXGroup;
+			children = (
+				3D5D9FEC1E91195E007C2E0D /* ShareViewController.swift */,
+				3D5D9FEE1E91195E007C2E0D /* MainInterface.storyboard */,
+				3D5D9FF11E91195E007C2E0D /* Info.plist */,
+			);
+			path = PostHelperShare;
+			sourceTree = "<group>";
+		};
 		3D65CDD41DDC423D00073AB4 /* PostHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -306,6 +351,7 @@
 				3D65CDD41DDC423D00073AB4 /* PostHelper */,
 				3DB307201DDB2B0E00CFBFC6 /* PostHelperTests */,
 				3DB3072B1DDB2B0E00CFBFC6 /* PostHelperUITests */,
+				3D5D9FEB1E91195E007C2E0D /* PostHelperShare */,
 				3DB3070A1DDB2B0E00CFBFC6 /* Products */,
 				BFAB604D503CC05C2D567932 /* Pods */,
 				11634D9F0F7107EBE1FA3908 /* Frameworks */,
@@ -318,6 +364,7 @@
 				3DB307091DDB2B0E00CFBFC6 /* PostHelper.app */,
 				3DB3071D1DDB2B0E00CFBFC6 /* PostHelperTests.xctest */,
 				3DB307281DDB2B0E00CFBFC6 /* PostHelperUITests.xctest */,
+				3D5D9FEA1E91195D007C2E0D /* PostHelperShare.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -402,6 +449,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3D5D9FE91E91195D007C2E0D /* PostHelperShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D5D9FF71E91195E007C2E0D /* Build configuration list for PBXNativeTarget "PostHelperShare" */;
+			buildPhases = (
+				3D5D9FE61E91195D007C2E0D /* Sources */,
+				3D5D9FE71E91195D007C2E0D /* Frameworks */,
+				3D5D9FE81E91195D007C2E0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PostHelperShare;
+			productName = PostHelperShare;
+			productReference = 3D5D9FEA1E91195D007C2E0D /* PostHelperShare.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		3DB307081DDB2B0E00CFBFC6 /* PostHelper */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3DB307311DDB2B0E00CFBFC6 /* Build configuration list for PBXNativeTarget "PostHelper" */;
@@ -413,10 +477,12 @@
 				19EA883AB8F31C240A232007 /* [CP] Embed Pods Frameworks */,
 				E82919AF6BDC4FE0743F8081 /* [CP] Copy Pods Resources */,
 				3D832FC61E24C48A00D5EF79 /* ShellScript */,
+				3D5D9FF81E91195E007C2E0D /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3D5D9FF31E91195E007C2E0D /* PBXTargetDependency */,
 			);
 			name = PostHelper;
 			productName = PostHelper;
@@ -466,10 +532,15 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = HA;
-				LastSwiftUpdateCheck = 0810;
+				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = HnA;
 				TargetAttributes = {
+					3D5D9FE91E91195D007C2E0D = {
+						CreatedOnToolsVersion = 8.3;
+						DevelopmentTeam = E5LGBCK373;
+						ProvisioningStyle = Automatic;
+					};
 					3DB307081DDB2B0E00CFBFC6 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = E5LGBCK373;
@@ -512,11 +583,20 @@
 				3DB307081DDB2B0E00CFBFC6 /* PostHelper */,
 				3DB3071C1DDB2B0E00CFBFC6 /* PostHelperTests */,
 				3DB307271DDB2B0E00CFBFC6 /* PostHelperUITests */,
+				3D5D9FE91E91195D007C2E0D /* PostHelperShare */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3D5D9FE81E91195D007C2E0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D5D9FF01E91195E007C2E0D /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3DB307071DDB2B0E00CFBFC6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -611,6 +691,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3D5D9FE61E91195D007C2E0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D5D9FED1E91195E007C2E0D /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3DB307051DDB2B0E00CFBFC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -673,6 +761,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3D5D9FF31E91195E007C2E0D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3D5D9FE91E91195D007C2E0D /* PostHelperShare */;
+			targetProxy = 3D5D9FF21E91195E007C2E0D /* PBXContainerItemProxy */;
+		};
 		3DB3071F1DDB2B0E00CFBFC6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3DB307081DDB2B0E00CFBFC6 /* PostHelper */;
@@ -685,7 +778,51 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		3D5D9FEE1E91195E007C2E0D /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3D5D9FEF1E91195E007C2E0D /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		3D5D9FF51E91195E007C2E0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = E5LGBCK373;
+				INFOPLIST_FILE = PostHelperShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.HnA.PostHelperAPP.PostHelperShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		3D5D9FF61E91195E007C2E0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				DEVELOPMENT_TEAM = E5LGBCK373;
+				INFOPLIST_FILE = PostHelperShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.HnA.PostHelperAPP.PostHelperShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 		3DB3072F1DDB2B0E00CFBFC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -783,6 +920,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 939F7C730FC13A127E23CEAA /* Pods-PostHelper.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PostHelper/PostHelper.entitlements;
@@ -802,6 +940,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8FFDBA34AE057E37144E9A72 /* Pods-PostHelper.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PostHelper/PostHelper.entitlements;
@@ -877,6 +1016,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3D5D9FF71E91195E007C2E0D /* Build configuration list for PBXNativeTarget "PostHelperShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D5D9FF51E91195E007C2E0D /* Debug */,
+				3D5D9FF61E91195E007C2E0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		3DB307041DDB2B0E00CFBFC6 /* Build configuration list for PBXProject "PostHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

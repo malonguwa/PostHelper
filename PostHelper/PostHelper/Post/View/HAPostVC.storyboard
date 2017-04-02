@@ -28,8 +28,8 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="eQo-zc-axd"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardType="twitter"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SNE-yg-4OF">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>

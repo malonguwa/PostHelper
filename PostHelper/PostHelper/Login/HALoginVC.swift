@@ -79,8 +79,8 @@ class HALoginVC: UIViewController {
 //        print("HALoginVC\(self)")
         
         //check login state
-        print("Twitter session = \(Twitter.sharedInstance().sessionStore.session())")
-        print("Facebook AccessToken = \(AccessToken.current?.appId) and expirationDate = \(AccessToken.current?.expirationDate)")
+        print("Twitter session = \(String(describing: Twitter.sharedInstance().sessionStore.session()))")
+        print("Facebook AccessToken = \(String(describing: AccessToken.current?.appId)) and expirationDate = \(String(describing: AccessToken.current?.expirationDate))")
         hasAuthToTwitter = HALoginVC.hasAccessToTwitter()
         hasAuthToFacebook = HALoginVC.hasAccessToFacebook()
         
@@ -223,10 +223,10 @@ class HALoginVC: UIViewController {
 
                 }
                 
-                print("signed in as \(session?.userName)")
+                print("signed in as \(String(describing: session?.userName))")
                 
             } else {
-                print("error : \(error?.localizedDescription)")
+                print("error : \(String(describing: error?.localizedDescription))")
             }
             
             UIApplication.shared.isNetworkActivityIndicatorVisible = false

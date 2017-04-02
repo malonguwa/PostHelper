@@ -45,6 +45,7 @@ class HAPostVCManager: NSObject {
                         hudEffectView = HAPostHUDViewBuilder.createSendTextOnlyHUD(textInView: "Success", onlyOneError: false)
                         
                         self?.postVC.textView.text = ""
+                        self?.postVC.previousRect = CGRect.zero
                         self?.postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
                         self?.postVC.sendBtn.isEnabled = false
 

@@ -22,7 +22,7 @@ class HAVideo : NSObject {
     }
     
     internal func printInfo() {
-        print("+++video-info:\nvideoURL: \(HAvideoURL)\nvideoImage = \(HAvideoImage)\nvideoSize = \(Double((HAvideoSize)) * 0.000001024) MB)/n+++/n")
+        print("+++video-info:\nvideoURL: \(String(describing: HAvideoURL))\nvideoImage = \(String(describing: HAvideoImage))\nvideoSize = \(Double((HAvideoSize)) * 0.000001024) MB)/n+++/n")
 //        print("fileSize : \(Double((videoData?.length)!) * 0.000001024) MB")
 
     }

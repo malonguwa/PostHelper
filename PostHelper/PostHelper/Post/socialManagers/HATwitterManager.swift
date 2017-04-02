@@ -53,11 +53,13 @@ class HATwitterManager: HASocialPlatformsBaseManager {
         
         var twitterText = text
       
+        
         if text.unicodeScalars.count >= 140 {
             
             let index = twitterText.index((twitterText.startIndex), offsetBy: 140)
             twitterText = twitterText.substring(to: index)
         }
+        
         
         let HATW_userID = Twitter.sharedInstance().sessionStore.session()?.userID
         let client = TWTRAPIClient(userID: HATW_userID!)
@@ -93,7 +95,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 completion(nil)
             } else {
                 print("Twitter Error")
-                let nse = error as! NSError
+                let nse = error! as NSError
                 completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
             }
         })
@@ -138,7 +140,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                         client.uploadMedia(imgData as Data, contentType: "image/jpeg", completion: { (mediaID, error) in
                             if error != nil {
                                 //FIXME: here to know which twitter image upload faliure
-                                print("\(image.offset): error uploading media to Twitter \(error)")
+                                print("\(image.offset): error uploading media to Twitter \(String(describing: error))")
                             } else {
                                 mediaIDs.append(mediaID!)
                                 print(mediaIDs)
@@ -219,8 +221,8 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                 } else {
                     //FIXME: 失败也要继续往下一个平台发
                     print("159 line - else")
-                    print("159 line - \(response)\n\n\(data)\n\n\(error)")
-                    let nse = error as! NSError
+                    print("159 line - \(String(describing: response))\n\n\(String(describing: data))\n\n\(String(describing: error))")
+                    let nse = error! as NSError
                     //FIXME: 这里加了新通知方法调用
                     HASocialPlatformsBaseManager.sendFinalPostStatusNotification(isEnd: true, currentPlatform: SocialPlatform.HATwitter, whoEnd: WhoUploadEnd.TWImageFinalEND, isFinalRequestSucess: false)
                     completion("\(nse.userInfo["NSLocalizedFailureReason"]!)\n")
@@ -267,14 +269,15 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                     // step 0: 将DKAsset对象中的video.url转化成NSData
                     let videoData = NSData(contentsOf: video.HAvideoURL!)
                     if videoData == nil{
-                        print("data == nil")
+                        print("Video data == nil")
+                        return
                     }
                     
                     if Double((videoData?.length)!) * 0.000001024 > 500.00 {//不能发往Twitter
                         print("fileSize : \(Double((videoData?.length)!) * 0.000001024) MB")
                         completion("Video is too large for twitter")
                     } else {//符合要求开始上传
-                        SocialVideoHelper.uploadTwitterVideo(videoData as! Data, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessageStr) in
+                        SocialVideoHelper.uploadTwitterVideo(videoData! as Data, comment: text, account: accounts[0] as! ACAccount, withCompletion: { (success, errorMessageStr) in
                             if success == true {
                                 print("Twitter video upload success")
                                 //                                        self.HAtimer?.invalidate()
@@ -296,7 +299,7 @@ class HATwitterManager: HASocialPlatformsBaseManager {
                                 completion(nil)
                                 
                             } else {
-                                print("Twitter Video Upload ErrorMsg: - \(errorMessageStr)")
+                                print("Twitter Video Upload ErrorMsg: - \(String(describing: errorMessageStr))")
                                 //                                        self.HAtimer?.invalidate()
                                 //                                        self.HAtimer = nil
                                 //FIXME: 失败也要继续往下一个平台发

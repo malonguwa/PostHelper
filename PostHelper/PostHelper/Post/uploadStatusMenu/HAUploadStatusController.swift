@@ -95,7 +95,7 @@ class HAUploadStatusController : UIViewController {
     func updateLabelInfor(notification: Notification) {
         let platform = notification.userInfo?["currentPlatform"] as! SocialPlatform
         
-        print("TwitterVideo: \(notification.userInfo?["isVideo"]), isSuccess: \(notification.userInfo?["isSuccess"])")
+        print("TwitterVideo: \(String(describing: notification.userInfo?["isVideo"])), isSuccess: \(String(describing: notification.userInfo?["isSuccess"]))")
 
         if platform == SocialPlatform.HATwitter && notification.userInfo?["isSuccess"] as! Bool == true {
             if notification.userInfo?["isVideo"] as! Bool == false {//Image
@@ -449,6 +449,7 @@ class HAUploadStatusController : UIViewController {
             postVC.videoInGalleryArray.removeAll()
             postVC.selected_assets.removeAllObjects()
             postVC.textView.text = ""
+            postVC.previousRect = CGRect.zero
             postVC.wordCountLabel.text = "140 Twitter, 63206 Facebook"
             postVC.sendBtn.isEnabled = false
             

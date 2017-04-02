@@ -19,7 +19,7 @@ class HAImage : NSObject {
     }
     
     internal func printInfo() {
-        print("+++image-info:\nimage: \(HAimage)\nvimageSize = \(CGFloat(HAimageSize) / 1024.00)kb/n+++/n")
+        print("+++image-info:\nimage: \(String(describing: HAimage))\nvimageSize = \(CGFloat(HAimageSize) / 1024.00)kb/n+++/n")
     }
 
     

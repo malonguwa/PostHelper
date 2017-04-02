@@ -131,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if fm.fileExists(atPath: PHA_PlistPath) == true {
             //找到了再读取数据
             let dictFromPlist = NSMutableDictionary(contentsOfFile: PHA_PlistPath)
-            print("从plist中取出的dict: \(dictFromPlist)")
+            print("从plist中取出的dict: \(String(describing: dictFromPlist))")
             return dictFromPlist
             
         } else {
@@ -243,12 +243,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if shortcutItem.type == "postSomething" {
             print("postSomething")
             let topViewController = UIApplication.shared.topMostViewController()
-            print("1.------\(topViewController)")
+            print("1.------\(String(describing: topViewController))")
             if (topViewController?.isKind(of: HALoginVC.self))! && platforms.count > 0 {
-                print("2.------\(topViewController)")
+                print("2.------\(String(describing: topViewController))")
                 topViewController?.performSegue(withIdentifier: "HA_loginToPost", sender: nil)
             } else if (topViewController?.childViewControllers.count)! > 0 && (topViewController?.childViewControllers[0].isKind(of: HASidePanel.self))! && platforms.count > 0 {
-                print("3.------\(topViewController)")
+                print("3.------\(String(describing: topViewController))")
                 NotificationCenter.default.post((topViewController?.childViewControllers[0] as! HASidePanel).sidePanelRemoveAnimationNotify)
             }
             completionHandler(true)
