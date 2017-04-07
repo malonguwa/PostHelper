@@ -39,6 +39,10 @@
 		3DB3072D1DDB2B0E00CFBFC6 /* PostHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3072C1DDB2B0E00CFBFC6 /* PostHelperUITests.swift */; };
 		3DBB0DFC1E66BE9000056E7B /* HAUploadStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */; };
 		3DD551F61E4D8D2200BDBBDF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD551F51E4D8D2200BDBBDF /* Utility.swift */; };
+		3DD993FA1E923011001F350A /* HAPostHelperShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD993F91E923011001F350A /* HAPostHelperShareVC.swift */; };
+		3DD993FC1E9285C8001F350A /* KeychainPasswordItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD993FB1E9285C8001F350A /* KeychainPasswordItem.swift */; };
+		3DD993FE1E928807001F350A /* KeychainPasswordItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD993FD1E928807001F350A /* KeychainPasswordItem.swift */; };
+		3DD994011E962186001F350A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D65CDD61DDC423D00073AB4 /* Assets.xcassets */; };
 		3DDFC9C21E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DDFC9C11E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard */; };
 		3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A61E446FC60089C64F /* M13ProgressView.m */; };
 		3DE0E4AA1E446FC60089C64F /* M13ProgressViewRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0E4A81E446FC60089C64F /* M13ProgressViewRing.m */; };
@@ -139,6 +143,10 @@
 		3DB3072E1DDB2B0E00CFBFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DBB0DFB1E66BE9000056E7B /* HAUploadStatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAUploadStatusController.swift; sourceTree = "<group>"; };
 		3DD551F51E4D8D2200BDBBDF /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		3DD993F81E922047001F350A /* PostHelperShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PostHelperShare.entitlements; sourceTree = "<group>"; };
+		3DD993F91E923011001F350A /* HAPostHelperShareVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAPostHelperShareVC.swift; sourceTree = "<group>"; };
+		3DD993FB1E9285C8001F350A /* KeychainPasswordItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainPasswordItem.swift; sourceTree = "<group>"; };
+		3DD993FD1E928807001F350A /* KeychainPasswordItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainPasswordItem.swift; sourceTree = "<group>"; };
 		3DDFC9C11E81159900298CB2 /* HAPostHelperAdvantureVC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = HAPostHelperAdvantureVC.storyboard; sourceTree = "<group>"; };
 		3DE0E4A51E446FC60089C64F /* M13ProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressView.h; sourceTree = "<group>"; };
 		3DE0E4A61E446FC60089C64F /* M13ProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressView.m; sourceTree = "<group>"; };
@@ -313,7 +321,10 @@
 		3D5D9FEB1E91195E007C2E0D /* PostHelperShare */ = {
 			isa = PBXGroup;
 			children = (
+				3DD993F81E922047001F350A /* PostHelperShare.entitlements */,
 				3D5D9FEC1E91195E007C2E0D /* ShareViewController.swift */,
+				3DD993F91E923011001F350A /* HAPostHelperShareVC.swift */,
+				3DD993FD1E928807001F350A /* KeychainPasswordItem.swift */,
 				3D5D9FEE1E91195E007C2E0D /* MainInterface.storyboard */,
 				3D5D9FF11E91195E007C2E0D /* Info.plist */,
 			);
@@ -399,6 +410,7 @@
 				3DF5471B1E2CB16400A5FF27 /* SocialVideoHelper.m */,
 				3DF5471D1E2CB1A600A5FF27 /* PostHelper-Bridging-Header.h */,
 				3DD551F51E4D8D2200BDBBDF /* Utility.swift */,
+				3DD993FB1E9285C8001F350A /* KeychainPasswordItem.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -540,6 +552,14 @@
 						CreatedOnToolsVersion = 8.3;
 						DevelopmentTeam = E5LGBCK373;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					3DB307081DDB2B0E00CFBFC6 = {
 						CreatedOnToolsVersion = 8.1;
@@ -547,6 +567,9 @@
 						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Keychain = {
 								enabled = 1;
 							};
@@ -593,6 +616,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DD994011E962186001F350A /* Assets.xcassets in Resources */,
 				3D5D9FF01E91195E007C2E0D /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -696,6 +720,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D5D9FED1E91195E007C2E0D /* ShareViewController.swift in Sources */,
+				3DD993FA1E923011001F350A /* HAPostHelperShareVC.swift in Sources */,
+				3DD993FE1E928807001F350A /* KeychainPasswordItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -709,6 +735,7 @@
 				3D1608531E5D7A5400D1124C /* HAPostHUDController.swift in Sources */,
 				3DE0E4A91E446FC60089C64F /* M13ProgressView.m in Sources */,
 				3D0F58041E55A70300CE9F03 /* HAPostVCManager.swift in Sources */,
+				3DD993FC1E9285C8001F350A /* KeychainPasswordItem.swift in Sources */,
 				3DF5471C1E2CB16400A5FF27 /* SocialVideoHelper.m in Sources */,
 				3D1608551E5D8E4E00D1124C /* HAPostHUDViewBuilder.swift in Sources */,
 				3DF688931E55FF6A00CE034F /* TZAssetModel.m in Sources */,
@@ -795,6 +822,7 @@
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_ENTITLEMENTS = PostHelperShare/PostHelperShare.entitlements;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = E5LGBCK373;
 				INFOPLIST_FILE = PostHelperShare/Info.plist;
@@ -812,6 +840,7 @@
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_ENTITLEMENTS = PostHelperShare/PostHelperShare.entitlements;
 				DEVELOPMENT_TEAM = E5LGBCK373;
 				INFOPLIST_FILE = PostHelperShare/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
@@ -1023,6 +1052,7 @@
 				3D5D9FF61E91195E007C2E0D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		3DB307041DDB2B0E00CFBFC6 /* Build configuration list for PBXProject "PostHelper" */ = {
 			isa = XCConfigurationList;

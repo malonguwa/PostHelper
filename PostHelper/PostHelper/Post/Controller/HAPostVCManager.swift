@@ -22,7 +22,7 @@ class HAPostVCManager: NSObject {
         postVC = nil
     }
     
-
+    
 
     func sendDataFilter(text: String, images: [HAImage], video: [HAVideo], presentFrom: HAPostController){
         postVC = presentFrom

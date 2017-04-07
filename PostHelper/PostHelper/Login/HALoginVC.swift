@@ -11,6 +11,7 @@ import FacebookLogin
 import FacebookCore
 import FBSDKCoreKit
 import TwitterKit
+import Security
 
 // Global var
 public var hasAuthToTwitter : Bool?
@@ -183,16 +184,40 @@ class HALoginVC: UIViewController {
                 }
                 
                 print("Logged in with write permission!, \n\n grantedPermissions: \(grantedPermissions), \n\n declinedPermissions: \(declinedPermissions),\n\n accessToken: \(accessToken)")
+               
+                //将Token写入KeyChain
+                let keychainItem = KeychainPasswordItem.init(service: "PostHelperService", account: "FB_AccesssTokenForShare_Test", accessGroup: "group.com.HnA.PostHelperAPP")
+                
+                do {
+                    try keychainItem.savePassword(accessToken.authenticationToken)
+                    print("写入keychain成功")
+                } catch {
+                    print(error.localizedDescription)
+                }
+                
+                //获取
+                
+                var passW = ""
+                do {
+                    try passW = keychainItem.readPassword()
+                    print("keychain成功\(passW)")
+                } catch {
+                    print(error.localizedDescription)
+                }
+                
+                
         }
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
 
     }
 }
     
+
+    
     /// addTWAccountBtn event
     @IBAction func addTWAccountClick(_ sender: Any) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
-
+        
         Twitter.sharedInstance().logIn { (session, error) in
             if session != nil {
                 
