@@ -24,6 +24,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
     var limitInputUnicodeScalarsCount = 0
     var colorChangeRange = 0
     var previousRect = CGRect.zero
+    var textViewURLArray = [String]()
 //    var rowFlag = false
 //    var twitterWordCountReturnCharsCorrector = 0
     weak var sidePanelVC : HASidePanel?
@@ -549,6 +550,7 @@ class HAPostController: UIViewController, CAAnimationDelegate  {
         }
     }
     
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
         print("HAPostController deinit")
@@ -710,18 +712,43 @@ extension HAPostController: UITextViewDelegate {
 //            print("还在第三行, \(TwitterWordCount)")
 //        }
         
-        wordCountLabel.text = "\(140 - TwitterWordCount) Twitter, \(63206 - TwitterWordCount) Facebook"
-//        print("外面, \(TwitterWordCount)")
+        
+        let array = postVCMgr.matchURLwithString(urlString: textView.text! as NSString)
+        textViewURLArray = array!
 
-        if 140 - TwitterWordCount < 0 {
+        
+        if (textViewURLArray.count) > 0 {
+//            let totalCount = 0
+//            for urlStr in array {
+//                
+//            }
+            let urlLength = array?[0].characters.count
+//            print("TwitterWordCount URL: \(TwitterWordCount)")
+            wordCountLabel.text = "\(140 - TwitterWordCount + urlLength! - 23) Twitter, \(63206 - TwitterWordCount) Facebook"
+//            print("wordCountLabel.text: \(wordCountLabel.text)")
 
-            let count = 140 - TwitterWordCount
-            let endex = "\(count)".characters.count
+        } else {
+            wordCountLabel.text = "\(140 - TwitterWordCount) Twitter, \(63206 - TwitterWordCount) Facebook"
+        }
+
+        if 140 - TwitterWordCount < 0 && textViewURLArray.count == 0{
+
+            let TWcount = 140 - TwitterWordCount
+            let endex = "\(TWcount)".characters.count
             
             wordCountLabel.attributedText = postVCMgr.HA_attributedText(text: wordCountLabel.text!, textColor: UIColor.red, rangeForTextColor: NSMakeRange(0, endex))
 
+        } else if 140 - TwitterWordCount < 0 && textViewURLArray.count > 0{
+            
+            let TWcount = 140 - TwitterWordCount + textViewURLArray[0].characters.count - 23
+            let endex = "\(TWcount)".characters.count
+            if TWcount < 0 {
+                wordCountLabel.attributedText = postVCMgr.HA_attributedText(text: wordCountLabel.text!, textColor: UIColor.red, rangeForTextColor: NSMakeRange(0, endex))
+            }
+
         }
     
+
         textView.selectedRange = currentRange
         HAPlatformSelectionController.disableSendBtn(sendBtn: sendBtn, displayCount: arrayForDisplay.count, text: textView.text)
     }

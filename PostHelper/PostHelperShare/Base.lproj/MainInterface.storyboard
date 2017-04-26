@@ -46,10 +46,6 @@
                                             <action selector="postbtnClick:" destination="j1y-V4-xli" eventType="touchUpInside" id="CaR-4y-nuy"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35j-GS-2qS">
-                                        <rect key="frame" x="0.0" y="145" width="300" height="30"/>
-                                        <state key="normal" title="   Select Platforms" image="linea_f3(0)_30"/>
-                                    </button>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qzg-J4-jff">
                                         <rect key="frame" x="8" y="44" width="210" height="80"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -77,24 +73,38 @@
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5e3-9I-hxN">
                                         <rect key="frame" x="240" y="49" width="50" height="50"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="d1Y-MG-F86">
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            </imageView>
+                                        </subviews>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="d1Y-MG-F86" secondAttribute="bottom" id="MKo-rr-dgr"/>
                                             <constraint firstAttribute="width" constant="50" id="Mkz-dm-AQg"/>
+                                            <constraint firstItem="d1Y-MG-F86" firstAttribute="top" secondItem="5e3-9I-hxN" secondAttribute="top" id="RuI-wx-MCI"/>
+                                            <constraint firstItem="d1Y-MG-F86" firstAttribute="leading" secondItem="5e3-9I-hxN" secondAttribute="leading" id="dy1-PN-NUE"/>
+                                            <constraint firstAttribute="trailing" secondItem="d1Y-MG-F86" secondAttribute="trailing" id="pB2-I6-2bf"/>
                                             <constraint firstAttribute="height" constant="50" id="zTZ-Xi-PN6"/>
                                         </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ccp-Za-xfs" userLabel="BottomView">
+                                        <rect key="frame" x="0.0" y="145" width="300" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="35j-GS-2qS" firstAttribute="leading" secondItem="LLd-t3-dgs" secondAttribute="leading" id="0rM-yq-S07"/>
                                     <constraint firstItem="Lu7-E3-ygt" firstAttribute="top" secondItem="LLd-t3-dgs" secondAttribute="top" constant="33" id="1ez-yZ-jY5"/>
                                     <constraint firstItem="Lu7-E3-ygt" firstAttribute="leading" secondItem="LLd-t3-dgs" secondAttribute="leading" id="1fL-jB-hoe"/>
-                                    <constraint firstItem="35j-GS-2qS" firstAttribute="top" secondItem="h6c-ND-dlY" secondAttribute="bottom" id="1tV-Kd-ilC"/>
                                     <constraint firstAttribute="height" constant="175" id="49p-7B-jOH"/>
                                     <constraint firstItem="h6c-ND-dlY" firstAttribute="top" secondItem="Qzg-J4-jff" secondAttribute="bottom" constant="20" id="72l-fl-0SV"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ccp-Za-xfs" secondAttribute="trailing" id="8RK-pp-nW5"/>
                                     <constraint firstAttribute="trailing" secondItem="Lu7-E3-ygt" secondAttribute="trailing" id="9nf-uR-Kvd"/>
+                                    <constraint firstItem="Ccp-Za-xfs" firstAttribute="top" secondItem="h6c-ND-dlY" secondAttribute="bottom" id="AAj-H5-RMk"/>
                                     <constraint firstAttribute="trailing" secondItem="h6c-ND-dlY" secondAttribute="trailing" id="DDx-0Q-7PV"/>
                                     <constraint firstItem="Qzg-J4-jff" firstAttribute="top" secondItem="Lu7-E3-ygt" secondAttribute="bottom" constant="10" id="Dix-sj-6Zo"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ccp-Za-xfs" secondAttribute="bottom" id="J3J-Pe-upZ"/>
                                     <constraint firstItem="LBF-F1-ZBB" firstAttribute="leading" secondItem="LLd-t3-dgs" secondAttribute="leading" constant="8" id="JhN-Rn-EFz"/>
                                     <constraint firstItem="Qzg-J4-jff" firstAttribute="leading" secondItem="LLd-t3-dgs" secondAttribute="leading" constant="8" id="OlF-tZ-eM0"/>
                                     <constraint firstItem="LBF-F1-ZBB" firstAttribute="top" secondItem="LLd-t3-dgs" secondAttribute="top" constant="3" id="QhE-6Q-hjh"/>
@@ -103,9 +113,8 @@
                                     <constraint firstItem="Fge-Zt-ZqJ" firstAttribute="top" secondItem="LLd-t3-dgs" secondAttribute="top" constant="3" id="ZCL-e3-8ZL"/>
                                     <constraint firstItem="5e3-9I-hxN" firstAttribute="top" secondItem="Lu7-E3-ygt" secondAttribute="bottom" constant="15" id="bBQ-HG-kuq"/>
                                     <constraint firstAttribute="trailing" secondItem="Fge-Zt-ZqJ" secondAttribute="trailing" id="bHZ-EA-sDz"/>
+                                    <constraint firstItem="Ccp-Za-xfs" firstAttribute="leading" secondItem="LLd-t3-dgs" secondAttribute="leading" id="dui-Rs-Mbj"/>
                                     <constraint firstItem="h6c-ND-dlY" firstAttribute="leading" secondItem="LLd-t3-dgs" secondAttribute="leading" id="jG5-4X-R5X"/>
-                                    <constraint firstAttribute="bottom" secondItem="35j-GS-2qS" secondAttribute="bottom" id="p9P-dk-tUE"/>
-                                    <constraint firstAttribute="trailing" secondItem="35j-GS-2qS" secondAttribute="trailing" id="wZU-Kf-l5t"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -116,8 +125,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="imageView" destination="d1Y-MG-F86" id="iqL-Ik-jaN"/>
                         <outlet property="postBtn" destination="Fge-Zt-ZqJ" id="Aa0-yB-90l"/>
-                        <outlet property="selectPlatformsBtn" destination="35j-GS-2qS" id="rdw-5q-vhW"/>
                         <outlet property="snapShotView" destination="5e3-9I-hxN" id="PTg-BQ-zen"/>
                         <outlet property="textView" destination="Qzg-J4-jff" id="Vl8-4T-qFW"/>
                     </connections>
@@ -127,7 +136,4 @@
             <point key="canvasLocation" x="36" y="38.23088455772114"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="linea_f3(0)_30" width="30" height="30"/>
-    </resources>
 </document>

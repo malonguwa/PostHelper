@@ -28,8 +28,6 @@
 			<dict>
 				<key>NSExtensionActivationSupportsAttachmentsWithMaxCount</key>
 				<integer>6</integer>
-<!--				<key>NSExtensionActivationSupportsAttachmentsWithMinCount</key>-->
-<!--				<integer>0</integer>-->
 				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
 				<integer>0</integer>
 				<key>NSExtensionActivationSupportsMovieWithMaxCount</key>

@@ -222,6 +222,37 @@ class HAPostVCManager: NSObject {
     }
     
     
+    func matchURLwithString(urlString: NSString?) -> Array<String>? {
+        
+        if (urlString == nil) {
+            return nil
+        }
+        
+        let regulaStr = "(http|ftp|https)://[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?"
+
+        var regex : NSRegularExpression? = nil
+        
+        do {
+            regex = try NSRegularExpression(pattern: regulaStr, options: NSRegularExpression.Options.caseInsensitive)
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        
+        
+        let arrayOfAllMatches = regex?.matches(in: urlString! as String, options: NSRegularExpression.MatchingOptions.init(rawValue: 0), range: NSMakeRange(0, (urlString?.length)!))
+        
+        var urls = [String]()
+        
+        for match in arrayOfAllMatches! {
+            
+            let substringForMatch = urlString?.substring(with: match.range)
+            urls.append(substringForMatch!)
+        }
+        
+        return urls
+    }
+    
+    
     
     deinit {
         
